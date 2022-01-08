@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: shelf_app
+    build:
+      context: .
+      target: development # Build the specified stage as defined inside the Dockerfile
+    image: shelf:1.0.0
+    restart: unless-stopped
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules # Just specify a path and let the Engine create a volume
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    command: npm run start:dev
+    networks:
+      - shelf
+
+networks:
+  shelf:
+
