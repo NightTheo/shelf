@@ -25,11 +25,20 @@ Le worflow utilisé est le **Gitflow**, c'est à dire:
 - main
 - develop
 - feature
-  ... To Do
+- fix
+
+Le Gitflow est associé à l'utilisation de **pull requests**. 
+Chaque nouveau développement ou correction doit faire suite à la création d'une **issue**
+liée à une **Pull Request**.
+La Pull Request doit avoir deux approbations pour être appliquée sur la branche develop.
+Les branches sont supprimées lorsque la pull request est acceptée.
+
+Le nom des commits sont en anglais.
 
 ### Sécurité
-Gpg, ssh
+Tous les commits sont vérifiés par le biais de clés GPG.
 
+Les branches main et develop sont protégés par des règles ...
 
 ## Contribuer
 La documentation de l’exécution de votre application via l’environnement de développement sous docker-compose
