@@ -40,7 +40,9 @@ services:
 
 networks:
   shelf:
+    driver: bridge
 
 volumes:
   mysql:
+    driver: local
 
