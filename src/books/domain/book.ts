@@ -8,7 +8,7 @@ export class Book {
     private _isbn: Isnb;
     private _title: BookTitle;
     private _author: Author;
-    private overview: BookOverview;
+    private _overview: BookOverview;
     private picture: Picture;
 
 
@@ -16,7 +16,7 @@ export class Book {
         this._isbn = isbn;
         this._title = title;
         this._author = author;
-        this.overview = overview
+        this._overview = overview
     }
 
     get isbn(): Isnb {
@@ -29,6 +29,10 @@ export class Book {
 
     get author(): Author {
         return this._author;
+    }
+
+    get overview(): BookOverview {
+        return this._overview;
     }
 
     canBeAdded(): void {

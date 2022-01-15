@@ -43,17 +43,7 @@ export class BookRepositoryImp implements BookRepository {
     }
 
     async save(book: Book): Promise<Book> {
-        const saved = await this.booksRepository.save({
-            isbn: book.isbn.value,
-            title: book.title.value,
-            author: book.author.name
-        });
-        return new Book(
-            new Isnb(saved.isbn),
-            new BookTitle(saved.title),
-            new Author(saved.author),
-            new BookOverview('')
-        );
+        return Promise.resolve(undefined);
     }
 
     update(book: Book): Promise<Book> {
