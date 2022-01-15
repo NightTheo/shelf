@@ -12,4 +12,7 @@ export class BookEntity{
   @Column()
   author: string;
 
+  @Column()
+  overview: string;
+
 }
