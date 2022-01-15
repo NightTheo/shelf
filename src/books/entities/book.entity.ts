@@ -1,15 +1,15 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {Column, Entity, PrimaryColumn} from 'typeorm';
 
-@Entity()
-export class Book{
+@Entity({name:'book'})
+export class BookEntity{
 
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
+  @PrimaryColumn()
   isbn: string;
 
   @Column()
   title: string;
+
+  @Column()
+  author: string;
 
 }
