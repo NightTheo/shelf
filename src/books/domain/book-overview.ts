@@ -1,7 +1,12 @@
 export class BookOverview{
-    private overview: string;
+    private readonly _value: string;
 
     constructor(overview: string) {
-        this.overview = overview
+        this._value = overview
+    }
+
+
+    get value(): string {
+        return this._value;
     }
 }
