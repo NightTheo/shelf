@@ -14,19 +14,24 @@ export class BookRepositoryImp implements BookRepository {
     constructor(
         @InjectRepository(BookEntity)
         private booksRepository: Repository<BookEntity>
-    ) {}
+    ) {
+    }
 
     delete(isbn: Isnb): void {
     }
 
     async find(): Promise<Book[]> {
-        const books: BookEntity[] = await this.booksRepository.find();
-        return books.map(book => new Book(
-            new Isnb(book.isbn),
-            new BookTitle(book.title),
-            new Author(book.author),
-            new BookOverview('')
-        ))
+        return await this.booksRepository.find()
+            .then(books => {
+                    return books.map(book => new Book(
+                        new Isnb(book.isbn),
+                        new BookTitle(book.title),
+                        new Author(book.author),
+                        new BookOverview(book.overview)
+                    ));
+                }
+            );
+
     }
 
     findBy(): Promise<Book[]> {
