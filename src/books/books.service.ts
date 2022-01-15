@@ -3,6 +3,7 @@ import { UpdateBookDto } from './dto/update-book.dto';
 import { Book } from './domain/book';
 import {BookRepositoryImp} from "./repository/book.repository.imp";
 
+@Injectable()
 export class BooksService {
 
   @Inject()
