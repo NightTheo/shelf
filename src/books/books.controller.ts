@@ -4,26 +4,21 @@ import { AddBookDto } from './dto/add-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import {AddBookDtoToBookAdapter} from "./adapters/add-book-dto-to-book.adapter";
 import {AddedBookDto} from "./dto/added-book.dto";
-import {BookToAddedBookAdapter} from "./adapters/book-to-added-book.adapter";
+import {BookDomainToAddedBookDtoAdapter} from "./adapters/book-domain-to-added-book-dto.adapter";
 import {Book} from "./domain/book";
-import {map} from "rxjs";
 
 @Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Post()
-  async add(@Body() addBookDto: AddBookDto): Promise<AddedBookDto> {
-    const book = AddBookDtoToBookAdapter.of(addBookDto);
-    book.canBeAdded();
-    const addedBook = await this.booksService.add(book);
-    return BookToAddedBookAdapter.of(addedBook);
+  async add(@Body() id: string){
   }
 
   @Get()
-  async findAll() {
+  async findAll(): Promise<AddedBookDto[]> {
     const booksDomain: Book[] = await this.booksService.findAll();
-    return booksDomain.map(book => BookToAddedBookAdapter.of(book));
+    return booksDomain.map(book => BookDomainToAddedBookDtoAdapter.of(book));
   }
 
   @Get(':id')

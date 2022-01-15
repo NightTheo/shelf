@@ -9,23 +9,20 @@ import {BookOverview} from "./domain/book-overview";
 
 describe('BooksService', () => {
   let service: BooksService;
-  let books: Book[];
-  books = [
-    new Book(
-        new Isnb("1234567890001"),
-        new BookTitle("title 1"),
-        new Author("author 1"),
-        new BookOverview("overview 1")
-    ),
-    new Book(
-        new Isnb("1234567890002"),
-        new BookTitle("title 2"),
-        new Author("author 2"),
-        new BookOverview("overview 2")
-    )
-  ];
+  const numberOfBooksInMockStoredBooks = 20;
+  const mockStoredBooks: Book[] = Array.from(Array(numberOfBooksInMockStoredBooks).keys())
+      .map(key => {
+        const i = key+1;
+        return new Book(
+            new Isnb(`123456789000${i}`),
+            new BookTitle(`title ${i}`),
+            new Author(`author ${i}`),
+            new BookOverview(`overview ${i}`)
+        )
+      })
+
   const mockBooksRepositoryImp = {
-    find : jest.fn(() => Promise.all(books))
+    find : jest.fn(() => Promise.all(mockStoredBooks))
   }
 
   beforeEach(async () => {
@@ -45,6 +42,6 @@ describe('BooksService', () => {
 
   it('should get all the books', async () => {
     const allBooks: Book[] = await service.findAll();
-    expect(allBooks).toEqual(books);
+    expect(allBooks).toEqual(mockStoredBooks);
   })
 });

@@ -7,7 +7,7 @@ qu’il a lus au cours de sa vie, dans sa bibliothèque virtuelle.
 ## Installation
 
 ## Fonctionnalités de l’application
-- [ ] Afficher ses livres
+- [x] Afficher ses livres
 - [ ] Afficher les détails d'un livre
 - [ ] Ajouter un livre
 - [ ] Modifier un livre
