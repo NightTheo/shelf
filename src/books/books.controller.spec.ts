@@ -34,7 +34,7 @@ describe('BooksController', () => {
       author: 'Albert Camus',
       overview: 'Quand la sonnerie a encore retenti, que la porte du box s\'est ouverte, c\'est le silence...'
     }
-    expect(controller.create(createDto)).toEqual({
+    expect(controller.add(createDto)).toEqual({
       isbn: createDto.isbn,
       title: createDto.title,
       author: createDto.author
