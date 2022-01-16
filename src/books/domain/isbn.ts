@@ -1,16 +1,15 @@
 export class Isnb{
-    private _value: string;
+    private readonly _value: string;
 
     constructor(isbn: string) {
         this._value = isbn;
     }
 
-    public isValid() {
-
-    }
-
-
     get value(): string {
         return this._value;
+    }
+
+    public isValid(): Boolean {
+        return this.value.length > 13;
     }
 }

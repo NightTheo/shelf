@@ -3,6 +3,7 @@ import {Author} from "./author";
 import {BookTitle} from "./book-title";
 import {BookOverview} from "./book-overview";
 import {Picture} from "./picture";
+import {IsbnFormatException} from "./IsbnFormatException";
 
 export class Book {
     private _isbn: Isnb;
@@ -36,5 +37,6 @@ export class Book {
     }
 
     canBeAdded(): void {
+
     }
 }

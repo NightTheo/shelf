@@ -7,7 +7,7 @@ import {BookOverview} from "../domain/book-overview";
 
 export class AddBookDtoToBookAdapter {
 
-    public static of(dto: AddBookDto): Book {
+    public static from(dto: AddBookDto): Book {
         return new Book(
             new Isnb(dto.isbn),
             new BookTitle(dto.title),

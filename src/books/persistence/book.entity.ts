@@ -3,16 +3,16 @@ import {Column, Entity, PrimaryColumn} from 'typeorm';
 @Entity({name:'book'})
 export class BookEntity{
 
-  @PrimaryColumn()
+  @PrimaryColumn({length: 13})
   isbn: string;
 
-  @Column()
+  @Column({length: 200})
   title: string;
 
-  @Column()
+  @Column({length: 150})
   author: string;
 
-  @Column()
+  @Column({length: 1500})
   overview: string;
 
 }

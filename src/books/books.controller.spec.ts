@@ -8,6 +8,8 @@ import {Author} from "./domain/author";
 import {BookOverview} from "./domain/book-overview";
 import {AddedBookDto} from "./dto/added-book.dto";
 import {AddBookDto} from "./dto/add-book.dto";
+import {UnprocessableEntityException} from "@nestjs/common";
+import exp from "constants";
 
 describe('BooksController', () => {
     let controller: BooksController;
@@ -66,6 +68,12 @@ describe('BooksController', () => {
             author: book.author, isbn: book.isbn, title: book.title
         }
         expect(await controller.add(book)).toEqual(addedBook);
+    })
+
+    it("should throw an UnprocessableEntityException if given a bad ISBN", async () => {
+        const bookWithBadIsbn: AddBookDto = {isbn: "badIsbn", author: "", overview: "", title: "" };
+        await expect(() => controller.add(bookWithBadIsbn)).rejects.toThrow(UnprocessableEntityException);
+        await expect(() => controller.add(bookWithBadIsbn)).rejects.toThrow("The ISBN-13 should be a numeric identification key as aaa-b-cccc-dddd-e");
     })
 
 });

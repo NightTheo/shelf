@@ -10,6 +10,7 @@ export class BooksService {
   private readonly bookRepository: BookRepositoryImp;
 
   async add(book: Book): Promise<Book> {
+    book.canBeAdded();
     return await this.bookRepository.save(book);
   }
 

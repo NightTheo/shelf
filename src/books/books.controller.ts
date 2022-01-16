@@ -6,6 +6,8 @@ import {AddBookDtoToBookAdapter} from "./adapters/add-book-dto-to-book.adapter";
 import {AddedBookDto} from "./dto/added-book.dto";
 import {BookDomainToAddedBookDtoAdapter} from "./adapters/book-domain-to-added-book-dto.adapter";
 import {Book} from "./domain/book";
+import {UnprocessableEntityException} from "@nestjs/common";
+
 
 @Controller('books')
 export class BooksController {
@@ -13,18 +15,21 @@ export class BooksController {
 
   @Post()
   async add(@Body() addBookDto: AddBookDto): Promise<AddedBookDto>{
-    const toDomain = AddBookDtoToBookAdapter;
-    const toDto = BookDomainToAddedBookDtoAdapter;
-    const bookDomain = toDomain.of(addBookDto);
-    const addedBook = await this.booksService.add(bookDomain);
-    return toDto.of(addedBook);
+    const bookDomain: Book = AddBookDtoToBookAdapter.from(addBookDto);
+    const IsbnIsNotNumeric: boolean = isNaN(+bookDomain.isbn.value);
+    if(IsbnIsNotNumeric) {
+      throw new UnprocessableEntityException("The ISBN-13 should be a numeric identification key as aaa-b-cccc-dddd-e");
+    }
+
+    const addedBook: Book = await this.booksService.add(bookDomain);
+    return BookDomainToAddedBookDtoAdapter.from(addedBook);
   }
 
   @Get()
   async findAll(): Promise<AddedBookDto[]> {
     const booksDomain: Book[] = await this.booksService.findAll();
     const adapter = BookDomainToAddedBookDtoAdapter;
-    return booksDomain.map(book => adapter.of(book));
+    return booksDomain.map(book => adapter.from(book));
   }
 
   @Get(':id')

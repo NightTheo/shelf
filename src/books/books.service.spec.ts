@@ -6,6 +6,7 @@ import {Isnb} from "./domain/isbn";
 import {BookTitle} from "./domain/book-title";
 import {Author} from "./domain/author";
 import {BookOverview} from "./domain/book-overview";
+import {UnprocessableEntityException} from "@nestjs/common";
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -22,7 +23,8 @@ describe('BooksService', () => {
       })
 
   const mockBooksRepositoryImp = {
-    find : jest.fn(() => Promise.all(mockStoredBooks))
+      find: jest.fn(() => Promise.all(mockStoredBooks)),
+      save: jest.fn((book: Book) => Promise.resolve(book))
   }
 
   beforeEach(async () => {
@@ -43,5 +45,15 @@ describe('BooksService', () => {
   it('should get all the books', async () => {
     const allBooks: Book[] = await service.findAll();
     expect(allBooks).toEqual(mockStoredBooks);
-  })
+  });
+
+  it('should add a book', async () => {
+      const book: Book = new Book(
+          new Isnb("9782070360024"),
+          new BookTitle("L'Étranger"),
+          new Author("Albert Camus"),
+          new BookOverview("Overview")
+      );
+      expect(await service.add(book)).toEqual(book);
+  });
 });

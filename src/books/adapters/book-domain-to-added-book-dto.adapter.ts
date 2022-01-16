@@ -3,7 +3,7 @@ import {AddedBookDto} from "../dto/added-book.dto";
 
 export class BookDomainToAddedBookDtoAdapter {
 
-    public static of(book: Book): AddedBookDto {
+    public static from(book: Book): AddedBookDto {
         return {
             isbn: book.isbn.value,
             title: book.title.value,
