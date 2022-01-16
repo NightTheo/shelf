@@ -2,7 +2,7 @@ import {BookRepository} from "../domain/book.repository";
 import {Isnb} from "../domain/isbn";
 import {Book} from "../domain/book";
 import {InjectRepository} from "@nestjs/typeorm";
-import {BookEntity} from "../entities/book.entity";
+import {BookEntity} from "./book.entity";
 import {Injectable} from "@nestjs/common";
 import {Repository} from "typeorm";
 import {BookTitle} from "../domain/book-title";

@@ -12,13 +12,19 @@ export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Post()
-  async add(@Body() id: string){
+  async add(@Body() addBookDto: AddBookDto): Promise<AddedBookDto>{
+    const toDomain = AddBookDtoToBookAdapter;
+    const toDto = BookDomainToAddedBookDtoAdapter;
+    const bookDomain = toDomain.of(addBookDto);
+    const addedBook = await this.booksService.add(bookDomain);
+    return toDto.of(addedBook);
   }
 
   @Get()
   async findAll(): Promise<AddedBookDto[]> {
     const booksDomain: Book[] = await this.booksService.findAll();
-    return booksDomain.map(book => BookDomainToAddedBookDtoAdapter.of(book));
+    const adapter = BookDomainToAddedBookDtoAdapter;
+    return booksDomain.map(book => adapter.of(book));
   }
 
   @Get(':id')

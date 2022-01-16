@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BooksService } from './books.service';
-import {BookRepositoryImp} from "./repository/book.repository.imp";
+import {BookRepositoryImp} from "./persistence/book.repository.imp";
 import {Book} from "./domain/book";
 import {Isnb} from "./domain/isbn";
 import {BookTitle} from "./domain/book-title";

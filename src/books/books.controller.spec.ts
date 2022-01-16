@@ -7,6 +7,7 @@ import {BookTitle} from "./domain/book-title";
 import {Author} from "./domain/author";
 import {BookOverview} from "./domain/book-overview";
 import {AddedBookDto} from "./dto/added-book.dto";
+import {AddBookDto} from "./dto/add-book.dto";
 
 describe('BooksController', () => {
     let controller: BooksController;
@@ -23,7 +24,8 @@ describe('BooksController', () => {
         });
 
     const mockBooksService = {
-        findAll: jest.fn(() => Promise.all(mockStoredBooks))
+        findAll: jest.fn(() => Promise.all(mockStoredBooks)),
+        add: jest.fn(book => Promise.resolve(book))
     }
 
     beforeEach(async () => {
@@ -53,6 +55,17 @@ describe('BooksController', () => {
                 author: allStoredBooksDto[1].author
             }
         ]);
+    })
+
+    it('should add a book', async () => {
+        const book: AddBookDto = {
+            isbn: "9782070360024", title: "L'Étranger", author: "Albert Camus",
+            overview: "overview"
+        }
+        const addedBook: AddedBookDto = {
+            author: book.author, isbn: book.isbn, title: book.title
+        }
+        expect(await controller.add(book)).toEqual(addedBook);
     })
 
 });
