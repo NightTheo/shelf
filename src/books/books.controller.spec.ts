@@ -71,7 +71,7 @@ describe('BooksController', () => {
     })
 
     it("should throw an UnprocessableEntityException if given a bad ISBN", async () => {
-        const bookWithBadIsbn: AddBookDto = {isbn: "badIsbn", author: "", overview: "", title: "" };
+        const bookWithBadIsbn: AddBookDto = {isbn: "badIsbn", author: "author", overview: "overview", title: "title" };
         await expect(() => controller.add(bookWithBadIsbn)).rejects.toThrow(UnprocessableEntityException);
         await expect(() => controller.add(bookWithBadIsbn)).rejects.toThrow("The ISBN-13 should be a numeric identification key as aaa-b-cccc-dddd-e");
     })
