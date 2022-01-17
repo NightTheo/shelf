@@ -21,7 +21,8 @@ import { BookEntity } from './books/entities/book.entity';
                 username: configService.get('DB_USERNAME'),
                 password: configService.get('DB_PASSWORD'),
                 database: configService.get('DB_DATABASE'),
-                entities: [__dirname + '/**/*.entity{.ts,.js}']
+                entities: [__dirname + '/**/*.entity{.ts,.js}'],
+                synchronize: true
               } as TypeOrmModuleOptions;
           },
           connectionFactory: async (options) => {
