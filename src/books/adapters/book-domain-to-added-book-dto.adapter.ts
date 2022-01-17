@@ -7,7 +7,8 @@ export class BookDomainToAddedBookDtoAdapter {
         return {
             isbn: book.isbn.value,
             title: book.title.value,
-            author: book.author.name
+            author: book.author.name,
+            overview: book.overview.value
         }
     }
 
