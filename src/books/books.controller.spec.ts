@@ -27,8 +27,8 @@ describe('BooksController', () => {
 
     const mockBooksService = {
         findAll: jest.fn(() => Promise.all(mockStoredBooks)),
-    }
         add: jest.fn(book => Promise.resolve(book))
+    }
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -46,14 +46,16 @@ describe('BooksController', () => {
         const allStoredBooksDto: AddedBookDto[] = await controller.findAll();
         expect(allStoredBooksDto.slice(0, 2)).toEqual([
             {
-                isbn: allStoredBooksDto[0].isbn,
-                title: allStoredBooksDto[0].title,
-                author: allStoredBooksDto[0].author
+                isbn: mockStoredBooks[0].isbn.value,
+                title: mockStoredBooks[0].title.value,
+                author: mockStoredBooks[0].author.name,
+                overview: mockStoredBooks[0].overview.value
             },
             {
-                isbn: allStoredBooksDto[1].isbn,
-                title: allStoredBooksDto[1].title,
-                author: allStoredBooksDto[1].author
+                isbn: mockStoredBooks[1].isbn.value,
+                title: mockStoredBooks[1].title.value,
+                author: mockStoredBooks[1].author.name,
+                overview: mockStoredBooks[1].overview.value
             }
         ]);
     })
@@ -64,7 +66,7 @@ describe('BooksController', () => {
             overview: "overview"
         }
         const addedBook: AddedBookDto = {
-            author: book.author, isbn: book.isbn, title: book.title
+            author: book.author, isbn: book.isbn, title: book.title, overview: "overview",
         }
         expect(await controller.add(book)).toEqual(addedBook);
     })
