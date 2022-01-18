@@ -30,6 +30,9 @@ export class BooksController {
     const booksDomain: Book[] = await this.booksService.findAll();
     const adapter = BookDomainToAddedBookDtoAdapter;
     return booksDomain.map(book => adapter.from(book));
+  async findAll(): Promise<AddedBookDto[]> {
+    const booksDomain: Book[] = await this.booksService.findAll();
+    return booksDomain.map(book => BookDomainToAddedBookDtoAdapter.of(book));
   }
 
   @Get(':id')

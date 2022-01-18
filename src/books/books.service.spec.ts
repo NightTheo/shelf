@@ -56,4 +56,9 @@ describe('BooksService', () => {
       );
       expect(await service.add(book)).toEqual(book);
   });
+
+  it('should get all the books', async () => {
+    const allBooks: Book[] = await service.findAll();
+    expect(allBooks).toEqual(mockStoredBooks);
+  })
 });

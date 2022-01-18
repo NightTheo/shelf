@@ -27,8 +27,8 @@ describe('BooksController', () => {
 
     const mockBooksService = {
         findAll: jest.fn(() => Promise.all(mockStoredBooks)),
-        add: jest.fn(book => Promise.resolve(book))
     }
+        add: jest.fn(book => Promise.resolve(book))
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -42,7 +42,6 @@ describe('BooksController', () => {
     it('should be defined', () => {
         expect(controller).toBeDefined();
     });
-
     it('should get all the books', async () => {
         const allStoredBooksDto: AddedBookDto[] = await controller.findAll();
         expect(allStoredBooksDto.slice(0, 2)).toEqual([
