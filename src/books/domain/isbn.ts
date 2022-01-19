@@ -9,7 +9,16 @@ export class Isnb{
         return this._value;
     }
 
-    public isValid(): Boolean {
-        return this.value.length > 13;
+    public isValid(): boolean {
+        return this.hasCorrectLength()
+            && this.isNumeric();
+    }
+
+    private isNumeric(): boolean {
+        return !isNaN(+this._value);
+    }
+
+    private hasCorrectLength(): boolean {
+        return this._value.length === 13;
     }
 }

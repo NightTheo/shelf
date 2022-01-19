@@ -36,7 +36,8 @@ export class Book {
         return this._overview;
     }
 
-    canBeAdded(): void {
-
+    canBeAdded(): boolean {
+        return this.isbn.isValid()
+            && this.title.isValid();
     }
 }

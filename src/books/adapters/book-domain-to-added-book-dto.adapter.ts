@@ -1,5 +1,5 @@
 import {Book} from "../domain/book";
-import {AddedBookDto} from "../dto/added-book.dto";
+import {AddedBookDto} from "../exposition/dto/added-book.dto";
 
 export class BookDomainToAddedBookDtoAdapter {
 

@@ -6,14 +6,15 @@ import {Isnb} from "./domain/isbn";
 import {BookTitle} from "./domain/book-title";
 import {Author} from "./domain/author";
 import {BookOverview} from "./domain/book-overview";
-import {AddedBookDto} from "./dto/added-book.dto";
-import {AddBookDto} from "./dto/add-book.dto";
+import {AddedBookDto} from "./exposition/dto/added-book.dto";
+import {AddBookDto} from "./exposition/dto/add-book.dto";
 import {UnprocessableEntityException} from "@nestjs/common";
 import exp from "constants";
 
 describe('BooksController', () => {
     let controller: BooksController;
     const numberOfBooksInMockStoredBooks = 20;
+    const goodIsbn = "9782070360024";
     const mockStoredBooks: Book[] = Array.from(Array(numberOfBooksInMockStoredBooks).keys())
         .map(key => {
             const i = key + 1;
@@ -75,6 +76,17 @@ describe('BooksController', () => {
         const bookWithBadIsbn: AddBookDto = {isbn: "badIsbn", author: "author", overview: "overview", title: "title" };
         await expect(() => controller.add(bookWithBadIsbn)).rejects.toThrow(UnprocessableEntityException);
         await expect(() => controller.add(bookWithBadIsbn)).rejects.toThrow("The ISBN-13 should be a numeric identification key as aaa-b-cccc-dddd-e");
+    })
+
+    it("should throw an UnprocessableEntityException if the title length is over 200", async () => {
+        const bookWithGoodTitle: AddBookDto = {isbn: goodIsbn, author: "author", overview: "overview", title: 'a'.repeat(200) };
+        expect(await controller.add(bookWithGoodTitle)).toEqual({
+            ...bookWithGoodTitle
+        });
+
+        const bookWithTooLongTitle: AddBookDto = {isbn: goodIsbn, author: "author", overview: "overview", title: 'b'.repeat(201) };
+        await expect(() => controller.add(bookWithTooLongTitle)).rejects.toThrow(UnprocessableEntityException);
+        await expect(() => controller.add(bookWithTooLongTitle)).rejects.toThrow("The book title is required with a maximum length of 200 characters");
     })
 
 });

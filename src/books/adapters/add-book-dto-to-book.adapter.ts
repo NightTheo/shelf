@@ -1,4 +1,4 @@
-import {AddBookDto} from "../dto/add-book.dto";
+import {AddBookDto} from "../exposition/dto/add-book.dto";
 import {Book} from "../domain/book";
 import {Isnb} from "../domain/isbn";
 import {BookTitle} from "../domain/book-title";

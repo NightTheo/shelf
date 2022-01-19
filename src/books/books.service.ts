@@ -1,5 +1,5 @@
 import {Inject, Injectable} from '@nestjs/common';
-import { UpdateBookDto } from './dto/update-book.dto';
+import { UpdateBookDto } from './exposition/dto/update-book.dto';
 import { Book } from './domain/book';
 import {BookRepositoryImp} from "./persistence/book.repository.imp";
 
@@ -10,7 +10,6 @@ export class BooksService {
   private readonly bookRepository: BookRepositoryImp;
 
   async add(book: Book): Promise<Book> {
-    book.canBeAdded();
     return await this.bookRepository.save(book);
   }
 
