@@ -1,26 +1,26 @@
-import {Isnb} from "./isbn";
+import {Isbn} from "./isbn";
 import {Author} from "./author";
 import {BookTitle} from "./book-title";
 import {BookOverview} from "./book-overview";
 import {Picture} from "./picture";
-import {IsbnFormatException} from "./IsbnFormatException";
+import {BookBuilder} from "./book.builder";
 
 export class Book {
-    private _isbn: Isnb;
+    private _isbn: Isbn;
     private _title: BookTitle;
     private _author: Author;
     private _overview: BookOverview;
     private picture: Picture;
 
 
-    constructor(isbn: Isnb, title: BookTitle, author: Author, overview: BookOverview) {
+    constructor(isbn: Isbn, title: BookTitle, author: Author, overview: BookOverview) {
         this._isbn = isbn;
         this._title = title;
         this._author = author;
         this._overview = overview
     }
 
-    get isbn(): Isnb {
+    get isbn(): Isbn {
         return this._isbn;
     }
 
@@ -36,8 +36,7 @@ export class Book {
         return this._overview;
     }
 
-    canBeAdded(): boolean {
-        return this.isbn.isValid()
-            && this.title.isValid();
-    }
+    static builder(): BookBuilder {
+        return new BookBuilder();
+    };
 }

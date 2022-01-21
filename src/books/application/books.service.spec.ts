@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BooksService } from './books.service';
-import {BookRepositoryImp} from "./persistence/book.repository.imp";
-import {Book} from "./domain/book";
-import {Isnb} from "./domain/isbn";
-import {BookTitle} from "./domain/book-title";
-import {Author} from "./domain/author";
-import {BookOverview} from "./domain/book-overview";
+import {BookRepositoryImp} from "../persistence/book.repository.imp";
+import {Book} from "../domain/book";
+import {Isbn} from "../domain/isbn";
+import {BookTitle} from "../domain/book-title";
+import {Author} from "../domain/author";
+import {BookOverview} from "../domain/book-overview";
 import {UnprocessableEntityException} from "@nestjs/common";
+import {AddBookDto} from "../dto/add-book.dto";
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -15,7 +16,7 @@ describe('BooksService', () => {
       .map(key => {
         const i = key+1;
         return new Book(
-            new Isnb(`123456789000${i}`),
+            new Isbn(`123456789000${i}`),
             new BookTitle(`title ${i}`),
             new Author(`author ${i}`),
             new BookOverview(`overview ${i}`)
@@ -48,13 +49,12 @@ describe('BooksService', () => {
   });
 
   it('should add a book', async () => {
-      const book: Book = new Book(
-          new Isnb("9782070360024"),
-          new BookTitle("L'Étranger"),
-          new Author("Albert Camus"),
-          new BookOverview("Overview")
-      );
-      expect(await service.add(book)).toEqual(book);
+      const book: AddBookDto = {
+          isbn: "9782070360024", title: "L'Étranger", author: "Albert Camus",
+          overview: "overview"
+      }
+      await service.add(book);
+      expect(mockBooksRepositoryImp.save).toHaveBeenCalled();
   });
 
   it('should get all the books', async () => {

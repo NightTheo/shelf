@@ -1,4 +1,4 @@
-export class Isnb{
+export class Isbn {
     private readonly _value: string;
 
     constructor(isbn: string) {
