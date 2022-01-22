@@ -21,11 +21,11 @@ qu’il a lus au cours de sa vie, dans sa bibliothèque virtuelle.
 
 ## Versioning
 ### Gitflow
-Le worflow utilisé est le **Gitflow**, c'est à dire:
+Le worflow utilisé est le **Gitflow**, c'est à dire les branches:
 - main
 - develop
-- feature
-- fix
+- feature/{:sujet/**/}
+- fix/{:sujet/**/}
 
 Le Gitflow est associé à l'utilisation de **pull requests**. 
 Chaque nouveau développement ou correction doit faire suite à la création d'une **issue**
