@@ -8,6 +8,7 @@ import {Author} from "../domain/author";
 import {BookOverview} from "../domain/book-overview";
 import {UnprocessableEntityException} from "@nestjs/common";
 import {AddBookDto} from "../dto/add-book.dto";
+import {IsbnFormatException} from "../domain/IsbnFormatException";
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -56,6 +57,14 @@ describe('BooksService', () => {
       await service.add(book);
       expect(mockBooksRepositoryImp.save).toHaveBeenCalled();
   });
+
+  it('should throw an IsbnFormatException', async () => {
+      const book = {
+        title: "L'Étranger", author: "Albert Camus", overview: "overview"
+      }
+      await expect(() => service.add({isbn: 'BadIsbn',...book})).rejects.toThrow(IsbnFormatException);
+      await expect(() => service.add({isbn: 'BadIsbn',...book})).rejects.toThrow("ISBN-13 format is: 'aaa-b-cc-dddddd-e' (with or without dashes)");
+  })
 
   it('should get all the books', async () => {
     const allBooks: Book[] = await service.findAll();

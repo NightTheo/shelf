@@ -41,10 +41,50 @@ describe('BookController (e2e)', () => {
         })
   });
 
-    it('/books (POST) -> throw Unprocessable Entity', () => {
+    it('/books (POST) should create a book when given an ISBN with dashes', () => {
+        return request(app.getHttpServer())
+            .post('/books')
+            .send({
+                isbn: "978-2-29-003272-6",
+                title: "...", author: "...", overview: "..."
+            })
+            .expect(201)
+            .then(response => {
+                expect(response.body).toEqual({
+                    isbn: "9782290032726"
+                })
+            })
+    });
+
+    it('/books (POST) should create a book when given an ISBN with dashes (not all)', () => {
+        return request(app.getHttpServer())
+            .post('/books')
+            .send({
+                isbn: "978-229003272-6",
+                title: "...", author: "...", overview: "..."
+            })
+            .expect(201)
+            .then(response => {
+                expect(response.body).toEqual({
+                    isbn: "9782290032726"
+                })
+            })
+    });
+
+    it('/books (POST) empty DTO -> throw Unprocessable Entity', () => {
         return request(app.getHttpServer())
             .post('/books')
             .send()// empty body
+            .expect(422)
+    });
+
+    it('/books (POST) bad isbn -> throw Unprocessable Entity', () => {
+        return request(app.getHttpServer())
+            .post('/books')
+            .send({
+                isbn: "badIsbn",
+                title: "...",author: "...",overview: "..."
+            })
             .expect(422)
     });
 });

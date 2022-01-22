@@ -10,6 +10,7 @@ import {AddedBookDto} from "../../dto/added-book.dto";
 import {AddBookDto} from "../../dto/add-book.dto";
 import {BadRequestException, UnprocessableEntityException} from "@nestjs/common";
 import exp from "constants";
+import {IsbnFormatException} from "../../domain/IsbnFormatException";
 
 describe('BooksController', () => {
     let controller: BooksController;

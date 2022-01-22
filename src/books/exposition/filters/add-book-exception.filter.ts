@@ -5,6 +5,7 @@ import {
     HttpException, HttpStatus, UnprocessableEntityException
 } from "@nestjs/common";
 import { Request, Response } from 'express';
+import {IsbnFormatException} from "../../domain/IsbnFormatException";
 
 @Catch()
 export class AddBookExceptionFilter implements ExceptionFilter {
@@ -19,7 +20,6 @@ export class AddBookExceptionFilter implements ExceptionFilter {
 
         let body = {
             statusCode: httpStatus,
-            error: exception.name,
             timestamp: new Date().toISOString(),
             message: exception.message,
             path: request.url,
@@ -29,9 +29,15 @@ export class AddBookExceptionFilter implements ExceptionFilter {
             case BadRequestException.name:
                 const e = <BadRequestException> exception;
                 body.statusCode = 422;
-                body.error = UnprocessableEntityException.name;
                 body.message = e.getResponse()["message"];
                 break;
+            case IsbnFormatException.name:
+                body.statusCode = 422;
+                body.message = exception.message;
+                break;
+            default:
+                console.log(`Unhandled exception on '${request.url}' : '${exception.name}' `)
+
         }
 
         response

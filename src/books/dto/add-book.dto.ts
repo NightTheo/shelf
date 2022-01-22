@@ -3,7 +3,7 @@ import {UseFilters} from "@nestjs/common";
 
 export class AddBookDto {
     @IsNotEmpty()
-    @MaxLength(13)
+    @MaxLength(17)
     isbn: string;
 
     @IsNotEmpty()
