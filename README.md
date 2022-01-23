@@ -61,7 +61,7 @@ Le nom des commits sont en anglais.
 ### Sécurité
 Tous les commits sont vérifiés par le biais de clés GPG.
 
-Les branches main et develop sont protégés par des règles:
+Les branches main et develop sont protégées par des règles :
 - Chaque merge sur main et develop doivent passer par une pull-request
 - Ces pull-request nécessitent au moins deux Approvals pour être merge
 
