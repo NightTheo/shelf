@@ -6,10 +6,10 @@ import {Picture} from "./picture";
 import {BookBuilder} from "./book.builder";
 
 export class Book {
-    private _isbn: Isbn;
-    private _title: BookTitle;
-    private _author: Author;
-    private _overview: BookOverview;
+    private readonly _isbn: Isbn;
+    private readonly _title: BookTitle;
+    private readonly _author: Author;
+    private readonly _overview: BookOverview;
     private picture: Picture;
 
 
