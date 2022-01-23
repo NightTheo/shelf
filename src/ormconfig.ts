@@ -23,7 +23,9 @@ function connectionOptionsFactory(type: string): ConnectionOptions {
     switch (type) {
         case 'mysql': return options as MysqlConnectionOptions;
         case 'postgre': return options as PostgresConnectionOptions;
-        default: throw Error('Unhandled database type.');
+        default: throw Error('Unhandled database type. ' +
+            'Please select one of the handled types in ' +
+            'connectionOptionsFactory or add a new one in it');
     }
 }
 
