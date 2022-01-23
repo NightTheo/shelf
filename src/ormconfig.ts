@@ -3,7 +3,11 @@ require('dotenv').config();
 
 const ormConfig: ConnectionOptions = {
     type: 'mysql',
-    url: process.env.DB_URL,
+    host: process.env.DB_HOST,
+    port: +process.env.DB_PORT,
+    database: process.env.DB_DATABASE,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
     synchronize: false,
     dropSchema: false,
     migrationsRun: true,

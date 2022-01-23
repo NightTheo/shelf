@@ -18,11 +18,11 @@ services:
     networks:
       - shelf
   db:
-    container_name: shelf_db
+    container_name: "${DB_HOST}"
     image: mysql:8.0
     restart: unless-stopped
     ports:
-      - "${FORWARD_DB_PORT:-3306}:3306"
+      - "${FORWARD_DB_PORT:-3306}:${DB_PORT}"
     environment:
       MYSQL_ROOT_HOST: "%"
       MYSQL_DATABASE: "${DB_DATABASE}"
