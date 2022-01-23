@@ -1,5 +1,5 @@
 export class BookTitle{
-    private _value: string;
+    private readonly _value: string;
 
     constructor(title: string) {
         this._value = title;

@@ -1,11 +1,11 @@
 import {Book} from "./book";
-import {Isnb} from "./isbn";
+import {Isbn} from "./isbn";
 
 export interface BookRepository{
-    save(book: Book): Promise<Book>;
-    findOne(isbn: Isnb): Promise<Book>;
+    save(book: Book): void;
+    findOne(isbn: Isbn): Promise<Book>;
     find(): Promise<Book[]>
     findBy(): Promise<Book[]>
     update(book: Book): Promise<Book>;
-    delete(isbn: Isnb): void;
+    delete(isbn: Isbn): void;
 }

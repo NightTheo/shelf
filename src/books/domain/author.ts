@@ -1,5 +1,5 @@
 export class Author {
-    private _name: string;
+    private readonly _name: string;
 
     constructor(name: string) {
         this._name = name;

@@ -5,7 +5,9 @@ import {BooksModule} from './books/books.module';
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import {TypeOrmModule, TypeOrmModuleOptions} from "@nestjs/typeorm";
 import {createConnection} from "typeorm";
-import { BookEntity } from './books/entities/book.entity';
+import { BookEntity } from './books/persistence/book.entity';
+import {APP_FILTER} from "@nestjs/core";
+import {AllExceptionsFilter} from "./all-exceptions.filter";
 
 @Module({
   imports: [
@@ -32,6 +34,12 @@ import { BookEntity } from './books/entities/book.entity';
       BooksModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+      AppService,
+      {
+          provide: APP_FILTER,
+          useClass: AllExceptionsFilter,
+      }
+  ],
 })
 export class AppModule {}
