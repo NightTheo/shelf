@@ -85,9 +85,3 @@ $ npm run test:cov
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
-
-
-## Test
-
-
-

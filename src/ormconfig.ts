@@ -3,8 +3,8 @@ import {MysqlConnectionOptions} from "typeorm/driver/mysql/MysqlConnectionOption
 import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnectionOptions";
 require('dotenv').config();
 
-const options = {
-    type: 'mysql',
+const ormConfig = {
+    type: process.env.DB_TYPE,
     host: process.env.DB_HOST,
     port: +process.env.DB_PORT,
     database: process.env.DB_DATABASE,
@@ -17,17 +17,6 @@ const options = {
     entities: [__dirname + '/**/*.entity{.ts,.js}'],
     migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
     cli: {migrationsDir: 'src/migrations'}
-};
+} as ConnectionOptions;
 
-function connectionOptionsFactory(type: string): ConnectionOptions {
-    switch (type) {
-        case 'mysql': return options as MysqlConnectionOptions;
-        case 'postgre': return options as PostgresConnectionOptions;
-        default: throw Error('Unhandled database type. ' +
-            'Please select one of the handled types in ' +
-            'connectionOptionsFactory or add a new one in it');
-    }
-}
-
-const ormConfig: ConnectionOptions = connectionOptionsFactory(process.env.DB_TYPE);
 export = ormConfig;
