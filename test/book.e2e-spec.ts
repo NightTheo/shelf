@@ -4,13 +4,31 @@ import * as request from 'supertest';
 import {BooksModule} from "../src/books/books.module";
 import {BookEntity} from "../src/books/persistence/book.entity";
 import {getRepositoryToken} from "@nestjs/typeorm";
-import {response} from "express";
+import {BookAdapter} from "../src/books/adapters/book.adapter";
+import {Book} from "../src/books/domain/book";
 
 describe('BookController (e2e)', () => {
   let app: INestApplication;
 
+  const mockBooks = [
+      {
+          isbn: "1234567890001",
+          title: "title 1",
+          author: "author 1",
+          overview: "overview 1"
+      },
+      {
+          isbn: "1234567890002",
+          title: "title 2",
+          author: "author 2",
+          overview: "overview 2"
+      }
+  ];
+
+
   const mockBooksRepository = {
-    save: jest.fn().mockImplementation()
+      save: jest.fn().mockImplementation(),
+      find: jest.fn().mockResolvedValue(mockBooks)
   }
 
   beforeEach(async () => {
@@ -86,5 +104,15 @@ describe('BookController (e2e)', () => {
                 title: "...",author: "...",overview: "..."
             })
             .expect(422)
+    });
+
+    it('/books (GET)', () => {
+        console.log(mockBooksRepository.find())
+        return request(app.getHttpServer())
+            .get('/books')
+            .expect(200)
+            .then(response => {
+                expect(response.body).toEqual(Array.from(mockBooks.values()))
+            })
     });
 });
