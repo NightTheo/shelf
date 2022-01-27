@@ -12,10 +12,9 @@ import {
 import { BooksService } from '../../application/books.service';
 import { AddBookDto } from '../../dto/add-book.dto';
 import { UpdateBookDto } from '../../dto/update-book.dto';
-import {AddedBookDto} from "../../dto/added-book.dto";
-import {BookDomainToAddedBookDtoAdapter} from "../../adapters/book-domain-to-added-book-dto.adapter";
-import {Book} from "../../domain/book";
+import {GetBookDto} from "../../dto/get-book.dto";
 import {AddBookExceptionFilter} from "../filters/add-book-exception.filter";
+import {GetBookDtoAdapter} from "../../adapters/get-book-dto.adapter";
 
 
 @Controller('books')
@@ -33,9 +32,8 @@ export class BooksController {
   }
 
   @Get()
-  async findAll(): Promise<AddedBookDto[]> {
-    const booksDomain: Book[] = await this.booksService.findAll();
-    return booksDomain.map(book => BookDomainToAddedBookDtoAdapter.of(book));
+  async findAll(): Promise<GetBookDto[]> {
+    return (await this.booksService.findAll()).map(book => GetBookDtoAdapter.from(book));
   }
 
   @Get(':id')

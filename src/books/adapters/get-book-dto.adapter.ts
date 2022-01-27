@@ -1,9 +1,9 @@
 import {Book} from "../domain/book";
-import {AddedBookDto} from "../dto/added-book.dto";
+import {GetBookDto} from "../dto/get-book.dto";
 
-export class BookDomainToAddedBookDtoAdapter {
+export class GetBookDtoAdapter {
 
-    public static of(book: Book): AddedBookDto {
+    public static from(book: Book): GetBookDto {
         return {
             isbn: book.isbn.value,
             title: book.title.value,

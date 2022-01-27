@@ -5,7 +5,7 @@ import {BookTitle} from "../domain/book-title";
 import {Author} from "../domain/author";
 import {BookOverview} from "../domain/book-overview";
 
-export class AddBookDtoToBookAdapter {
+export class BookAdapter {
 
     public static from(dto: AddBookDto): Book {
         return new Book(
