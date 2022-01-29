@@ -11,20 +11,22 @@ describe('BooksService', () => {
   const mockStoredBooks: Map<string, Book> = new Map([
       [
           "1234567890001",
-          BookAdapter.from({
+          BookAdapter.fromDto({
               isbn: "1234567890001",
               title: "title 1",
               author: "author 1",
               overview: "overview 1",
+              readCount: 2
           })
       ],
       [
           "1234567890002",
-          BookAdapter.from({
+          BookAdapter.fromDto({
               isbn: "1234567890002",
               title: "title 2",
               author: "author 2",
               overview: "overview 2",
+              readCount: 2
           })
       ]
   ]);
@@ -57,7 +59,7 @@ describe('BooksService', () => {
   it('should add a book', async () => {
       const book: AddBookDto = {
           isbn: "9782070360024", title: "L'Étranger", author: "Albert Camus",
-          overview: "overview"
+          overview: "overview", readCount: 1
       }
       await service.add(book);
       expect(mockBooksRepositoryImp.save).toHaveBeenCalled();
@@ -65,7 +67,7 @@ describe('BooksService', () => {
 
   it('should throw an IsbnFormatException', async () => {
       const book = {
-        title: "L'Étranger", author: "Albert Camus", overview: "overview"
+        title: "L'Étranger", author: "Albert Camus", overview: "overview", readCount: 1
       }
       await expect(() => service.add({isbn: 'BadIsbn',...book})).rejects.toThrow(IsbnFormatException);
       await expect(() => service.add({isbn: 'BadIsbn',...book})).rejects.toThrow("ISBN-13 format is: 'aaa-b-cc-dddddd-e' (with or without dashes)");

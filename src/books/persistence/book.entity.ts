@@ -15,4 +15,7 @@ export class BookEntity{
   @Column({length: 1500, nullable: true})
   overview: string;
 
+  @Column({default: 1, nullable: true })
+  read_count: number
+
 }

@@ -8,6 +8,7 @@ import {Repository} from "typeorm";
 import {BookTitle} from "../domain/book-title";
 import {BookOverview} from "../domain/book-overview";
 import {Author} from "../domain/author";
+import {BookAdapter} from "../adapters/book.adapter";
 
 @Injectable()
 export class BookRepositoryImp implements BookRepository {
@@ -21,16 +22,7 @@ export class BookRepositoryImp implements BookRepository {
     }
 
     async find(): Promise<Book[]> {
-        return await this.booksRepository.find()
-            .then(books => {
-                    return books.map(book => new Book(
-                        new Isbn(book.isbn),
-                        new BookTitle(book.title),
-                        new Author(book.author),
-                        new BookOverview(book.overview)
-                    ));
-                }
-            );
+        return (await this.booksRepository.find()).map(book => BookAdapter.fromEntity(book));
 
     }
 
@@ -47,7 +39,8 @@ export class BookRepositoryImp implements BookRepository {
             author: book.author.name,
             isbn: book.isbn.value,
             overview: book.overview.value,
-            title: book.title.value
+            title: book.title.value,
+            read_count: book.readCount
         }
         await this.booksRepository.save(bookEntity);
     }

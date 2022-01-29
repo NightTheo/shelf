@@ -10,14 +10,16 @@ export class Book {
     private readonly _title: BookTitle;
     private readonly _author: Author;
     private readonly _overview: BookOverview;
-    private picture: Picture;
+    private readonly picture: Picture;
+    private readonly _readCount: number;
 
 
-    constructor(isbn: Isbn, title: BookTitle, author: Author, overview: BookOverview) {
+    constructor(isbn: Isbn, title: BookTitle, author: Author, overview: BookOverview, readCount: number) {
         this._isbn = isbn;
         this._title = title;
         this._author = author;
-        this._overview = overview
+        this._overview = overview;
+        this._readCount = readCount;
     }
 
     get isbn(): Isbn {
@@ -34,6 +36,10 @@ export class Book {
 
     get overview(): BookOverview {
         return this._overview;
+    }
+
+    get readCount(): number {
+        return this._readCount;
     }
 
     static builder(): BookBuilder {

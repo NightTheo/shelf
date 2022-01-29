@@ -8,7 +8,8 @@ export class GetBookDtoAdapter {
             isbn: book.isbn.value,
             title: book.title.value,
             author: book.author.name,
-            overview: book.overview.value
+            overview: book.overview.value,
+            readCount: book.readCount
         }
     }
 
