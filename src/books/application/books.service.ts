@@ -26,7 +26,7 @@ export class BooksService {
     return await this.bookRepository.find();
   }
 
-  async findOne(isbn: Isbn) {
+  async findOne(isbn: Isbn): Promise<Book> {
     return await this.bookRepository.findOne(isbn);
   }
 

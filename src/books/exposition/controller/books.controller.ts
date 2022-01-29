@@ -40,8 +40,9 @@ export class BooksController {
   }
 
   @Get(':id')
-  findOne(@Param('id') isbn: Isbn) {
-    return this.booksService.findOne(isbn);
+  async findOne(@Param('id') isbn: Isbn) {
+    const book: Book = await this.booksService.findOne(isbn);
+    return BookDomainToAddedBookDtoAdapter.of(book);
   }
 
   @Patch(':id')
