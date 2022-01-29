@@ -16,6 +16,7 @@ import {AddedBookDto} from "../../dto/added-book.dto";
 import {BookDomainToAddedBookDtoAdapter} from "../../adapters/book-domain-to-added-book-dto.adapter";
 import {Book} from "../../domain/book";
 import {AddBookExceptionFilter} from "../filters/add-book-exception.filter";
+import { Isbn } from 'src/books/domain/isbn';
 
 
 @Controller('books')
@@ -39,8 +40,8 @@ export class BooksController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.booksService.findOne(+id);
+  findOne(@Param('id') isbn: Isbn) {
+    return this.booksService.findOne(isbn);
   }
 
   @Patch(':id')
