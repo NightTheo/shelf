@@ -23,7 +23,8 @@ describe('BooksController', () => {
                 new Isbn(`123456789000${i}`),
                 new BookTitle(`title ${i}`),
                 new Author(`author ${i}`),
-                new BookOverview(`overview ${i}`)
+                new BookOverview(`overview ${i}`),
+                i
             )
         });
 
@@ -51,13 +52,14 @@ describe('BooksController', () => {
             title: mockStoredBooks[0].title.value,
             author: mockStoredBooks[0].author.name,
             overview: mockStoredBooks[0].overview.value,
+            readCount: mockStoredBooks[0].readCount
         });
     })
 
     it('should add a book', async () => {
         const book: AddBookDto = {
             isbn: "9782070360024", title: "L'Étranger", author: "Albert Camus",
-            overview: "overview"
+            overview: "overview", readCount: 1
         }
         expect(await controller.add(book)).toEqual({isbn: book.isbn});
         expect(mockBooksService.add).toHaveBeenCalled();

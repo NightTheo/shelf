@@ -1,7 +1,6 @@
 import {Inject, Injectable} from '@nestjs/common';
 import { UpdateBookDto } from '../dto/update-book.dto';
 import { Book } from '../domain/book';
-import { Isbn } from '../domain/isbn';
 import {BookRepositoryImp} from "../persistence/book.repository.imp";
 import {AddBookDto} from "../dto/add-book.dto";
 
@@ -17,6 +16,7 @@ export class BooksService {
         .title(dto.title)
         .author(dto.author)
         .overview(dto.overview)
+        .readCount(dto.readCount)
         .build();
     await this.bookRepository.save(book);
     return book.isbn.value;

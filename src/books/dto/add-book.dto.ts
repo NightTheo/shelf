@@ -1,5 +1,4 @@
-import {IsNotEmpty, MaxLength} from "class-validator";
-import {UseFilters} from "@nestjs/common";
+import {IsNotEmpty, MaxLength, Min} from "class-validator";
 
 export class AddBookDto {
     @IsNotEmpty()
@@ -16,4 +15,7 @@ export class AddBookDto {
 
     @MaxLength(1500)
     overview: string;
+
+    @Min(0)
+    readCount: number;
 }

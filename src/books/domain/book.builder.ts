@@ -9,6 +9,7 @@ export class BookBuilder {
     private _title: BookTitle;
     private _author: Author;
     private _overview: BookOverview;
+    private _readCount: number;
 
     public isbn(isbn: string) {
         this._isbn = new Isbn(isbn);
@@ -30,12 +31,21 @@ export class BookBuilder {
         return this;
     }
 
+    public readCount(readCount: number) {
+        const readCountIsValid: boolean = readCount && readCount >= 0;
+        this._readCount = readCountIsValid
+            ? readCount
+            : 1;
+        return this;
+    }
+
     public build(): Book {
         return new Book(
             this._isbn,
             this._title,
             this._author,
-            this._overview
+            this._overview,
+            this._readCount
         );
     }
 }

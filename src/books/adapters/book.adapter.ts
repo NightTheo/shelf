@@ -4,16 +4,28 @@ import {Isbn} from "../domain/isbn";
 import {BookTitle} from "../domain/book-title";
 import {Author} from "../domain/author";
 import {BookOverview} from "../domain/book-overview";
+import {BookEntity} from "../persistence/book.entity";
 
 export class BookAdapter {
 
-    public static from(dto: AddBookDto): Book {
-        return new Book(
-            new Isbn(dto.isbn),
-            new BookTitle(dto.title),
-            new Author(dto.author),
-            new BookOverview(dto.overview)
-        );
+    public static fromDto(dto: AddBookDto): Book {
+        return Book.builder()
+            .isbn(dto.isbn)
+            .title(dto.title)
+            .author(dto.author)
+            .overview(dto.overview)
+            .readCount(dto.readCount)
+            .build()
+    }
+
+    public static fromEntity(entity: BookEntity): Book {
+        return Book.builder()
+            .isbn(entity.isbn)
+            .title(entity.title)
+            .author(entity.author)
+            .overview(entity.overview)
+            .readCount(entity.read_count)
+            .build()
     }
 
 }
