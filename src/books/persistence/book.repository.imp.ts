@@ -41,12 +41,16 @@ export class BookRepositoryImp implements BookRepository {
     async findOne(isbn: Isbn): Promise<Book> {
         return await this.booksRepository.findOne(isbn.value)
         .then(book => {
-                return new Book(
-                    new Isbn(book.isbn),
-                    new BookTitle(book.title),
-                    new Author(book.author),
-                    new BookOverview(book.overview)
-                );
+                if (book) {
+                    return new Book(
+                        new Isbn(isbn.value),
+                        new BookTitle(book.title),
+                        new Author(book.author),
+                        new BookOverview(book.overview)
+                    )
+                }else {
+                    return null
+                };
             }
         );
     }
