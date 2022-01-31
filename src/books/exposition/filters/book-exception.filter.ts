@@ -8,7 +8,7 @@ import { Request, Response } from 'express';
 import {IsbnFormatException} from "../../domain/IsbnFormatException";
 
 @Catch()
-export class AddBookExceptionFilter implements ExceptionFilter {
+export class BookExceptionFilter implements ExceptionFilter {
     catch(exception: Error, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();

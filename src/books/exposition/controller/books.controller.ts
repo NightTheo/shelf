@@ -13,7 +13,7 @@ import { BooksService } from '../../application/books.service';
 import { AddBookDto } from '../../dto/add-book.dto';
 import { UpdateBookDto } from '../../dto/update-book.dto';
 import {GetBookDto} from "../../dto/get-book.dto";
-import {AddBookExceptionFilter} from "../filters/add-book-exception.filter";
+import {BookExceptionFilter} from "../filters/book-exception.filter";
 import {GetBookDtoAdapter} from "../../adapters/get-book-dto.adapter";
 
 
@@ -23,7 +23,7 @@ export class BooksController {
 
   @Post()
   @HttpCode(201)
-  @UseFilters(new AddBookExceptionFilter())
+  @UseFilters(new BookExceptionFilter())
   async add(@Body() addBookDto: AddBookDto): Promise<any>{
     const isbn: string = await this.booksService.add(addBookDto);
     return {
