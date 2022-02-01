@@ -1,8 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { UpdateBookDto } from '../dto/update-book.dto';
 import { Book } from '../domain/book';
-import { BookRepositoryImp } from '../persistence/book.repository.imp';
-import { AddBookDto } from '../dto/add-book.dto';
+import {BookRepositoryImp} from "../persistence/book.repository.imp";
+import {AddBookDto} from "../dto/add-book.dto";
+import { IsbnFormatException } from "../domain/IsbnFormatException";
+import { BookEntity } from "../persistence/book.entity";
 import { Isbn } from '../domain/isbn';
 
 @Injectable()
@@ -34,7 +36,12 @@ export class BooksService {
     return `This action updates a #${id} book`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} book`;
+  async remove(isbn: string) {
+    const book: BookEntity = await this.bookRepository.findOne(isbn);
+    if(!book){
+      throw new NotFoundException();
+    }
+
+    this.bookRepository.delete(isbn);
   }
 }
