@@ -16,6 +16,7 @@ import exp from 'constants';
 import { IsbnFormatException } from '../../domain/IsbnFormatException';
 import { GetBookDtoAdapter } from '../../adapters/get-book-dto.adapter';
 
+
 describe('BooksController', () => {
   let controller: BooksController;
   const numberOfBooksInMockStoredBooks = 9;
@@ -41,6 +42,7 @@ describe('BooksController', () => {
         (isbn: Isbn) =>
           mockStoredBooks.filter((book) => book.isbn.value == isbn.value)[0],
       ),
+        remove: jest.fn().mockImplementation()
   };
 
   beforeEach(async () => {
@@ -99,5 +101,8 @@ describe('BooksController', () => {
       overview: 'overview 1',
       readCount: 1,
     });
-  });
+
+    it("should delete a book", function() {
+        expect(controller.remove("9782070360024"))
+    });
 });

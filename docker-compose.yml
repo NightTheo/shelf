@@ -12,7 +12,7 @@ services:
       - .:/usr/src/app
     ports:
       - "3000:3000"
-    command: npm run start:dev
+    command: npm run start
     depends_on:
       - db
     networks:
