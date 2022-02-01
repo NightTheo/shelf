@@ -7,11 +7,5 @@ export interface BookRepository{
     find(): Promise<Book[]>
     findBy(): Promise<Book[]>
     update(book: Book): Promise<Book>;
-export interface BookRepository {
-  save(book: Book): void;
-  findOne(isbn: Isbn): Promise<Book>;
-  find(): Promise<Book[]>;
-  findBy(): Promise<Book[]>;
-  update(book: Book): Promise<Book>;
-    delete(isbn: string): void;
+    delete(isbn: Isbn): void;
 }
