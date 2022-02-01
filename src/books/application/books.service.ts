@@ -37,7 +37,7 @@ export class BooksService {
   }
 
   async remove(isbn: string) {
-    const book: BookEntity = await this.bookRepository.findOne(isbn);
+    const book: Book = await this.bookRepository.findOne(new Isbn(isbn));
     if(!book){
       throw new NotFoundException();
     }
