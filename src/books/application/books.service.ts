@@ -1,24 +1,23 @@
-import {Inject, Injectable} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UpdateBookDto } from '../dto/update-book.dto';
 import { Book } from '../domain/book';
-import {BookRepositoryImp} from "../persistence/book.repository.imp";
-import {AddBookDto} from "../dto/add-book.dto";
+import { BookRepositoryImp } from '../persistence/book.repository.imp';
+import { AddBookDto } from '../dto/add-book.dto';
 import { Isbn } from '../domain/isbn';
 
 @Injectable()
 export class BooksService {
-
   @Inject()
   private readonly bookRepository: BookRepositoryImp;
 
-  async add(dto: AddBookDto): Promise<string>{
+  async add(dto: AddBookDto): Promise<string> {
     const book: Book = Book.builder()
-        .isbn(dto.isbn)
-        .title(dto.title)
-        .author(dto.author)
-        .overview(dto.overview)
-        .readCount(dto.readCount)
-        .build();
+      .isbn(dto.isbn)
+      .title(dto.title)
+      .author(dto.author)
+      .overview(dto.overview)
+      .readCount(dto.readCount)
+      .build();
     await this.bookRepository.save(book);
     return book.isbn.value;
   }
