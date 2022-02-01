@@ -66,7 +66,8 @@ export class BooksController {
   }
 
   @Delete(':isbn')
-  remove(@Param("isbn") isbn: string) {
-    this.booksService.remove(isbn);
+  async remove(@Param("isbn") isbn: string) {
+
+    await this.booksService.remove(isbn);
   }
 }

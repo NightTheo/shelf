@@ -3,7 +3,7 @@ import { Isbn } from './isbn';
 
 export interface BookRepository{
     save(book: Book): void;
-    findOne(isbn: string): Promise<BookEntity>;
+    findOne(isbn: Isbn): Promise<Book>;
     find(): Promise<Book[]>
     findBy(): Promise<Book[]>
     update(book: Book): Promise<Book>;
