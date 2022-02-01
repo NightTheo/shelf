@@ -35,10 +35,11 @@ export class BookRepositoryImp implements BookRepository {
         .then(book => {
                 if (book) {
                     return new Book(
-                        new Isbn(isbn.value),
+                        new Isbn(book.isbn),
                         new BookTitle(book.title),
                         new Author(book.author),
-                        new BookOverview(book.overview)
+                        new BookOverview(book.overview),
+                        book.read_count
                     )
                 }else {
                     return null

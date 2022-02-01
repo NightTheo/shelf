@@ -3,6 +3,7 @@ import { UpdateBookDto } from '../dto/update-book.dto';
 import { Book } from '../domain/book';
 import {BookRepositoryImp} from "../persistence/book.repository.imp";
 import {AddBookDto} from "../dto/add-book.dto";
+import { Isbn } from '../domain/isbn';
 
 @Injectable()
 export class BooksService {
