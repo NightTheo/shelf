@@ -3,6 +3,7 @@ import { UpdateBookDto } from '../dto/update-book.dto';
 import { Book } from '../domain/book';
 import {BookRepositoryImp} from "../persistence/book.repository.imp";
 import {AddBookDto} from "../dto/add-book.dto";
+import { Isbn } from '../domain/isbn';
 
 @Injectable()
 export class BooksService {
@@ -26,8 +27,8 @@ export class BooksService {
     return await this.bookRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} book`;
+  async findOne(isbn: Isbn): Promise<Book> {
+    return await this.bookRepository.findOne(isbn);
   }
 
   update(id: number, updateBookDto: UpdateBookDto) {

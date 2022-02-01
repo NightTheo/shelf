@@ -8,10 +8,13 @@ import {
   Delete,
   UseFilters,
   HttpCode,
+  NotFoundException
 } from '@nestjs/common';
 import { BooksService } from '../../application/books.service';
 import { AddBookDto } from '../../dto/add-book.dto';
 import { UpdateBookDto } from '../../dto/update-book.dto';
+import {Book} from "../../domain/book";
+import { Isbn } from 'src/books/domain/isbn';
 import {GetBookDto} from "../../dto/get-book.dto";
 import {BookExceptionFilter} from "../filters/book-exception.filter";
 import {GetBookDtoAdapter} from "../../adapters/get-book-dto.adapter";
@@ -37,8 +40,18 @@ export class BooksController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.booksService.findOne(+id);
+  @UseFilters(new BookExceptionFilter())
+  async findOne(@Param('id') id: string): Promise<GetBookDto>{
+    const isbn = new Isbn(id)
+
+    const book: Book = await this.booksService.findOne(isbn);
+
+    if(book) {
+      return GetBookDtoAdapter.from(book);
+    } else {
+      throw new NotFoundException('Book Not Found');
+    }
+    
   }
 
   @Patch(':id')
