@@ -103,6 +103,7 @@ describe('BooksController', () => {
     });
 
     it("should delete a book", function() {
-        expect(controller.remove("9782070360024"))
+        const isbn = new Isbn("9782070360024");
+        expect(controller.remove(isbn))
     });
 });

@@ -37,11 +37,12 @@ export class BooksService {
   }
 
   async remove(isbn: string) {
-    const book: Book = await this.bookRepository.findOne(new Isbn(isbn));
+    const id = new Isbn(isbn);
+    const book: Book = await this.bookRepository.findOne(id);
     if(!book){
       throw new NotFoundException();
     }
 
-    this.bookRepository.delete(isbn);
+    await this.bookRepository.delete(id);
   }
 }
