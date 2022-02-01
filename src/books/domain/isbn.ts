@@ -3,10 +3,10 @@ import {IsbnFormatException} from "./IsbnFormatException";
 export class Isbn {
     private readonly _value: string;
 
-    constructor(string: string) {
-        const found = string.match(Isbn.format());
+    constructor(isbn: string) {
+        const found = String(isbn).match(Isbn.format());
         if(!found) {
-            throw new IsbnFormatException("ISBN-13 format is: 'aaa-b-cc-dddddd-e' (with or without dashes)");
+            throw new IsbnFormatException(`ISBN-13 format is: 'aaa-b-cc-dddddd-e' (with or without dashes). Error with '${isbn}'`);
         }
         this._value = found.slice(1).join('');
     }

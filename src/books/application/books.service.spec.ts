@@ -2,30 +2,37 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BooksService } from './books.service';
 import {BookRepositoryImp} from "../persistence/book.repository.imp";
 import {Book} from "../domain/book";
-import {Isbn} from "../domain/isbn";
-import {BookTitle} from "../domain/book-title";
-import {Author} from "../domain/author";
-import {BookOverview} from "../domain/book-overview";
-import {UnprocessableEntityException} from "@nestjs/common";
 import {AddBookDto} from "../dto/add-book.dto";
 import {IsbnFormatException} from "../domain/IsbnFormatException";
+import {BookAdapter} from "../adapters/book.adapter";
 
 describe('BooksService', () => {
   let service: BooksService;
-  const numberOfBooksInMockStoredBooks = 20;
-  const mockStoredBooks: Book[] = Array.from(Array(numberOfBooksInMockStoredBooks).keys())
-      .map(key => {
-        const i = key+1;
-        return new Book(
-            new Isbn(`123456789000${i}`),
-            new BookTitle(`title ${i}`),
-            new Author(`author ${i}`),
-            new BookOverview(`overview ${i}`)
-        )
-      })
+  const mockStoredBooks: Map<string, Book> = new Map([
+      [
+          "1234567890001",
+          BookAdapter.fromDto({
+              isbn: "1234567890001",
+              title: "title 1",
+              author: "author 1",
+              overview: "overview 1",
+              readCount: 2
+          })
+      ],
+      [
+          "1234567890002",
+          BookAdapter.fromDto({
+              isbn: "1234567890002",
+              title: "title 2",
+              author: "author 2",
+              overview: "overview 2",
+              readCount: 2
+          })
+      ]
+  ]);
 
   const mockBooksRepositoryImp = {
-      find: jest.fn(() => Promise.all(mockStoredBooks)),
+      find: jest.fn().mockResolvedValue(Array.from(mockStoredBooks.values())),
       save: jest.fn((book: Book) => Promise.resolve(book))
   }
 
@@ -46,13 +53,13 @@ describe('BooksService', () => {
 
   it('should get all the books', async () => {
     const allBooks: Book[] = await service.findAll();
-    expect(allBooks).toEqual(mockStoredBooks);
+    expect(allBooks).toEqual(Array.from(mockStoredBooks.values()));
   });
 
   it('should add a book', async () => {
       const book: AddBookDto = {
           isbn: "9782070360024", title: "L'Étranger", author: "Albert Camus",
-          overview: "overview"
+          overview: "overview", readCount: 1
       }
       await service.add(book);
       expect(mockBooksRepositoryImp.save).toHaveBeenCalled();
@@ -60,14 +67,10 @@ describe('BooksService', () => {
 
   it('should throw an IsbnFormatException', async () => {
       const book = {
-        title: "L'Étranger", author: "Albert Camus", overview: "overview"
+        title: "L'Étranger", author: "Albert Camus", overview: "overview", readCount: 1
       }
       await expect(() => service.add({isbn: 'BadIsbn',...book})).rejects.toThrow(IsbnFormatException);
       await expect(() => service.add({isbn: 'BadIsbn',...book})).rejects.toThrow("ISBN-13 format is: 'aaa-b-cc-dddddd-e' (with or without dashes)");
   })
 
-  it('should get all the books', async () => {
-    const allBooks: Book[] = await service.findAll();
-    expect(allBooks).toEqual(mockStoredBooks);
-  })
 });

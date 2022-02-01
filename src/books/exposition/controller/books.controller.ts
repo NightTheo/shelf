@@ -13,11 +13,11 @@ import {
 import { BooksService } from '../../application/books.service';
 import { AddBookDto } from '../../dto/add-book.dto';
 import { UpdateBookDto } from '../../dto/update-book.dto';
-import {AddedBookDto} from "../../dto/added-book.dto";
-import {BookDomainToAddedBookDtoAdapter} from "../../adapters/book-domain-to-added-book-dto.adapter";
 import {Book} from "../../domain/book";
-import {AddBookExceptionFilter} from "../filters/add-book-exception.filter";
 import { Isbn } from 'src/books/domain/isbn';
+import {GetBookDto} from "../../dto/get-book.dto";
+import {BookExceptionFilter} from "../filters/book-exception.filter";
+import {GetBookDtoAdapter} from "../../adapters/get-book-dto.adapter";
 
 
 @Controller('books')
@@ -26,7 +26,7 @@ export class BooksController {
 
   @Post()
   @HttpCode(201)
-  @UseFilters(new AddBookExceptionFilter())
+  @UseFilters(new BookExceptionFilter())
   async add(@Body() addBookDto: AddBookDto): Promise<any>{
     const isbn: string = await this.booksService.add(addBookDto);
     return {
@@ -35,20 +35,19 @@ export class BooksController {
   }
 
   @Get()
-  async findAll(): Promise<AddedBookDto[]> {
-    const booksDomain: Book[] = await this.booksService.findAll();
-    return booksDomain.map(book => BookDomainToAddedBookDtoAdapter.of(book));
+  async findAll(): Promise<GetBookDto[]> {
+    return (await this.booksService.findAll()).map(book => GetBookDtoAdapter.from(book));
   }
 
   @Get(':id')
-  @UseFilters(new AddBookExceptionFilter())
-  async findOne(@Param('id') id: string): Promise<AddedBookDto>{
+  @UseFilters(new BookExceptionFilter())
+  async findOne(@Param('id') id: string): Promise<GetBookDto>{
     const isbn = new Isbn(id)
 
     const book: Book = await this.booksService.findOne(isbn);
 
     if(book) {
-      return BookDomainToAddedBookDtoAdapter.of(book);
+      return GetBookDtoAdapter.from(book);
     } else {
       throw new NotFoundException('Book Not Found');
     }
