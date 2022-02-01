@@ -18,7 +18,7 @@ export class BookRepositoryImp implements BookRepository {
     ) {
     }
 
-    delete(isbn: Isbn): void {
+    delete(isbn: string): void {
     }
 
     async find(): Promise<Book[]> {
@@ -30,7 +30,7 @@ export class BookRepositoryImp implements BookRepository {
         return Promise.resolve([]);
     }
 
-    findOne(isbn: Isbn): Promise<Book> {
+    findOne(isbn: string): Promise<BookEntity> {
         return Promise.resolve(undefined);
     }
 

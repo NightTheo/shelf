@@ -2,6 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BooksService } from './books.service';
 import {BookRepositoryImp} from "../persistence/book.repository.imp";
 import {Book} from "../domain/book";
+import {Isbn} from "../domain/isbn";
+import {BookTitle} from "../domain/book-title";
+import {Author} from "../domain/author";
+import {BookOverview} from "../domain/book-overview";
+import { NotFoundException, UnprocessableEntityException } from "@nestjs/common";
 import {AddBookDto} from "../dto/add-book.dto";
 import {IsbnFormatException} from "../domain/IsbnFormatException";
 import {BookAdapter} from "../adapters/book.adapter";
@@ -30,10 +35,19 @@ describe('BooksService', () => {
           })
       ]
   ]);
+  const numberOfBooksInMockStoredBooks = 9;
+
+
+  const mockBooks = new Map();
+  mockStoredBooks.forEach(book => mockBooks.set(book.isbn.value, book));
 
   const mockBooksRepositoryImp = {
       find: jest.fn().mockResolvedValue(Array.from(mockStoredBooks.values())),
-      save: jest.fn((book: Book) => Promise.resolve(book))
+      save: jest.fn((book: Book) => Promise.resolve(book)),
+      delete: jest.fn(isbn => {
+        mockBooks.delete(isbn);
+      }),
+      findOne: jest.fn( isbn => mockBooks.get(isbn))
   }
 
   beforeEach(async () => {
@@ -73,4 +87,16 @@ describe('BooksService', () => {
       await expect(() => service.add({isbn: 'BadIsbn',...book})).rejects.toThrow("ISBN-13 format is: 'aaa-b-cc-dddddd-e' (with or without dashes)");
   })
 
+  it('should get all the books', async () => {
+    const allBooks: Book[] = await service.findAll();
+    expect(allBooks).toEqual(Array.from(mockStoredBooks.values()));
+  })
+
+  it("should delete a book", function() {
+      expect(service.remove("1234567890001"));
+  });
+
+  it("should not found isbn throw NotFoundException",   function() {
+    expect(() => service.remove("0000000000000")).rejects.toThrow(NotFoundException)
+  });
 });
