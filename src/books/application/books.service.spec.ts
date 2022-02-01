@@ -90,11 +90,6 @@ describe('BooksService', () => {
       await expect(() => service.add({isbn: 'BadIsbn',...book})).rejects.toThrow("ISBN-13 format is: 'aaa-b-cc-dddddd-e' (with or without dashes)");
   })
 
-  it('should get all the books', async () => {
-    const allBooks: Book[] = await service.findAll();
-    expect(allBooks).toEqual(Array.from(mockStoredBooks.values()));
-  })
-
   it("should delete a book", function() {
       expect(service.remove("1234567890001"));
   });
