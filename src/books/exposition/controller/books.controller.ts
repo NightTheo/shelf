@@ -9,6 +9,7 @@ import {
   UseFilters,
   HttpCode,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { BooksService } from '../../application/books.service';
 import { AddBookDto } from '../../dto/add-book.dto';
@@ -27,6 +28,14 @@ export class BooksController {
   @HttpCode(201)
   @UseFilters(new BookExceptionFilter())
   async add(@Body() addBookDto: AddBookDto): Promise<any> {
+    const existingBook = await this.booksService.findOne(
+      new Isbn(addBookDto.isbn),
+    );
+    if (existingBook) {
+      throw new UnprocessableEntityException(
+        `The book with the ISBN ${addBookDto.isbn} already exists.`,
+      );
+    }
     const isbn: string = await this.booksService.add(addBookDto);
     return {
       isbn: isbn,
@@ -40,13 +49,10 @@ export class BooksController {
     );
   }
 
-  @Get(':id')
+  @Get(':isbn')
   @UseFilters(new BookExceptionFilter())
-  async findOne(@Param('id') id: string): Promise<GetBookDto> {
-    const isbn = new Isbn(id);
-
-    const book: Book = await this.booksService.findOne(isbn);
-
+  async findOne(@Param('isbn') isbn: string): Promise<GetBookDto> {
+    const book: Book = await this.booksService.findOne(new Isbn(isbn));
     if (book) {
       return GetBookDtoAdapter.from(book);
     } else {
