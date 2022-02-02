@@ -4,31 +4,36 @@ import * as request from 'supertest';
 import { BooksModule } from '../src/books/books.module';
 import { BookEntity } from '../src/books/persistence/book.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import e from 'express';
+import { BookAdapter } from '../src/books/adapters/book.adapter';
+import { Book } from '../src/books/domain/book';
 
 describe('BookController (e2e)', () => {
   let app: INestApplication;
 
-  const mockBooks = [
-    {
-      isbn: '1234567890001',
-      title: 'title 1',
-      author: 'author 1',
-      overview: 'overview 1',
-      read_count: 1,
-    },
-    {
-      isbn: '1234567890002',
-      title: 'title 2',
-      author: 'author 2',
-      overview: 'overview 2',
-      read_count: 2,
-    },
-  ];
+  const mockBooks: Map<string, BookEntity> = new Map([
+    [
+      '1234567890001',
+      {
+        isbn: '1234567890001',
+        title: 'title 1',
+        author: 'author 1',
+        overview: 'overview 1',
+        read_count: 1,
+      },
+    ],
+  ]);
 
   const mockBooksRepository = {
-    save: jest.fn().mockImplementation(),
-    find: jest.fn().mockResolvedValue(mockBooks),
+    save: jest.fn().mockImplementation((book: Book) =>
+      mockBooks.set(book.isbn.value, {
+        isbn: book.isbn.value,
+        title: book.title.value,
+        author: book.author.name,
+        overview: book.overview?.value,
+        read_count: book.readCount,
+      }),
+    ),
+    find: jest.fn().mockResolvedValue(Array.from(mockBooks.values())),
   };
 
   beforeEach(async () => {
@@ -51,8 +56,7 @@ describe('BookController (e2e)', () => {
         isbn: '9782290032726',
         title: 'Des fleurs pour Algernon',
         author: 'Daniel Keyes',
-        overview:
-          "Algernon est une souris dont le traitement du Pr Nemur et du Dr Strauss vient de décupler l'intelligence.",
+        overview: 'Algernon est une souris dont le traitement ....',
         readCount: 1,
       })
       .expect(201)
