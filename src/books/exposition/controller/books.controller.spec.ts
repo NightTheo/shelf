@@ -35,6 +35,12 @@ describe('BooksController', () => {
   const mockBooksService = {
     findAll: jest.fn().mockResolvedValue(mockStoredBooks),
     add: jest.fn().mockImplementation((book) => book.isbn),
+    findOne: jest
+      .fn()
+      .mockImplementation(
+        (isbn: Isbn) =>
+          mockStoredBooks.filter((book) => book.isbn.value == isbn.value)[0],
+      ),
   };
 
   beforeEach(async () => {
@@ -83,5 +89,15 @@ describe('BooksController', () => {
     } as AddBookDto;
     expect(await controller.add(book)).toEqual({ isbn: book.isbn });
     expect(mockBooksService.add).toHaveBeenCalled();
+  });
+
+  it('should get a book by its ISBN', async () => {
+    expect(await controller.findOne('1234567890001')).toEqual({
+      isbn: '1234567890001',
+      title: 'title 1',
+      author: 'author 1',
+      overview: 'overview 1',
+      readCount: 1,
+    });
   });
 });
