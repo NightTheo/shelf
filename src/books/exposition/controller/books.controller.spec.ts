@@ -16,7 +16,6 @@ import exp from 'constants';
 import { IsbnFormatException } from '../../domain/IsbnFormatException';
 import { GetBookDtoAdapter } from '../../adapters/get-book-dto.adapter';
 
-
 describe('BooksController', () => {
   let controller: BooksController;
   const numberOfBooksInMockStoredBooks = 9;
