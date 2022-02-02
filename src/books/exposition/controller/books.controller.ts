@@ -65,9 +65,10 @@ export class BooksController {
     return this.booksService.update(+id, updateBookDto);
   }
 
+  @HttpCode(204)
+  @UseFilters(new BookExceptionFilter())
   @Delete(':isbn')
-  async remove(@Param("isbn") isbn: string) {
-
+  async remove(@Param('isbn') isbn: string) {
     await this.booksService.remove(isbn);
   }
 }
