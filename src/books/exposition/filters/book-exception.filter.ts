@@ -40,7 +40,7 @@ export class BookExceptionFilter implements ExceptionFilter {
         break;
       default:
         console.log(
-          `Unhandled exception on '${request.url}' : '${exception.name}' `,
+          `Unhandled exception on '${request.url}' : '${exception.stack}' `,
         );
     }
 

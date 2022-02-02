@@ -12,22 +12,22 @@ export class BookBuilder {
   private _readCount: number;
 
   public isbn(isbn: string) {
-    this._isbn = new Isbn(isbn);
+    this._isbn = new Isbn(isbn.trim());
     return this;
   }
 
   public title(title: string) {
-    this._title = new BookTitle(title);
+    this._title = new BookTitle(title.trim());
     return this;
   }
 
   public author(author: string) {
-    this._author = new Author(author);
+    this._author = new Author(author.trim());
     return this;
   }
 
   public overview(overview: string) {
-    this._overview = new BookOverview(overview);
+    this._overview = new BookOverview(overview?.trim());
     return this;
   }
 

@@ -74,4 +74,14 @@ describe('BooksController', () => {
     expect(await controller.add(book)).toEqual({ isbn: book.isbn });
     expect(mockBooksService.add).toHaveBeenCalled();
   });
+
+  it('should add a book without overview and readCount', async () => {
+    const book = {
+      isbn: '9782070360024',
+      title: "L'Étranger",
+      author: 'Albert Camus',
+    } as AddBookDto;
+    expect(await controller.add(book)).toEqual({ isbn: book.isbn });
+    expect(mockBooksService.add).toHaveBeenCalled();
+  });
 });
