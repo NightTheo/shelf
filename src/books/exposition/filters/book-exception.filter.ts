@@ -36,12 +36,15 @@ export class BookExceptionFilter implements ExceptionFilter {
         break;
       case IsbnFormatException.name:
         body.statusCode = 422;
-        body.message = exception.message;
+        break;
+      case UnprocessableEntityException.name:
         break;
       default:
-        console.log(
-          `Unhandled exception on '${request.url}' : '${exception.stack}' `,
-        );
+        if (exception! instanceof HttpException) {
+          console.log(
+            `Unhandled exception on '${request.url}' : '${exception.stack}' `,
+          );
+        }
     }
 
     response.status(body.statusCode).json(body);

@@ -4,7 +4,6 @@ import * as request from 'supertest';
 import { BooksModule } from '../src/books/books.module';
 import { BookEntity } from '../src/books/persistence/book.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { BookAdapter } from '../src/books/adapters/book.adapter';
 import { Book } from '../src/books/domain/book';
 
 describe('BookController (e2e)', () => {
@@ -33,6 +32,9 @@ describe('BookController (e2e)', () => {
         read_count: book.readCount,
       }),
     ),
+    findOne: jest
+      .fn()
+      .mockImplementation((isbn: string) => mockBooks.get(isbn)),
     find: jest.fn().mockResolvedValue(Array.from(mockBooks.values())),
   };
 
@@ -139,6 +141,17 @@ describe('BookController (e2e)', () => {
       .expect(422);
   });
 
+  it('/books (POST) existing book -> throw Unprocessable Entity', () => {
+    return request(app.getHttpServer())
+      .post('/books')
+      .send({
+        isbn: '1234567890001', // already exists
+        title: '...',
+        author: '...',
+      })
+      .expect(422);
+  });
+
   it('/books (GET)', () => {
     return request(app.getHttpServer())
       .get('/books')
@@ -152,5 +165,24 @@ describe('BookController (e2e)', () => {
           readCount: 1,
         });
       });
+  });
+
+  it('/books/1234567890001 (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/books/1234567890001')
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+          isbn: '1234567890001',
+          title: 'title 1',
+          author: 'author 1',
+          overview: 'overview 1',
+          readCount: 1,
+        });
+      });
+  });
+
+  it('/books/0000000000000 (GET)', () => {
+    return request(app.getHttpServer()).get('/books/0000000000000').expect(404);
   });
 });
