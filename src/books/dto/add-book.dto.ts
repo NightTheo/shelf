@@ -1,4 +1,4 @@
-import { IsNotEmpty, MaxLength, Min } from 'class-validator';
+import { IsNotEmpty, IsOptional, MaxLength, Min } from 'class-validator';
 
 export class AddBookDto {
   @IsNotEmpty()
@@ -13,9 +13,11 @@ export class AddBookDto {
   @MaxLength(150)
   author: string;
 
+  @IsOptional()
   @MaxLength(1500)
   overview: string;
 
+  @IsOptional()
   @Min(0)
   readCount: number;
 }
