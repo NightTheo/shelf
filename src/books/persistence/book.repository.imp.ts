@@ -17,11 +17,11 @@ export class BookRepositoryImp implements BookRepository {
     private booksRepository: Repository<BookEntity>,
   ) {}
 
-    async delete(isbn: Isbn): Promise<void> {
-        const book = new BookEntity();
-        book.isbn = isbn.value;
-        await this.booksRepository.remove(book);
-    }
+  async delete(isbn: Isbn): Promise<void> {
+    const book = new BookEntity();
+    book.isbn = isbn.value;
+    await this.booksRepository.remove(book);
+  }
 
   async find(): Promise<Book[]> {
     return (await this.booksRepository.find()).map((book) =>
