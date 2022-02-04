@@ -41,7 +41,7 @@ describe('BooksController', () => {
         (isbn: Isbn) =>
           mockStoredBooks.filter((book) => book.isbn.value == isbn.value)[0],
       ),
-        remove: jest.fn().mockImplementation()
+    remove: jest.fn().mockImplementation(),
   };
 
   beforeEach(async () => {
@@ -100,9 +100,9 @@ describe('BooksController', () => {
       overview: 'overview 1',
       readCount: 1,
     });
+  });
 
-    it("should delete a book", function() {
-        const isbn = new Isbn("9782070360024");
-        expect(controller.remove(isbn))
-    });
+  it('should delete a book', function () {
+    expect(controller.remove('9782070360024'));
+  });
 });

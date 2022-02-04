@@ -28,8 +28,8 @@ export class BooksService {
     return await this.bookRepository.find();
   }
 
-  async findOne(isbn: Isbn): Promise<Book> {
-    return await this.bookRepository.findOne(isbn);
+  findOne(isbn: Isbn): Promise<Book> {
+    return this.bookRepository.findOne(isbn);
   }
 
   update(id: number, updateBookDto: UpdateBookDto) {
