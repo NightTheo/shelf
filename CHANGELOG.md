@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
-## [0.4.0] - 2022-02-8
+## [0.4.0] - 2022-02-08
 ### Added
 - Endpoint `GET /books/{isbn}` Get the details of a book by its ISBN 13.
 - Endpoint `GET /books` get all the books.
