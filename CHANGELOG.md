@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.0] - 2022-02-8
 ### Added
-- Endpoint GET `/books/{isbn}` Get the details of a book by its ISBN 13.
-- Endpoint GET `/books` get all the books.
-- Endpoint DELETE `/books/{isbn}` delete a book by its ISBN 13.
-- Endpoint POST `/books` add a book.
+- Endpoint `GET /books/{isbn}` Get the details of a book by its ISBN 13.
+- Endpoint `GET /books` get all the books.
+- Endpoint `DELETE /books/{isbn}` delete a book by its ISBN 13.
+- Endpoint `POST /books` add a book.
 - Unit and integration tests for the those four endpoints.
 - GitHub Actions for Continuous Integration.
 - This CHANGELOG which starts at version 0.4.0.
