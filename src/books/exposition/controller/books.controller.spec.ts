@@ -8,13 +8,9 @@ import { Author } from '../../domain/author';
 import { BookOverview } from '../../domain/book-overview';
 import { GetBookDto } from '../../dto/get-book.dto';
 import { AddBookDto } from '../../dto/add-book.dto';
-import {
-  BadRequestException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
-import exp from 'constants';
-import { IsbnFormatException } from '../../domain/IsbnFormatException';
-import { GetBookDtoAdapter } from '../../adapters/get-book-dto.adapter';
+import { FilesUtils } from '../../../utils/files.utils';
+import { BufferFile } from './buffer-file';
+const streamBuffers = require('stream-buffers');
 
 describe('BooksController', () => {
   let controller: BooksController;
@@ -78,7 +74,7 @@ describe('BooksController', () => {
       overview: 'overview',
       readCount: 1,
     };
-    expect(await controller.add(book)).toEqual({ isbn: book.isbn });
+    expect(await controller.add(book, null)).toEqual({ isbn: book.isbn });
     expect(mockBooksService.add).toHaveBeenCalled();
   });
 
@@ -88,7 +84,7 @@ describe('BooksController', () => {
       title: "L'Étranger",
       author: 'Albert Camus',
     } as AddBookDto;
-    expect(await controller.add(book)).toEqual({ isbn: book.isbn });
+    expect(await controller.add(book, null)).toEqual({ isbn: book.isbn });
     expect(mockBooksService.add).toHaveBeenCalled();
   });
 
@@ -102,7 +98,39 @@ describe('BooksController', () => {
     });
   });
 
-  it('should delete a book', function () {
-    expect(controller.remove('9782070360024'));
+  it('should delete a book', async () => {
+    expect(await controller.remove('9782070360024'));
+  });
+
+  it('should add a book with its cover', async () => {
+    const imageBuffer = (await FilesUtils.fileToBuffer(
+      __dirname + '/../../../../test/assets/images/uploadExample.jpg',
+    )) as Buffer;
+    const readableStreamBuffer = new streamBuffers.ReadableStreamBuffer({
+      frequency: 10,
+      chunkSize: 2048,
+    });
+    readableStreamBuffer.put(imageBuffer as Buffer);
+    expect(imageBuffer.length).toBeGreaterThan(0);
+    const image: Express.Multer.File = {
+      buffer: imageBuffer,
+      fieldname: 'cover_image',
+      originalname: 'uploadExemple.jpg',
+      encoding: '7bit',
+      mimetype: 'image/jpeg',
+      destination: 'destination-path',
+      filename: 'uploadExemple.jpg',
+      path: __dirname + '/../../../../test/assets/images/uploadExample.jpg',
+      size: 955578,
+      stream: readableStreamBuffer,
+    };
+
+    const cover = image as BufferFile;
+    const book = {
+      isbn: '9782070360024',
+      title: "L'Étranger",
+      author: 'Albert Camus',
+    } as AddBookDto;
+    expect(await controller.add(book, cover)).toEqual({ isbn: book.isbn });
   });
 });
