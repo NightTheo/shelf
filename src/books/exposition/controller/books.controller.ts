@@ -10,6 +10,7 @@ import {
   HttpCode,
   NotFoundException,
   UnprocessableEntityException,
+  UploadedFile,
 } from '@nestjs/common';
 import { BooksService } from '../../application/books.service';
 import { AddBookDto } from '../../dto/add-book.dto';
@@ -19,6 +20,7 @@ import { Isbn } from '../../domain/isbn';
 import { GetBookDto } from '../../dto/get-book.dto';
 import { BookExceptionFilter } from '../filters/book-exception.filter';
 import { GetBookDtoAdapter } from '../../adapters/get-book-dto.adapter';
+import { BufferFile } from './buffer-file';
 
 @Controller('books')
 export class BooksController {
@@ -27,7 +29,10 @@ export class BooksController {
   @Post()
   @HttpCode(201)
   @UseFilters(new BookExceptionFilter())
-  async add(@Body() addBookDto: AddBookDto): Promise<any> {
+  async add(
+    @Body() addBookDto: AddBookDto,
+    @UploadedFile() coverImage: BufferFile,
+  ): Promise<any> {
     const existingBook = await this.booksService.findOne(
       new Isbn(addBookDto.isbn),
     );
