@@ -6,13 +6,14 @@ import { AddBookDto } from '../dto/add-book.dto';
 import { IsbnFormatException } from '../domain/IsbnFormatException';
 import { BookEntity } from '../persistence/book.entity';
 import { Isbn } from '../domain/isbn';
+import { BufferFile } from '../exposition/controller/buffer-file';
 
 @Injectable()
 export class BooksService {
   @Inject()
   private readonly bookRepository: BookRepositoryImp;
 
-  async add(dto: AddBookDto): Promise<string> {
+  async add(dto: AddBookDto, coverImage: BufferFile): Promise<string> {
     const book: Book = Book.builder()
       .isbn(dto.isbn)
       .title(dto.title)

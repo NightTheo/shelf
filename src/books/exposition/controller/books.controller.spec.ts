@@ -10,6 +10,8 @@ import { GetBookDto } from '../../dto/get-book.dto';
 import { AddBookDto } from '../../dto/add-book.dto';
 import { FilesUtils } from '../../../utils/files.utils';
 import { BufferFile } from './buffer-file';
+import any = jasmine.any;
+import { StreamableFile, Response } from '@nestjs/common';
 const streamBuffers = require('stream-buffers');
 
 describe('BooksController', () => {
@@ -39,6 +41,9 @@ describe('BooksController', () => {
       ),
     remove: jest.fn().mockImplementation(),
   };
+  const mockResponse = {
+    set: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -66,7 +71,7 @@ describe('BooksController', () => {
     });
   });
 
-  it('should add a book', async () => {
+  it('should add a books', async () => {
     const book: AddBookDto = {
       isbn: '9782070360024',
       title: "L'Étranger",
@@ -78,7 +83,7 @@ describe('BooksController', () => {
     expect(mockBooksService.add).toHaveBeenCalled();
   });
 
-  it('should add a book without overview and readCount', async () => {
+  it('should add a books without overview and readCount', async () => {
     const book = {
       isbn: '9782070360024',
       title: "L'Étranger",
@@ -88,7 +93,7 @@ describe('BooksController', () => {
     expect(mockBooksService.add).toHaveBeenCalled();
   });
 
-  it('should get a book by its ISBN', async () => {
+  it('should get a books by its ISBN', async () => {
     expect(await controller.findOne('1234567890001')).toEqual({
       isbn: '1234567890001',
       title: 'title 1',
@@ -98,11 +103,11 @@ describe('BooksController', () => {
     });
   });
 
-  it('should delete a book', async () => {
+  it('should delete a books', async () => {
     expect(await controller.remove('9782070360024'));
   });
 
-  it('should add a book with its cover', async () => {
+  it('should add a books with its cover', async () => {
     const imageBuffer = (await FilesUtils.fileToBuffer(
       __dirname + '/../../../../test/assets/images/uploadExample.jpg',
     )) as Buffer;
@@ -112,25 +117,25 @@ describe('BooksController', () => {
     });
     readableStreamBuffer.put(imageBuffer as Buffer);
     expect(imageBuffer.length).toBeGreaterThan(0);
-    const image: Express.Multer.File = {
-      buffer: imageBuffer,
-      fieldname: 'cover_image',
-      originalname: 'uploadExemple.jpg',
-      encoding: '7bit',
-      mimetype: 'image/jpeg',
-      destination: 'destination-path',
-      filename: 'uploadExemple.jpg',
-      path: __dirname + '/../../../../test/assets/images/uploadExample.jpg',
-      size: 955578,
-      stream: readableStreamBuffer,
-    };
-
-    const cover = image as BufferFile;
     const book = {
       isbn: '9782070360024',
       title: "L'Étranger",
       author: 'Albert Camus',
     } as AddBookDto;
-    expect(await controller.add(book, cover)).toEqual({ isbn: book.isbn });
+    expect(
+      await controller.add(book, {
+        buffer: imageBuffer,
+        encoding: '7bit',
+        fieldname: 'cover_image',
+        mimetype: 'image/jpeg',
+        originalname: 'uploadExample.jpg',
+        size: imageBuffer.length,
+      }),
+    ).toEqual({ isbn: book.isbn });
+  });
+
+  it("should get a book cover image by the book's ISBN", () => {
+    const cover = controller.findPicture(mockResponse, '9782070360024');
+    expect(cover).toBeInstanceOf(StreamableFile);
   });
 });

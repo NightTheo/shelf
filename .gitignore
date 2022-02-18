@@ -115,3 +115,5 @@ dist
 *.swp
 *.class
 *.core
+
+storage/
