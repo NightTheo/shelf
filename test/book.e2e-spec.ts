@@ -69,7 +69,7 @@ describe('BookController (e2e)', () => {
       });
   });
 
-  it('/books (POST) should create a book when given an ISBN with dashes', () => {
+  it('/books (POST) should create a books when given an ISBN with dashes', () => {
     return request(app.getHttpServer())
       .post('/books')
       .send({
@@ -87,7 +87,7 @@ describe('BookController (e2e)', () => {
       });
   });
 
-  it('/books (POST) should create a book without overview and readCount', () => {
+  it('/books (POST) should create a books without overview and readCount', () => {
     return request(app.getHttpServer())
       .post('/books')
       .send({
@@ -103,7 +103,7 @@ describe('BookController (e2e)', () => {
       });
   });
 
-  it('/books (POST) should create a book when given an ISBN with dashes (not all)', () => {
+  it('/books (POST) should create a books when given an ISBN with dashes (not all)', () => {
     return request(app.getHttpServer())
       .post('/books')
       .send({
@@ -141,7 +141,7 @@ describe('BookController (e2e)', () => {
       .expect(422);
   });
 
-  it('/books (POST) existing book -> throw Unprocessable Entity', () => {
+  it('/books (POST) existing books -> throw Unprocessable Entity', () => {
     return request(app.getHttpServer())
       .post('/books')
       .send({

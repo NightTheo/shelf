@@ -11,6 +11,9 @@ import {
   NotFoundException,
   UnprocessableEntityException,
   UploadedFile,
+  UseInterceptors,
+  Response,
+  StreamableFile,
 } from '@nestjs/common';
 import { BooksService } from '../../application/books.service';
 import { AddBookDto } from '../../dto/add-book.dto';
@@ -21,6 +24,8 @@ import { GetBookDto } from '../../dto/get-book.dto';
 import { BookExceptionFilter } from '../filters/book-exception.filter';
 import { GetBookDtoAdapter } from '../../adapters/get-book-dto.adapter';
 import { BufferFile } from './buffer-file';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { createReadStream } from 'fs';
 
 @Controller('books')
 export class BooksController {
@@ -29,6 +34,7 @@ export class BooksController {
   @Post()
   @HttpCode(201)
   @UseFilters(new BookExceptionFilter())
+  @UseInterceptors(FileInterceptor('cover_image'))
   async add(
     @Body() addBookDto: AddBookDto,
     @UploadedFile() coverImage: BufferFile,
@@ -41,7 +47,7 @@ export class BooksController {
         `The book with the ISBN ${addBookDto.isbn} already exists.`,
       );
     }
-    const isbn: string = await this.booksService.add(addBookDto);
+    const isbn: string = await this.booksService.add(addBookDto, coverImage);
     return {
       isbn: isbn,
     };
@@ -75,5 +81,20 @@ export class BooksController {
   @Delete(':isbn')
   async remove(@Param('isbn') isbn: string) {
     await this.booksService.remove(isbn);
+  }
+
+  @Get(':isbn/cover')
+  findPicture(
+    @Response({ passthrough: true }) res,
+    @Param('isbn') isbn: string,
+  ): StreamableFile {
+    const cover = createReadStream(
+      process.cwd() + `/storage/books/cover/${isbn}.jpg`,
+    );
+    res.set({
+      'Content-Type': 'image/jpeg',
+      'Content-Disposition': `attachment; filename="${isbn}.jpg"`,
+    });
+    return new StreamableFile(cover);
   }
 }
