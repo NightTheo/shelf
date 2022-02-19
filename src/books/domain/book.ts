@@ -1,8 +1,8 @@
 import { Isbn } from './isbn';
-import { Author } from './author';
 import { BookTitle } from './book-title';
+import { Author } from './author';
 import { BookOverview } from './book-overview';
-import { Picture } from './picture';
+import { BookCover } from './book-cover';
 import { BookBuilder } from './book.builder';
 
 export class Book {
@@ -10,7 +10,7 @@ export class Book {
   private readonly _title: BookTitle;
   private readonly _author: Author;
   private readonly _overview: BookOverview;
-  private readonly picture: Picture;
+  private readonly _cover: BookCover;
   private readonly _readCount: number;
 
   constructor(
@@ -19,11 +19,13 @@ export class Book {
     author: Author,
     overview: BookOverview,
     readCount: number,
+    cover: BookCover,
   ) {
     this._isbn = isbn;
     this._title = title;
     this._author = author;
     this._overview = overview;
+    this._cover = cover;
     this._readCount = readCount;
   }
 
@@ -45,6 +47,10 @@ export class Book {
 
   get readCount(): number {
     return this._readCount;
+  }
+
+  get cover(): BookCover {
+    return this._cover;
   }
 
   static builder(): BookBuilder {
