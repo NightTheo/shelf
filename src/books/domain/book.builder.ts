@@ -2,6 +2,8 @@ import { Isbn } from './isbn';
 import { BookTitle } from './book-title';
 import { Author } from './author';
 import { BookOverview } from './book-overview';
+import { BufferFile } from '../exposition/controller/buffer-file';
+import { BookCover } from './book-cover';
 import { Book } from './book';
 
 export class BookBuilder {
@@ -10,6 +12,7 @@ export class BookBuilder {
   private _author: Author;
   private _overview: BookOverview;
   private _readCount: number;
+  private _cover: BookCover;
 
   public isbn(isbn: string) {
     this._isbn = new Isbn(isbn.trim());
@@ -37,6 +40,11 @@ export class BookBuilder {
     return this;
   }
 
+  public cover(picture: BufferFile) {
+    this._cover = new BookCover(picture);
+    return this;
+  }
+
   public build(): Book {
     return new Book(
       this._isbn,
@@ -44,6 +52,7 @@ export class BookBuilder {
       this._author,
       this._overview,
       this._readCount,
+      this._cover,
     );
   }
 }

@@ -5,9 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BookEntity } from './book.entity';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { BookTitle } from '../domain/book-title';
-import { BookOverview } from '../domain/book-overview';
-import { Author } from '../domain/author';
 import { BookAdapter } from '../adapters/book.adapter';
 
 @Injectable()
@@ -38,13 +35,13 @@ export class BookRepositoryImp implements BookRepository {
     if (!book) {
       return null;
     }
-    return new Book(
-      new Isbn(book.isbn),
-      new BookTitle(book.title),
-      new Author(book.author),
-      new BookOverview(book.overview),
-      book.read_count,
-    );
+    return Book.builder()
+      .isbn(book.isbn)
+      .title(book.title)
+      .author(book.author)
+      .overview(book.overview)
+      .readCount(book.read_count)
+      .build();
   }
 
   async save(book: Book): Promise<void> {
