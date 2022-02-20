@@ -16,4 +16,7 @@ export class BookEntity {
 
   @Column({ default: 1, nullable: true })
   read_count: number;
+
+  @Column({ length: 100, nullable: true })
+  cover_image: string;
 }

@@ -51,6 +51,7 @@ export class BookRepositoryImp implements BookRepository {
       overview: book.overview.value,
       title: book.title.value,
       read_count: book.readCount,
+      cover_image: book.cover.file.filename,
     };
     await this.booksRepository.save(bookEntity);
   }
