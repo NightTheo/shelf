@@ -10,7 +10,7 @@ export class Book {
   private readonly _title: BookTitle;
   private readonly _author: Author;
   private readonly _overview: BookOverview;
-  private readonly _cover: BookCover;
+  private _cover: BookCover;
   private readonly _readCount: number;
 
   constructor(
@@ -51,6 +51,10 @@ export class Book {
 
   get cover(): BookCover {
     return this._cover;
+  }
+
+  set cover(cover: BookCover) {
+    this._cover = cover;
   }
 
   static builder(): BookBuilder {

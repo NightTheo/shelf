@@ -2,8 +2,6 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateBookDto } from '../dto/update-book.dto';
 import { BookRepositoryImp } from '../persistence/book.repository.imp';
 import { AddBookDto } from '../dto/add-book.dto';
-import { IsbnFormatException } from '../domain/IsbnFormatException';
-import { BookEntity } from '../persistence/book.entity';
 import { Isbn } from '../domain/isbn';
 import { BufferFile } from '../exposition/controller/buffer-file';
 import { BookCoverFileSystemRepository } from '../persistence/book-cover.file-system.repository';
