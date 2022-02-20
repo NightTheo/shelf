@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { StringsUtils } from './strings.utils';
 
 export abstract class FilesUtils {
   public static fileToBuffer(filename: string): Promise<Buffer> {
@@ -15,5 +16,13 @@ export abstract class FilesUtils {
         resolve(Buffer.concat(chunks));
       });
     });
+  }
+
+  public static generateRandomNameFor(fileName: string, length = 15): string {
+    return (
+      StringsUtils.randomStringOfLength(length) +
+      '.' +
+      fileName.split('.').pop()
+    );
   }
 }

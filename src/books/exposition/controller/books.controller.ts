@@ -34,7 +34,7 @@ export class BooksController {
   @Post()
   @HttpCode(201)
   @UseFilters(new BookExceptionFilter())
-  @UseInterceptors(FileInterceptor('cover_image'))
+  @UseInterceptors(FileInterceptor('picture'))
   async add(
     @Body() addBookDto: AddBookDto,
     @UploadedFile() coverImage: BufferFile,

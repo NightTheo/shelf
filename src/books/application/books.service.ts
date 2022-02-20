@@ -13,6 +13,7 @@ import { Book } from '../domain/book';
 export class BooksService {
   @Inject()
   private readonly bookRepository: BookRepositoryImp;
+  @Inject()
   private readonly bookCoverRepository: BookCoverFileSystemRepository;
 
   async add(dto: AddBookDto, coverImage: BufferFile): Promise<string> {
@@ -24,8 +25,8 @@ export class BooksService {
       .readCount(dto.readCount)
       .cover(coverImage)
       .build();
+    book.cover.file.filename = this.bookCoverRepository.save(book.cover);
     await this.bookRepository.save(book);
-    await this.bookCoverRepository.save(book.cover);
     return book.isbn.value;
   }
 

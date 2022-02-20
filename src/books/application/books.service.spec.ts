@@ -8,6 +8,8 @@ import { AddBookDto } from '../dto/add-book.dto';
 import { IsbnFormatException } from '../domain/IsbnFormatException';
 import { BookAdapter } from '../adapters/book.adapter';
 import { BufferFile } from '../exposition/controller/buffer-file';
+import { BookCover } from '../domain/book-cover';
+import { BookCoverFileSystemRepository } from '../persistence/book-cover.file-system.repository';
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -36,21 +38,32 @@ describe('BooksService', () => {
   const mockFileStorage = new Set<string>();
   const mockBooksRepositoryImp = {
     find: jest.fn().mockResolvedValue(Array.from(mockBooks.values())),
-    save: jest.fn((book: Book) => {
-      mockFileStorage.add(book.isbn.value);
-    }),
+    save: jest.fn((book: Book) => {}),
     delete: jest.fn((isbn) => {
       mockBooks.delete(isbn);
     }),
     findOne: jest.fn((isbn: Isbn) => mockBooks.get(isbn.value)),
   };
 
+  const mockBookCoverRepository = {
+    save: jest.fn((bookCover: BookCover) => {
+      mockFileStorage.add(bookCover.file.filename);
+      return bookCover.file.filename;
+    }),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [BooksService, BookRepositoryImp],
+      providers: [
+        BooksService,
+        BookRepositoryImp,
+        BookCoverFileSystemRepository,
+      ],
     })
       .overrideProvider(BookRepositoryImp)
       .useValue(mockBooksRepositoryImp)
+      .overrideProvider(BookCoverFileSystemRepository)
+      .useValue(mockBookCoverRepository)
       .compile();
 
     service = module.get<BooksService>(BooksService);
@@ -73,7 +86,7 @@ describe('BooksService', () => {
       overview: 'overview',
       readCount: 1,
     };
-    await service.add(book, null);
+    await service.add(book, { filename: '9782070360024.jpg' } as BufferFile);
     expect(mockBooksRepositoryImp.save).toHaveBeenCalled();
   });
 
@@ -122,11 +135,12 @@ describe('BooksService', () => {
       buffer: null,
       encoding: '7bit',
       fieldname: 'cover_image',
+      filename: '9782070360024.jpg',
       mimetype: 'image/jpeg',
       originalname: 'uploadExample.jpg',
       size: 1,
     };
     await service.add(book, cover);
-    expect(mockFileStorage.has(book.isbn)).toBeTruthy();
+    expect(mockFileStorage.has(cover.filename)).toBeTruthy();
   });
 });

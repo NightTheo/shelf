@@ -27,6 +27,7 @@ describe('BooksController', () => {
       new Author(`author ${i}`),
       new BookOverview(`overview ${i}`),
       i,
+      null,
     );
   });
 
@@ -126,7 +127,8 @@ describe('BooksController', () => {
       await controller.add(book, {
         buffer: imageBuffer,
         encoding: '7bit',
-        fieldname: 'cover_image',
+        fieldname: 'picture',
+        filename: null,
         mimetype: 'image/jpeg',
         originalname: 'uploadExample.jpg',
         size: imageBuffer.length,
