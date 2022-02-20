@@ -4,4 +4,5 @@ export class GetBookDto {
   author: string;
   overview: string;
   readCount: number;
+  picture: string;
 }

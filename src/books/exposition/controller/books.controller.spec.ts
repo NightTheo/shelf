@@ -13,6 +13,8 @@ import { BufferFile } from './buffer-file';
 import any = jasmine.any;
 import { StreamableFile, Response } from '@nestjs/common';
 const streamBuffers = require('stream-buffers');
+import { Request } from 'express';
+import { BookCover } from '../../domain/book-cover';
 
 describe('BooksController', () => {
   let controller: BooksController;
@@ -42,9 +44,19 @@ describe('BooksController', () => {
       ),
     remove: jest.fn().mockImplementation(),
   };
+
   const mockResponse = {
     set: jest.fn(),
   };
+
+  const mockRequest = {
+    dict: new Map([['host', 'api.shelf.cat/']]),
+    protocol: 'https',
+    originalUrl: `books`,
+    get: function (key) {
+      return this.dict.get(key);
+    },
+  } as unknown as Request;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -69,6 +81,7 @@ describe('BooksController', () => {
       author: mockStoredBooks[0].author.name,
       overview: mockStoredBooks[0].overview.value,
       readCount: mockStoredBooks[0].readCount,
+      picture: null,
     });
   });
 
@@ -95,13 +108,28 @@ describe('BooksController', () => {
   });
 
   it('should get a books by its ISBN', async () => {
-    expect(await controller.findOne('1234567890001')).toEqual({
+    expect(await controller.findOne('1234567890001', mockRequest)).toEqual({
       isbn: '1234567890001',
       title: 'title 1',
       author: 'author 1',
       overview: 'overview 1',
       readCount: 1,
+      picture: null,
     });
+  });
+
+  it('should get a books and its picture as url', async () => {
+    mockStoredBooks[1].cover = new BookCover({
+      filename: 'filename.ext',
+    } as BufferFile);
+    const req = { ...mockRequest };
+    req.originalUrl = 'books/1234567890002';
+    expect(
+      await controller.findOne('1234567890002', req as Request),
+    ).toHaveProperty(
+      'picture',
+      'https://api.shelf.cat/books/1234567890002/cover',
+    );
   });
 
   it('should delete a books', async () => {

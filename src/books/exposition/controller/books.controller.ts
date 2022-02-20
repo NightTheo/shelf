@@ -14,6 +14,7 @@ import {
   UseInterceptors,
   Response,
   StreamableFile,
+  Req,
 } from '@nestjs/common';
 import { BooksService } from '../../application/books.service';
 import { AddBookDto } from '../../dto/add-book.dto';
@@ -26,6 +27,8 @@ import { GetBookDtoAdapter } from '../../adapters/get-book-dto.adapter';
 import { BufferFile } from './buffer-file';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { createReadStream } from 'fs';
+import { Request } from 'express';
+import { HttpUtils } from '../../../utils/http.utils';
 
 @Controller('books')
 export class BooksController {
@@ -62,13 +65,19 @@ export class BooksController {
 
   @Get(':isbn')
   @UseFilters(new BookExceptionFilter())
-  async findOne(@Param('isbn') isbn: string): Promise<GetBookDto> {
+  async findOne(
+    @Param('isbn') isbn: string,
+    @Req() request: Request,
+  ): Promise<GetBookDto> {
     const book: Book = await this.booksService.findOne(new Isbn(isbn));
-    if (book) {
-      return GetBookDtoAdapter.from(book);
-    } else {
+    if (!book) {
       throw new NotFoundException('Book Not Found');
     }
+    const dto = GetBookDtoAdapter.from(book);
+    if (book.cover) {
+      dto.picture = HttpUtils.getFullUrlOf(request) + '/cover';
+    }
+    return dto;
   }
 
   @Patch(':id')
