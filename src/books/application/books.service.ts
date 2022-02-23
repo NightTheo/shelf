@@ -1,16 +1,19 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateBookDto } from '../dto/update-book.dto';
-import { BookRepositoryImp } from '../persistence/book.repository.imp';
+import { BookRepositoryTypeORM } from '../persistence/book.repository.typeORM';
 import { AddBookDto } from '../dto/add-book.dto';
 import { Isbn } from '../domain/isbn';
 import { BufferFile } from '../exposition/controller/buffer-file';
 import { BookCoverFileSystemRepository } from '../persistence/book-cover.file-system.repository';
 import { Book } from '../domain/book';
+import { BookCover } from '../domain/book-cover';
+import { BookNotFoundException } from './book.not-found.exception';
+import { BookCoverNotFoundException } from './book-cover.not-found.exception';
 
 @Injectable()
 export class BooksService {
   @Inject()
-  private readonly bookRepository: BookRepositoryImp;
+  private readonly bookRepository: BookRepositoryTypeORM;
   @Inject()
   private readonly bookCoverRepository: BookCoverFileSystemRepository;
 
@@ -23,7 +26,6 @@ export class BooksService {
       .readCount(dto.readCount)
       .cover(coverImage)
       .build();
-    book.cover.file.filename = this.bookCoverRepository.save(book.cover);
     await this.bookRepository.save(book);
     return book.isbn.value;
   }
@@ -41,12 +43,24 @@ export class BooksService {
   }
 
   async remove(isbn: string) {
-    const id = new Isbn(isbn);
-    const book: Book = await this.bookRepository.findOne(id);
+    const bookIsbn = new Isbn(isbn);
+    const book: Book = await this.bookRepository.findOne(bookIsbn);
     if (!book) {
       throw new NotFoundException();
     }
 
-    await this.bookRepository.delete(id);
+    await this.bookRepository.delete(bookIsbn);
+  }
+
+  async findPictureByIsbn(isbn: string): Promise<BookCover> {
+    const BookIsbn: Isbn = new Isbn(isbn);
+    const book: Book = await this.bookRepository.findOne(BookIsbn);
+    if (!book) {
+      throw new BookNotFoundException(BookIsbn);
+    }
+    if (!book.cover.exists()) {
+      throw new BookCoverNotFoundException(BookIsbn);
+    }
+    return this.bookCoverRepository.findAt(book.cover.location);
   }
 }

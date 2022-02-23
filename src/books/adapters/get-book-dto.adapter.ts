@@ -9,7 +9,7 @@ export class GetBookDtoAdapter {
       author: book.author.name,
       overview: book.overview.value,
       readCount: book.readCount,
-      picture: null,
+      picture: undefined,
     };
   }
 }

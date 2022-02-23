@@ -7,9 +7,8 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { BookAdapter } from '../adapters/book.adapter';
 import { BufferFile } from '../exposition/controller/buffer-file';
-
 @Injectable()
-export class BookRepositoryImp implements BookRepository {
+export class BookRepositoryTypeORM implements BookRepository {
   constructor(
     @InjectRepository(BookEntity)
     private booksRepository: Repository<BookEntity>,
@@ -42,11 +41,7 @@ export class BookRepositoryImp implements BookRepository {
       .author(book.author)
       .overview(book.overview)
       .readCount(book.read_count)
-      .cover(
-        book.cover_image
-          ? ({ filename: book.cover_image } as BufferFile)
-          : null,
-      )
+      .cover({ filename: book.cover_image } as BufferFile)
       .build();
   }
 
@@ -57,7 +52,7 @@ export class BookRepositoryImp implements BookRepository {
       overview: book.overview.value,
       title: book.title.value,
       read_count: book.readCount,
-      cover_image: book.cover.file.filename,
+      cover_image: book.cover.location.path,
     };
     await this.booksRepository.save(bookEntity);
   }

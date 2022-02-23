@@ -15,6 +15,7 @@ import { StreamableFile, Response } from '@nestjs/common';
 const streamBuffers = require('stream-buffers');
 import { Request } from 'express';
 import { BookCover } from '../../domain/book-cover';
+import { FileLocation } from '../../persistence/file-location';
 
 describe('BooksController', () => {
   let controller: BooksController;
@@ -57,6 +58,8 @@ describe('BooksController', () => {
       return this.dict.get(key);
     },
   } as unknown as Request;
+
+  const imageDirectory = __dirname + '/../../../../test/assets/images/';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -119,9 +122,12 @@ describe('BooksController', () => {
   });
 
   it('should get a books and its picture as url', async () => {
-    mockStoredBooks[1].cover = new BookCover({
-      filename: 'filename.ext',
-    } as BufferFile);
+    mockStoredBooks[1].cover = new BookCover(
+      {
+        filename: 'filename.ext',
+      } as BufferFile,
+      new FileLocation(imageDirectory + 'filename.ext'),
+    );
     const req = { ...mockRequest };
     req.originalUrl = 'books/1234567890002';
     expect(
@@ -138,7 +144,7 @@ describe('BooksController', () => {
 
   it('should add a books with its cover', async () => {
     const imageBuffer = (await FilesUtils.fileToBuffer(
-      __dirname + '/../../../../test/assets/images/uploadExample.jpg',
+      imageDirectory + 'uploadExample.jpg',
     )) as Buffer;
     const readableStreamBuffer = new streamBuffers.ReadableStreamBuffer({
       frequency: 10,
