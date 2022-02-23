@@ -29,6 +29,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { createReadStream } from 'fs';
 import { Request } from 'express';
 import { HttpUtils } from '../../../utils/http.utils';
+import { BookCover } from '../../domain/book-cover';
 
 @Controller('books')
 export class BooksController {
@@ -74,7 +75,7 @@ export class BooksController {
       throw new NotFoundException('Book Not Found');
     }
     const dto = GetBookDtoAdapter.from(book);
-    if (book.cover) {
+    if (book.cover.exists()) {
       dto.picture = HttpUtils.getFullUrlOf(request) + '/cover';
     }
     return dto;
@@ -93,17 +94,17 @@ export class BooksController {
   }
 
   @Get(':isbn/cover')
-  findPicture(
+  async findPicture(
     @Response({ passthrough: true }) res,
     @Param('isbn') isbn: string,
-  ): StreamableFile {
-    const cover = createReadStream(
-      process.cwd() + `/storage/books/cover/${isbn}.jpg`,
-    );
+  ): Promise<StreamableFile> {
+    console.log('enter controller');
+    const cover: BookCover = await this.booksService.findPictureByIsbn(isbn);
+    console.log('a récupéré le book cover');
     res.set({
       'Content-Type': 'image/jpeg',
-      'Content-Disposition': `attachment; filename="${isbn}.jpg"`,
+      'Content-Disposition': `attachment; filename="${cover.file.filename}"`,
     });
-    return new StreamableFile(cover);
+    return new StreamableFile(<Buffer>cover.file.buffer);
   }
 }

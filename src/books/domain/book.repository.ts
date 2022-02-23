@@ -1,5 +1,6 @@
 import { Book } from './book';
 import { Isbn } from './isbn';
+import { BookCover } from './book-cover';
 
 export interface BookRepository {
   save(book: Book): void;

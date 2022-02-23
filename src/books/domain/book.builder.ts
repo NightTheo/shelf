@@ -5,6 +5,7 @@ import { BookOverview } from './book-overview';
 import { BufferFile } from '../exposition/controller/buffer-file';
 import { BookCover } from './book-cover';
 import { Book } from './book';
+import { FileLocation } from '../persistence/file-location';
 
 export class BookBuilder {
   private _isbn: Isbn;
@@ -41,7 +42,9 @@ export class BookBuilder {
   }
 
   public cover(picture: BufferFile) {
-    this._cover = new BookCover(picture);
+    this._cover = new BookCover(picture, new FileLocation(picture.filename));
+    console.log('Builder cover');
+    console.log(this._cover);
     return this;
   }
 

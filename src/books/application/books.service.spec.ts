@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BooksService } from './books.service';
-import { BookRepositoryImp } from '../persistence/book.repository.imp';
+import { BookRepositoryTypeORM } from '../persistence/book.repository.typeORM';
 import { Book } from '../domain/book';
 import { Isbn } from '../domain/isbn';
 import { NotFoundException } from '@nestjs/common';
@@ -56,11 +56,11 @@ describe('BooksService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BooksService,
-        BookRepositoryImp,
+        BookRepositoryTypeORM,
         BookCoverFileSystemRepository,
       ],
     })
-      .overrideProvider(BookRepositoryImp)
+      .overrideProvider(BookRepositoryTypeORM)
       .useValue(mockBooksRepositoryImp)
       .overrideProvider(BookCoverFileSystemRepository)
       .useValue(mockBookCoverRepository)
