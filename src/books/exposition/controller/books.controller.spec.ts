@@ -19,6 +19,7 @@ import { FileLocation } from '../../persistence/file-location';
 
 describe('BooksController', () => {
   let controller: BooksController;
+  const imageDirectory = __dirname + '/../../../../test/assets/images/';
   const numberOfBooksInMockStoredBooks = 9;
   const mockStoredBooks: Book[] = Array.from(
     Array(numberOfBooksInMockStoredBooks).keys(),
@@ -30,7 +31,10 @@ describe('BooksController', () => {
       new Author(`author ${i}`),
       new BookOverview(`overview ${i}`),
       i,
-      null,
+      new BookCover(
+        Buffer.alloc(10),
+        new FileLocation(imageDirectory + `123456789000${i}` + '.jpg'),
+      ),
     );
   });
 
@@ -44,6 +48,12 @@ describe('BooksController', () => {
           mockStoredBooks.filter((book) => book.isbn.value == isbn.value)[0],
       ),
     remove: jest.fn().mockImplementation(),
+    findPictureByIsbn: jest
+      .fn()
+      .mockImplementation(
+        (isbn: string) =>
+          mockStoredBooks.filter((book) => book.isbn.value == isbn)[0].cover,
+      ),
   };
 
   const mockResponse = {
@@ -58,8 +68,6 @@ describe('BooksController', () => {
       return this.dict.get(key);
     },
   } as unknown as Request;
-
-  const imageDirectory = __dirname + '/../../../../test/assets/images/';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -84,7 +92,6 @@ describe('BooksController', () => {
       author: mockStoredBooks[0].author.name,
       overview: mockStoredBooks[0].overview.value,
       readCount: mockStoredBooks[0].readCount,
-      picture: null,
     });
   });
 
@@ -117,15 +124,13 @@ describe('BooksController', () => {
       author: 'author 1',
       overview: 'overview 1',
       readCount: 1,
-      picture: null,
+      picture: 'https://api.shelf.cat/books/cover',
     });
   });
 
   it('should get a books and its picture as url', async () => {
     mockStoredBooks[1].cover = new BookCover(
-      {
-        filename: 'filename.ext',
-      } as BufferFile,
+      Buffer.alloc(10),
       new FileLocation(imageDirectory + 'filename.ext'),
     );
     const req = { ...mockRequest };
@@ -170,8 +175,8 @@ describe('BooksController', () => {
     ).toEqual({ isbn: book.isbn });
   });
 
-  it("should get a book cover image by the book's ISBN", () => {
-    const cover = controller.findPicture(mockResponse, '9782070360024');
+  it("should get a book cover image by the book's ISBN", async () => {
+    const cover = await controller.findPicture(mockResponse, '1234567890001');
     expect(cover).toBeInstanceOf(StreamableFile);
   });
 });

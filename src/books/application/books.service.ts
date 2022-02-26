@@ -35,6 +35,7 @@ export class BooksService {
     return await this.bookRepository.find();
   }
 
+  // TODO doit prendre une string
   findOne(isbn: Isbn): Promise<Book> {
     return this.bookRepository.findOne(isbn);
   }
@@ -49,6 +50,7 @@ export class BooksService {
     if (!book) {
       throw new NotFoundException();
     }
+    // TODO delete the image
 
     await this.bookRepository.delete(bookIsbn);
   }

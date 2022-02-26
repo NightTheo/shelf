@@ -10,6 +10,7 @@ import { BookAdapter } from '../adapters/book.adapter';
 import { BufferFile } from '../exposition/controller/buffer-file';
 import { BookCover } from '../domain/book-cover';
 import { BookCoverFileSystemRepository } from '../persistence/book-cover.file-system.repository';
+import { FilesUtils } from '../../utils/files/files.utils';
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -47,8 +48,9 @@ describe('BooksService', () => {
 
   const mockBookCoverRepository = {
     save: jest.fn((bookCover: BookCover) => {
-      mockFileStorage.add(bookCover.file.filename);
-      return bookCover.file.filename;
+      const name = FilesUtils.fileNameOfPath(bookCover.location.path);
+      mockFileStorage.add(name);
+      return name;
     }),
   };
 
@@ -86,7 +88,10 @@ describe('BooksService', () => {
       overview: 'overview',
       readCount: 1,
     };
-    await service.add(book, { filename: '9782070360024.jpg' } as BufferFile);
+    await service.add(book, {
+      buffer: Buffer.alloc(10),
+      originalname: '9782070360024.jpg',
+    } as BufferFile);
     expect(mockBooksRepositoryImp.save).toHaveBeenCalled();
   });
 
@@ -141,6 +146,6 @@ describe('BooksService', () => {
       size: 1,
     };
     await service.add(book, cover);
-    expect(mockFileStorage.has(cover.filename)).toBeTruthy();
+    expect(mockFileStorage.has(cover.originalname)).toBeTruthy();
   });
 });
