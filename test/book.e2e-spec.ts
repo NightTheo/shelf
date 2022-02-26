@@ -65,9 +65,7 @@ describe('BookController (e2e)', () => {
       })
       .expect(201)
       .then((response) => {
-        expect(response.body).toEqual({
-          isbn: '9782290032726',
-        });
+        expect(response.body.url).toContain('/books/9782290032726');
       });
   });
 
@@ -83,9 +81,7 @@ describe('BookController (e2e)', () => {
       })
       .expect(201)
       .then((response) => {
-        expect(response.body).toEqual({
-          isbn: '9782290032726',
-        });
+        expect(response.body.url).toContain('/books/9782290032726');
       });
   });
 
@@ -99,9 +95,7 @@ describe('BookController (e2e)', () => {
       })
       .expect(201)
       .then((response) => {
-        expect(response.body).toEqual({
-          isbn: '9782290032727',
-        });
+        expect(response.body.url).toContain('/books/9782290032727');
       });
   });
 
@@ -117,9 +111,7 @@ describe('BookController (e2e)', () => {
       })
       .expect(201)
       .then((response) => {
-        expect(response.body).toEqual({
-          isbn: '9782290032726',
-        });
+        expect(response.body.url).toContain('/books/9782290032726');
       });
   });
 

@@ -24,7 +24,7 @@ export class BooksService {
   @Inject()
   private readonly bookCoverRepository: BookCoverFileSystemRepository;
 
-  async add(dto: AddBookDto, coverImage: BufferFile): Promise<string> {
+  async add(dto: AddBookDto, coverImage: BufferFile) {
     const isbn: Isbn = new Isbn(dto.isbn);
     if (await this.bookRepository.exists(isbn)) {
       throw new BookConflictException(isbn);
@@ -41,7 +41,6 @@ export class BooksService {
       book.cover.location = this.bookCoverRepository.save(book.cover);
     }
     await this.bookRepository.save(book);
-    return book.isbn.value;
   }
 
   async findAll(): Promise<Book[]> {
