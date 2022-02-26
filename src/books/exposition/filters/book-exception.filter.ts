@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { IsbnFormatException } from '../../domain/IsbnFormatException';
+import { BookConflictException } from '../../application/exceptions/book.conflict.exception';
 
 @Catch()
 export class BookExceptionFilter implements ExceptionFilter {
@@ -16,13 +17,12 @@ export class BookExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    const httpStatus: number =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
 
     let body = {
-      statusCode: httpStatus,
+      statusCode:
+        exception instanceof HttpException
+          ? exception.getStatus()
+          : HttpStatus.INTERNAL_SERVER_ERROR,
       timestamp: new Date().toISOString(),
       message: exception.message,
       path: request.url,
@@ -30,14 +30,15 @@ export class BookExceptionFilter implements ExceptionFilter {
 
     switch (exception.name) {
       case BadRequestException.name:
-        const e = <BadRequestException>exception;
         body.statusCode = 422;
-        body.message = e.getResponse()['message'];
         break;
       case IsbnFormatException.name:
         body.statusCode = 422;
         break;
       case UnprocessableEntityException.name:
+        break;
+      case BookConflictException.name:
+        body.statusCode = 422;
         break;
       default:
         if (exception! instanceof HttpException) {

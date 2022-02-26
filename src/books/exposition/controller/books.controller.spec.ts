@@ -148,15 +148,6 @@ describe('BooksController', () => {
   });
 
   it('should add a books with its cover', async () => {
-    const imageBuffer = (await FilesUtils.fileToBuffer(
-      imageDirectory + 'uploadExample.jpg',
-    )) as Buffer;
-    const readableStreamBuffer = new streamBuffers.ReadableStreamBuffer({
-      frequency: 10,
-      chunkSize: 2048,
-    });
-    readableStreamBuffer.put(imageBuffer as Buffer);
-    expect(imageBuffer.length).toBeGreaterThan(0);
     const book = {
       isbn: '9782070360024',
       title: "L'Étranger",
@@ -164,13 +155,13 @@ describe('BooksController', () => {
     } as AddBookDto;
     expect(
       await controller.add(book, {
-        buffer: imageBuffer,
+        buffer: Buffer.alloc(10),
         encoding: '7bit',
         fieldname: 'picture',
         filename: null,
         mimetype: 'image/jpeg',
         originalname: 'uploadExample.jpg',
-        size: imageBuffer.length,
+        size: 10,
       }),
     ).toEqual({ isbn: book.isbn });
   });

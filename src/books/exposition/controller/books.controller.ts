@@ -44,15 +44,6 @@ export class BooksController {
     @Body() addBookDto: AddBookDto,
     @UploadedFile() coverImage: BufferFile,
   ): Promise<any> {
-    // TODO exporter cette vérification dans le service
-    const existingBook = await this.booksService.findOne(
-      new Isbn(addBookDto.isbn),
-    );
-    if (existingBook) {
-      throw new UnprocessableEntityException(
-        `The book with the ISBN ${addBookDto.isbn} already exists.`,
-      );
-    }
     // TODO gérer le cas d'un fichier vide ou corrompu
     const isbn: string = await this.booksService.add(addBookDto, coverImage);
     return {

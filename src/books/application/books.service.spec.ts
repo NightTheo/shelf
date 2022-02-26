@@ -44,6 +44,9 @@ describe('BooksService', () => {
       mockBooks.delete(isbn);
     }),
     findOne: jest.fn((isbn: Isbn) => mockBooks.get(isbn.value)),
+    exists: jest
+      .fn()
+      .mockImplementation((isbn: Isbn) => mockBooks.has(isbn.value)),
   };
 
   const mockBookCoverRepository = {
@@ -137,7 +140,7 @@ describe('BooksService', () => {
       readCount: null,
     };
     const cover: BufferFile = {
-      buffer: null,
+      buffer: Buffer.alloc(10),
       encoding: '7bit',
       fieldname: 'cover_image',
       filename: '9782070360024.jpg',
