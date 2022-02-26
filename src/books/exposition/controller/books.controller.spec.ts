@@ -103,7 +103,8 @@ describe('BooksController', () => {
       overview: 'overview',
       readCount: 1,
     };
-    expect(await controller.add(book, null)).toEqual({ isbn: book.isbn });
+    const response = await controller.add(book, null, mockRequest);
+    expect(response.url).toContain('/books/9782070360024');
     expect(mockBooksService.add).toHaveBeenCalled();
   });
 
@@ -113,7 +114,8 @@ describe('BooksController', () => {
       title: "L'Étranger",
       author: 'Albert Camus',
     } as AddBookDto;
-    expect(await controller.add(book, null)).toEqual({ isbn: book.isbn });
+    const res = await controller.add(book, null, mockRequest);
+    expect(res.url).toContain('/books/9782070360024');
     expect(mockBooksService.add).toHaveBeenCalled();
   });
 
@@ -153,8 +155,9 @@ describe('BooksController', () => {
       title: "L'Étranger",
       author: 'Albert Camus',
     } as AddBookDto;
-    expect(
-      await controller.add(book, {
+    const res = await controller.add(
+      book,
+      {
         buffer: Buffer.alloc(10),
         encoding: '7bit',
         fieldname: 'picture',
@@ -162,8 +165,10 @@ describe('BooksController', () => {
         mimetype: 'image/jpeg',
         originalname: 'uploadExample.jpg',
         size: 10,
-      }),
-    ).toEqual({ isbn: book.isbn });
+      },
+      mockRequest,
+    );
+    expect(res.url).toContain('/books/9782070360024');
   });
 
   it("should get a book cover image by the book's ISBN", async () => {

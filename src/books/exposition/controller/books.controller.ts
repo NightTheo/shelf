@@ -43,11 +43,14 @@ export class BooksController {
   async add(
     @Body() addBookDto: AddBookDto,
     @UploadedFile() coverImage: BufferFile,
+    @Req() request: Request,
   ): Promise<any> {
-    // TODO gérer le cas d'un fichier vide ou corrompu
-    const isbn: string = await this.booksService.add(addBookDto, coverImage);
+    await this.booksService.add(addBookDto, coverImage);
     return {
-      isbn: isbn,
+      url:
+        HttpUtils.getFullUrlOf(request) +
+        '/' +
+        addBookDto.isbn.split('-').join(''),
     };
   }
 
