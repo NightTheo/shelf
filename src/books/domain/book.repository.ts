@@ -1,6 +1,5 @@
 import { Book } from './book';
 import { Isbn } from './isbn';
-import { BookCover } from './book-cover';
 import { FileLocation } from '../persistence/file-location';
 
 export interface BookRepository {

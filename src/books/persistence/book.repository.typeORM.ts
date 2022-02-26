@@ -6,7 +6,6 @@ import { BookEntity } from './book.entity';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { BookAdapter } from '../adapters/book.adapter';
-import { BufferFile } from '../exposition/controller/buffer-file';
 import { FileLocation } from './file-location';
 import { BookNotFoundException } from '../application/exceptions/book.not-found.exception';
 

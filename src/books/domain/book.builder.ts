@@ -2,7 +2,6 @@ import { Isbn } from './isbn';
 import { BookTitle } from './book-title';
 import { Author } from './author';
 import { BookOverview } from './book-overview';
-import { BufferFile } from '../exposition/controller/buffer-file';
 import { BookCover } from './book-cover';
 import { Book } from './book';
 import { FileLocation } from '../persistence/file-location';
