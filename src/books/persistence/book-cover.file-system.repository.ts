@@ -2,7 +2,7 @@ import { BookCoverRepository } from './book-cover.repository';
 import { BookCover } from '../domain/book-cover';
 import { createWriteStream, write, writeFile } from 'fs';
 import { StringsUtils } from '../../utils/strings.utils';
-import { FilesUtils } from '../../utils/files.utils';
+import { FilesUtils } from '../../utils/files/files.utils';
 import { Isbn } from '../domain/isbn';
 import { FileLocation } from './file-location';
 import { BufferFile } from '../exposition/controller/buffer-file';
@@ -10,24 +10,19 @@ import { BufferFile } from '../exposition/controller/buffer-file';
 export class BookCoverFileSystemRepository implements BookCoverRepository {
   private readonly bookCoverDirectory = 'storage/books/cover';
 
-  /**
-   * @return Path of the saved file
-   */
-  save(bookCover: BookCover): string {
+  save(bookCover: BookCover): FileLocation {
     const newFileName = FilesUtils.generateRandomNameFor(
-      bookCover.file.originalname,
+      bookCover.location.path,
     );
     const path = `${this.bookCoverDirectory}/${newFileName}`;
-    writeFile(path, bookCover.file.buffer, (err) => {
+    writeFile(path, bookCover.file, (err) => {
       if (err) return console.log(err);
     });
-    return path;
+    return new FileLocation(path);
   }
 
   async findAt(location: FileLocation): Promise<BookCover> {
-    const picture: BufferFile = await FilesUtils.fileToBufferFile(
-      location.path,
-    );
+    const picture: Buffer = await FilesUtils.fileToBuffer(location.path);
     return new BookCover(picture, location);
   }
 }

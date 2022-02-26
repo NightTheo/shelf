@@ -26,10 +26,11 @@ import { BookExceptionFilter } from '../filters/book-exception.filter';
 import { GetBookDtoAdapter } from '../../adapters/get-book-dto.adapter';
 import { BufferFile } from './buffer-file';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { createReadStream } from 'fs';
 import { Request } from 'express';
 import { HttpUtils } from '../../../utils/http.utils';
 import { BookCover } from '../../domain/book-cover';
+import { FilesUtils } from '../../../utils/files/files.utils';
+import { FileName } from '../../persistence/file-name';
 
 @Controller('books')
 export class BooksController {
@@ -43,6 +44,7 @@ export class BooksController {
     @Body() addBookDto: AddBookDto,
     @UploadedFile() coverImage: BufferFile,
   ): Promise<any> {
+    // TODO exporter cette vérification dans le service
     const existingBook = await this.booksService.findOne(
       new Isbn(addBookDto.isbn),
     );
@@ -51,6 +53,7 @@ export class BooksController {
         `The book with the ISBN ${addBookDto.isbn} already exists.`,
       );
     }
+    // TODO gérer le cas d'un fichier vide ou corrompu
     const isbn: string = await this.booksService.add(addBookDto, coverImage);
     return {
       isbn: isbn,
@@ -70,6 +73,7 @@ export class BooksController {
     @Param('isbn') isbn: string,
     @Req() request: Request,
   ): Promise<GetBookDto> {
+    // TODO exporter cette vérification dans le service
     const book: Book = await this.booksService.findOne(new Isbn(isbn));
     if (!book) {
       throw new NotFoundException('Book Not Found');
@@ -94,17 +98,18 @@ export class BooksController {
   }
 
   @Get(':isbn/cover')
+  @UseFilters(new BookExceptionFilter())
   async findPicture(
     @Response({ passthrough: true }) res,
     @Param('isbn') isbn: string,
   ): Promise<StreamableFile> {
-    console.log('enter controller');
     const cover: BookCover = await this.booksService.findPictureByIsbn(isbn);
-    console.log('a récupéré le book cover');
+    const fileName: FileName = FileName.fromLocation(cover.location);
+    fileName.base = isbn;
     res.set({
       'Content-Type': 'image/jpeg',
-      'Content-Disposition': `attachment; filename="${cover.file.filename}"`,
+      'Content-Disposition': `attachment; filename="${fileName.toString()}"`,
     });
-    return new StreamableFile(<Buffer>cover.file.buffer);
+    return new StreamableFile(<Buffer>cover.file);
   }
 }

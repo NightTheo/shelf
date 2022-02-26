@@ -7,6 +7,9 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { BookAdapter } from '../adapters/book.adapter';
 import { BufferFile } from '../exposition/controller/buffer-file';
+import { FileLocation } from './file-location';
+import { BookNotFoundException } from '../application/book.not-found.exception';
+
 @Injectable()
 export class BookRepositoryTypeORM implements BookRepository {
   constructor(
@@ -41,8 +44,16 @@ export class BookRepositoryTypeORM implements BookRepository {
       .author(book.author)
       .overview(book.overview)
       .readCount(book.read_count)
-      .cover({ filename: book.cover_image } as BufferFile)
+      .cover({} as Buffer, book.cover_image)
       .build();
+  }
+
+  async findCoverLocation(isbn: Isbn): Promise<FileLocation> {
+    const book = await this.booksRepository.findOne(isbn.value);
+    if (!book) {
+      throw new BookNotFoundException(isbn);
+    }
+    return new FileLocation(book.cover_image);
   }
 
   async save(book: Book): Promise<void> {

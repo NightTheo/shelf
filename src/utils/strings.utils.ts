@@ -1,7 +1,8 @@
-const crypto = require('crypto');
-
 export abstract class StringsUtils {
   static randomStringOfLength(length: number): string {
-    return crypto.randomBytes(length).toString(36).replace('.', '');
+    return require('crypto')
+      .randomBytes(length)
+      .toString('hex')
+      .substring(0, length);
   }
 }

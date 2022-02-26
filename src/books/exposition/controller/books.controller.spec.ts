@@ -8,7 +8,7 @@ import { Author } from '../../domain/author';
 import { BookOverview } from '../../domain/book-overview';
 import { GetBookDto } from '../../dto/get-book.dto';
 import { AddBookDto } from '../../dto/add-book.dto';
-import { FilesUtils } from '../../../utils/files.utils';
+import { FilesUtils } from '../../../utils/files/files.utils';
 import { BufferFile } from './buffer-file';
 import any = jasmine.any;
 import { StreamableFile, Response } from '@nestjs/common';

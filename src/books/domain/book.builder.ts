@@ -41,10 +41,8 @@ export class BookBuilder {
     return this;
   }
 
-  public cover(picture: BufferFile) {
-    this._cover = new BookCover(picture, new FileLocation(picture.filename));
-    console.log('Builder cover');
-    console.log(this._cover);
+  public cover(picture: Buffer, location: string) {
+    this._cover = new BookCover(picture, new FileLocation(location));
     return this;
   }
 
