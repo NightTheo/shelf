@@ -11,4 +11,5 @@ export interface BookRepository {
   update(book: Book): Promise<Book>;
   delete(isbn: Isbn): void;
   findCoverLocation(isbn: Isbn): Promise<FileLocation>;
+  exists(isbn: Isbn);
 }

@@ -8,23 +8,23 @@ import { Repository } from 'typeorm';
 import { BookAdapter } from '../adapters/book.adapter';
 import { BufferFile } from '../exposition/controller/buffer-file';
 import { FileLocation } from './file-location';
-import { BookNotFoundException } from '../application/book.not-found.exception';
+import { BookNotFoundException } from '../application/exceptions/book.not-found.exception';
 
 @Injectable()
 export class BookRepositoryTypeORM implements BookRepository {
   constructor(
     @InjectRepository(BookEntity)
-    private booksRepository: Repository<BookEntity>,
+    private typeorm: Repository<BookEntity>,
   ) {}
 
   async delete(isbn: Isbn): Promise<void> {
     const book = new BookEntity();
     book.isbn = isbn.value;
-    await this.booksRepository.remove(book);
+    await this.typeorm.remove(book);
   }
 
   async find(): Promise<Book[]> {
-    return (await this.booksRepository.find()).map((book) =>
+    return (await this.typeorm.find()).map((book) =>
       BookAdapter.fromEntity(book),
     );
   }
@@ -34,7 +34,7 @@ export class BookRepositoryTypeORM implements BookRepository {
   }
 
   async findOne(isbn: Isbn): Promise<Book> {
-    const book = await this.booksRepository.findOne(isbn.value);
+    const book = await this.typeorm.findOne(isbn.value);
     if (!book) {
       return null;
     }
@@ -49,7 +49,7 @@ export class BookRepositoryTypeORM implements BookRepository {
   }
 
   async findCoverLocation(isbn: Isbn): Promise<FileLocation> {
-    const book = await this.booksRepository.findOne(isbn.value);
+    const book = await this.typeorm.findOne(isbn.value);
     if (!book) {
       throw new BookNotFoundException(isbn);
     }
@@ -63,12 +63,16 @@ export class BookRepositoryTypeORM implements BookRepository {
       overview: book.overview.value,
       title: book.title.value,
       read_count: book.readCount,
-      cover_image: book.cover.location.path,
+      cover_image: book.cover.exists() ? book.cover.location.path : null,
     };
-    await this.booksRepository.save(bookEntity);
+    await this.typeorm.save(bookEntity);
   }
 
   update(book: Book): Promise<Book> {
     return Promise.resolve(undefined);
+  }
+
+  async exists(isbn: Isbn): Promise<boolean> {
+    return (await this.typeorm.findOne(isbn.value)) != null;
   }
 }

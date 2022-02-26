@@ -18,6 +18,7 @@ describe('BookController (e2e)', () => {
         author: 'author 1',
         overview: 'overview 1',
         read_count: 1,
+        cover_image: '1234567890001.jpg',
       },
     ],
   ]);
@@ -30,6 +31,7 @@ describe('BookController (e2e)', () => {
         author: book.author.name,
         overview: book.overview?.value,
         read_count: book.readCount,
+        cover_image: book.isbn.value + '.jpg',
       }),
     ),
     findOne: jest
@@ -178,7 +180,9 @@ describe('BookController (e2e)', () => {
           author: 'author 1',
           overview: 'overview 1',
           readCount: 1,
+          picture: expect.any(String),
         });
+        expect(response.body.picture).toContain('/books/1234567890001/cover');
       });
   });
 

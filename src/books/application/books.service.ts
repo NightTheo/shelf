@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdateBookDto } from '../dto/update-book.dto';
 import { BookRepositoryTypeORM } from '../persistence/book.repository.typeORM';
 import { AddBookDto } from '../dto/add-book.dto';
@@ -7,8 +12,9 @@ import { BufferFile } from '../exposition/controller/buffer-file';
 import { BookCoverFileSystemRepository } from '../persistence/book-cover.file-system.repository';
 import { Book } from '../domain/book';
 import { BookCover } from '../domain/book-cover';
-import { BookCoverNotFoundException } from './book-cover.not-found.exception';
+import { BookCoverNotFoundException } from './exceptions/book-cover.not-found.exception';
 import { FileLocation } from '../persistence/file-location';
+import { BookConflictException } from './exceptions/book.conflict.exception';
 
 @Injectable()
 export class BooksService {
@@ -18,15 +24,21 @@ export class BooksService {
   private readonly bookCoverRepository: BookCoverFileSystemRepository;
 
   async add(dto: AddBookDto, coverImage: BufferFile): Promise<string> {
+    const isbn: Isbn = new Isbn(dto.isbn);
+    if (await this.bookRepository.exists(isbn)) {
+      throw new BookConflictException(isbn);
+    }
     const book: Book = Book.builder()
       .isbn(dto.isbn)
       .title(dto.title)
       .author(dto.author)
       .overview(dto.overview)
       .readCount(dto.readCount)
-      .cover(coverImage.buffer as Buffer, coverImage.originalname)
+      .cover(coverImage?.buffer as Buffer, coverImage?.originalname)
       .build();
-    book.cover.location = this.bookCoverRepository.save(book.cover);
+    if (book.cover.exists()) {
+      book.cover.location = this.bookCoverRepository.save(book.cover);
+    }
     await this.bookRepository.save(book);
     return book.isbn.value;
   }
@@ -45,6 +57,7 @@ export class BooksService {
   }
 
   async remove(isbn: string) {
+    // TODO exporter dans le repo
     const bookIsbn = new Isbn(isbn);
     const book: Book = await this.bookRepository.findOne(bookIsbn);
     if (!book) {
