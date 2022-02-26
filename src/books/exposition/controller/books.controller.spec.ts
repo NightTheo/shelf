@@ -8,14 +8,12 @@ import { Author } from '../../domain/author';
 import { BookOverview } from '../../domain/book-overview';
 import { GetBookDto } from '../../dto/get-book.dto';
 import { AddBookDto } from '../../dto/add-book.dto';
-import { FilesUtils } from '../../../utils/files/files.utils';
-import { BufferFile } from './buffer-file';
-import any = jasmine.any;
-import { StreamableFile, Response } from '@nestjs/common';
-const streamBuffers = require('stream-buffers');
+import { StreamableFile } from '@nestjs/common';
 import { Request } from 'express';
 import { BookCover } from '../../domain/book-cover';
 import { FileLocation } from '../../persistence/file-location';
+
+const streamBuffers = require('stream-buffers');
 
 describe('BooksController', () => {
   let controller: BooksController;

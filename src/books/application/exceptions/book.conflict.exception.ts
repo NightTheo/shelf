@@ -1,4 +1,4 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 import { Isbn } from '../../domain/isbn';
 
 export class BookConflictException extends ConflictException {

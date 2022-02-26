@@ -1,26 +1,23 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseFilters,
+  Get,
   HttpCode,
-  NotFoundException,
-  UnprocessableEntityException,
-  UploadedFile,
-  UseInterceptors,
+  Param,
+  Patch,
+  Post,
+  Req,
   Response,
   StreamableFile,
-  Req,
+  UploadedFile,
+  UseFilters,
+  UseInterceptors,
 } from '@nestjs/common';
 import { BooksService } from '../../application/books.service';
 import { AddBookDto } from '../../dto/add-book.dto';
 import { UpdateBookDto } from '../../dto/update-book.dto';
 import { Book } from '../../domain/book';
-import { Isbn } from '../../domain/isbn';
 import { GetBookDto } from '../../dto/get-book.dto';
 import { BookExceptionFilter } from '../filters/book-exception.filter';
 import { GetBookDtoAdapter } from '../../adapters/get-book-dto.adapter';
@@ -29,7 +26,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { HttpUtils } from '../../../utils/http.utils';
 import { BookCover } from '../../domain/book-cover';
-import { FilesUtils } from '../../../utils/files/files.utils';
 import { FileName } from '../../persistence/file-name';
 
 @Controller('books')

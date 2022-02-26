@@ -1,6 +1,5 @@
 import { ConnectionOptions } from 'typeorm';
-import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+
 require('dotenv').config();
 
 const ormConfig = {
