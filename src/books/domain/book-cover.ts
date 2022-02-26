@@ -1,16 +1,15 @@
-import { BufferFile } from '../exposition/controller/buffer-file';
 import { FileLocation } from '../persistence/file-location';
 
 export class BookCover {
-  private readonly _file: BufferFile;
-  private readonly _location: FileLocation;
+  private readonly _file: Buffer;
+  private _location: FileLocation;
 
-  constructor(picture: BufferFile, location: FileLocation) {
+  constructor(picture: Buffer, location: FileLocation) {
     this._file = picture;
     this._location = location;
   }
 
-  get file(): BufferFile {
+  get file(): Buffer {
     return this._file;
   }
 
@@ -18,7 +17,11 @@ export class BookCover {
     return this._location;
   }
 
+  set location(location: FileLocation) {
+    this._location = location;
+  }
+
   public exists(): boolean {
-    return this._file.filename != null;
+    return this._file != null;
   }
 }

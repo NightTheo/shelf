@@ -1,6 +1,7 @@
 import { Book } from './book';
 import { Isbn } from './isbn';
 import { BookCover } from './book-cover';
+import { FileLocation } from '../persistence/file-location';
 
 export interface BookRepository {
   save(book: Book): void;
@@ -9,4 +10,5 @@ export interface BookRepository {
   findBy(): Promise<Book[]>;
   update(book: Book): Promise<Book>;
   delete(isbn: Isbn): void;
+  findCoverLocation(isbn: Isbn): Promise<FileLocation>;
 }

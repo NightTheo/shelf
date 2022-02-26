@@ -7,8 +7,8 @@ import { BufferFile } from '../exposition/controller/buffer-file';
 import { BookCoverFileSystemRepository } from '../persistence/book-cover.file-system.repository';
 import { Book } from '../domain/book';
 import { BookCover } from '../domain/book-cover';
-import { BookNotFoundException } from './book.not-found.exception';
 import { BookCoverNotFoundException } from './book-cover.not-found.exception';
+import { FileLocation } from '../persistence/file-location';
 
 @Injectable()
 export class BooksService {
@@ -24,8 +24,9 @@ export class BooksService {
       .author(dto.author)
       .overview(dto.overview)
       .readCount(dto.readCount)
-      .cover(coverImage)
+      .cover(coverImage.buffer as Buffer, coverImage.originalname)
       .build();
+    book.cover.location = this.bookCoverRepository.save(book.cover);
     await this.bookRepository.save(book);
     return book.isbn.value;
   }
@@ -54,13 +55,12 @@ export class BooksService {
 
   async findPictureByIsbn(isbn: string): Promise<BookCover> {
     const BookIsbn: Isbn = new Isbn(isbn);
-    const book: Book = await this.bookRepository.findOne(BookIsbn);
-    if (!book) {
-      throw new BookNotFoundException(BookIsbn);
-    }
-    if (!book.cover.exists()) {
+    const location: FileLocation = await this.bookRepository.findCoverLocation(
+      BookIsbn,
+    );
+    if (!location.exists()) {
       throw new BookCoverNotFoundException(BookIsbn);
     }
-    return this.bookCoverRepository.findAt(book.cover.location);
+    return this.bookCoverRepository.findAt(location);
   }
 }
