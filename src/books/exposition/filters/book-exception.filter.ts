@@ -10,6 +10,7 @@ import {
 import { Request, Response } from 'express';
 import { IsbnFormatException } from '../../domain/IsbnFormatException';
 import { BookConflictException } from '../../application/exceptions/book.conflict.exception';
+import { BookNotFoundException } from '../../application/exceptions/book.not-found.exception';
 
 @Catch()
 export class BookExceptionFilter implements ExceptionFilter {
@@ -39,6 +40,8 @@ export class BookExceptionFilter implements ExceptionFilter {
         break;
       case BookConflictException.name:
         body.statusCode = 422;
+        break;
+      case BookNotFoundException.name:
         break;
       default:
         if (exception! instanceof HttpException) {

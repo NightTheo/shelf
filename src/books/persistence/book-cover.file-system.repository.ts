@@ -1,11 +1,8 @@
 import { BookCoverRepository } from './book-cover.repository';
 import { BookCover } from '../domain/book-cover';
-import { createWriteStream, write, writeFile } from 'fs';
-import { StringsUtils } from '../../utils/strings.utils';
+import { unlink, writeFile } from 'fs';
 import { FilesUtils } from '../../utils/files/files.utils';
-import { Isbn } from '../domain/isbn';
 import { FileLocation } from './file-location';
-import { BufferFile } from '../exposition/controller/buffer-file';
 import { FileException } from '../../utils/files/file.exception';
 
 export class BookCoverFileSystemRepository implements BookCoverRepository {
@@ -18,7 +15,7 @@ export class BookCoverFileSystemRepository implements BookCoverRepository {
     const path = `${this.bookCoverDirectory}/${newFileName}`;
     writeFile(path, bookCover.file, (err) => {
       if (err) {
-        throw new FileException(`Unable to write file in ${path}`);
+        throw new FileException(`Unable to write file '${path}'`);
       }
     });
     return new FileLocation(path);
@@ -27,5 +24,15 @@ export class BookCoverFileSystemRepository implements BookCoverRepository {
   async findAt(location: FileLocation): Promise<BookCover> {
     const picture: Buffer = await FilesUtils.fileToBuffer(location.path);
     return new BookCover(picture, location);
+  }
+
+  delete(coverLocation: FileLocation) {
+    unlink(coverLocation.path, (err) => {
+      if (err) {
+        throw new FileException(
+          `Unable to delete file '${coverLocation.path}'`,
+        );
+      }
+    });
   }
 }
