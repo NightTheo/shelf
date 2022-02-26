@@ -44,8 +44,8 @@ describe('BooksController', () => {
     findOne: jest
       .fn()
       .mockImplementation(
-        (isbn: Isbn) =>
-          mockStoredBooks.filter((book) => book.isbn.value == isbn.value)[0],
+        (isbn: string) =>
+          mockStoredBooks.filter((book) => book.isbn.value == isbn)[0],
       ),
     remove: jest.fn().mockImplementation(),
     findPictureByIsbn: jest

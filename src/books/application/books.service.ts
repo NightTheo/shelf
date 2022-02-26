@@ -15,6 +15,7 @@ import { BookCover } from '../domain/book-cover';
 import { BookCoverNotFoundException } from './exceptions/book-cover.not-found.exception';
 import { FileLocation } from '../persistence/file-location';
 import { BookConflictException } from './exceptions/book.conflict.exception';
+import { BookNotFoundException } from './exceptions/book.not-found.exception';
 
 @Injectable()
 export class BooksService {
@@ -47,9 +48,13 @@ export class BooksService {
     return await this.bookRepository.find();
   }
 
-  // TODO doit prendre une string
-  findOne(isbn: Isbn): Promise<Book> {
-    return this.bookRepository.findOne(isbn);
+  async findOne(isbn: string): Promise<Book> {
+    const bookIsbn: Isbn = new Isbn(isbn);
+    const book: Book = await this.bookRepository.findOne(bookIsbn);
+    if (!book) {
+      throw new BookNotFoundException(bookIsbn);
+    }
+    return book;
   }
 
   update(id: number, updateBookDto: UpdateBookDto) {
@@ -57,14 +62,10 @@ export class BooksService {
   }
 
   async remove(isbn: string) {
-    // TODO exporter dans le repo
     const bookIsbn = new Isbn(isbn);
-    const book: Book = await this.bookRepository.findOne(bookIsbn);
-    if (!book) {
-      throw new NotFoundException();
-    }
-    // TODO delete the image
-
+    const coverLocation: FileLocation =
+      await this.bookRepository.findCoverLocation(bookIsbn);
+    this.bookCoverRepository.delete(coverLocation);
     await this.bookRepository.delete(bookIsbn);
   }
 

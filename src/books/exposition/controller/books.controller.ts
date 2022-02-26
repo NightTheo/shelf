@@ -64,11 +64,7 @@ export class BooksController {
     @Param('isbn') isbn: string,
     @Req() request: Request,
   ): Promise<GetBookDto> {
-    // TODO exporter cette vérification dans le service
-    const book: Book = await this.booksService.findOne(new Isbn(isbn));
-    if (!book) {
-      throw new NotFoundException('Book Not Found');
-    }
+    const book: Book = await this.booksService.findOne(isbn);
     const dto = GetBookDtoAdapter.from(book);
     if (book.cover.exists()) {
       dto.picture = HttpUtils.getFullUrlOf(request) + '/cover';
