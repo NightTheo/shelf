@@ -83,14 +83,14 @@ describe('BooksController', () => {
     expect(controller).toBeDefined();
   });
   it('should get all the books', async () => {
-    const allBooks: GetBookDto[] = await controller.findAll();
+    const allBooks: GetBookDto[] = await controller.findAll(mockRequest);
     expect(allBooks[0]).toEqual({
       isbn: mockStoredBooks[0].isbn.value,
       title: mockStoredBooks[0].title.value,
       author: mockStoredBooks[0].author.name,
-      overview: mockStoredBooks[0].overview.value,
-      readCount: mockStoredBooks[0].readCount,
+      url: expect.any(String),
     });
+    expect(allBooks[0]['url']).toContain('/books/1234567890001');
   });
 
   it('should add a books', async () => {
@@ -99,7 +99,7 @@ describe('BooksController', () => {
       title: "L'Étranger",
       author: 'Albert Camus',
       overview: 'overview',
-      readCount: 1,
+      read_count: 1,
     };
     const response = await controller.add(book, null, mockRequest);
     expect(response.url).toContain('/books/9782070360024');
@@ -123,7 +123,7 @@ describe('BooksController', () => {
       title: 'title 1',
       author: 'author 1',
       overview: 'overview 1',
-      readCount: 1,
+      read_count: 1,
       picture: 'https://api.shelf.cat/books/cover',
     });
   });

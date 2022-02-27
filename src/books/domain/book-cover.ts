@@ -22,6 +22,6 @@ export class BookCover {
   }
 
   public exists(): boolean {
-    return this._file != null;
+    return this._file != null && this._location?.path != null;
   }
 }

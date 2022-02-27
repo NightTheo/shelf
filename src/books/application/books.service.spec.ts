@@ -106,7 +106,7 @@ describe('BooksService', () => {
       title: "L'Étranger",
       author: 'Albert Camus',
       overview: 'overview',
-      readCount: 1,
+      read_count: 1,
     };
     await service.add(book, {
       buffer: Buffer.alloc(10),
@@ -120,7 +120,7 @@ describe('BooksService', () => {
       title: "L'Étranger",
       author: 'Albert Camus',
       overview: 'overview',
-      readCount: 1,
+      read_count: 1,
     };
     await expect(() =>
       service.add({ isbn: 'BadIsbn', ...book }, null),
@@ -154,7 +154,7 @@ describe('BooksService', () => {
       title: "L'Étranger",
       author: 'Albert Camus',
       overview: null,
-      readCount: null,
+      read_count: null,
     };
     const cover: BufferFile = {
       buffer: Buffer.alloc(10),

@@ -61,7 +61,7 @@ describe('BookController (e2e)', () => {
         title: 'Des fleurs pour Algernon',
         author: 'Daniel Keyes',
         overview: 'Algernon est une souris dont le traitement ....',
-        readCount: 1,
+        read_count: 1,
       })
       .expect(201)
       .then((response) => {
@@ -77,7 +77,7 @@ describe('BookController (e2e)', () => {
         title: '...',
         author: '...',
         overview: '...',
-        readCount: 1,
+        read_count: 1,
       })
       .expect(201)
       .then((response) => {
@@ -85,7 +85,7 @@ describe('BookController (e2e)', () => {
       });
   });
 
-  it('/books (POST) should create a books without overview and readCount', () => {
+  it('/books (POST) should create a books without overview and read_count', () => {
     return request(app.getHttpServer())
       .post('/books')
       .send({
@@ -107,7 +107,7 @@ describe('BookController (e2e)', () => {
         title: '...',
         author: '...',
         overview: '...',
-        readCount: 1,
+        read_count: 1,
       })
       .expect(201)
       .then((response) => {
@@ -130,7 +130,7 @@ describe('BookController (e2e)', () => {
         title: '...',
         author: '...',
         overview: '...',
-        readCount: 1,
+        read_count: 1,
       })
       .expect(422);
   });
@@ -155,8 +155,7 @@ describe('BookController (e2e)', () => {
           isbn: '1234567890001',
           title: 'title 1',
           author: 'author 1',
-          overview: 'overview 1',
-          readCount: 1,
+          url: expect.stringContaining('/books/1234567890001'),
         });
       });
   });
@@ -171,10 +170,9 @@ describe('BookController (e2e)', () => {
           title: 'title 1',
           author: 'author 1',
           overview: 'overview 1',
-          readCount: 1,
-          picture: expect.any(String),
+          read_count: 1,
+          picture: expect.stringContaining('/books/1234567890001/cover'),
         });
-        expect(response.body.picture).toContain('/books/1234567890001/cover');
       });
   });
 

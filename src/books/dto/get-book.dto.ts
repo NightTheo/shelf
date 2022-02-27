@@ -3,6 +3,6 @@ export class GetBookDto {
   title: string;
   author: string;
   overview: string;
-  readCount: number;
+  read_count: number;
   picture: string;
 }
