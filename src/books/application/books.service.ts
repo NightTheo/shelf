@@ -11,6 +11,7 @@ import { BookCoverNotFoundException } from './exceptions/book-cover.not-found.ex
 import { FileLocation } from '../persistence/file-location';
 import { BookConflictException } from './exceptions/book.conflict.exception';
 import { BookNotFoundException } from './exceptions/book.not-found.exception';
+import { BookAdapter } from '../adapters/book.adapter';
 
 @Injectable()
 export class BooksService {
@@ -24,14 +25,11 @@ export class BooksService {
     if (await this.bookRepository.exists(isbn)) {
       throw new BookConflictException(isbn);
     }
-    const book: Book = Book.builder()
-      .isbn(dto.isbn)
-      .title(dto.title)
-      .author(dto.author)
-      .overview(dto.overview)
-      .readCount(dto.readCount)
-      .cover(coverImage?.buffer as Buffer, coverImage?.originalname)
-      .build();
+    const book: Book = BookAdapter.fromDto(dto);
+    book.cover = new BookCover(
+      coverImage?.buffer as Buffer,
+      new FileLocation(coverImage?.originalname),
+    );
     if (book.cover.exists()) {
       book.cover.location = this.bookCoverRepository.save(book.cover);
     }

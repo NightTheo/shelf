@@ -19,5 +19,5 @@ export class AddBookDto {
 
   @IsOptional()
   @Min(0)
-  readCount: number;
+  read_count: number;
 }

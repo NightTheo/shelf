@@ -9,7 +9,7 @@ export class BookAdapter {
       .title(dto.title)
       .author(dto.author)
       .overview(dto.overview)
-      .readCount(dto.readCount)
+      .readCount(dto.read_count)
       .build();
   }
 

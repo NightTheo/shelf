@@ -51,10 +51,14 @@ export class BooksController {
   }
 
   @Get()
-  async findAll(): Promise<GetBookDto[]> {
-    return (await this.booksService.findAll()).map((book) =>
-      GetBookDtoAdapter.from(book),
-    );
+  async findAll(@Req() request: Request): Promise<GetBookDto[]> {
+    return (await this.booksService.findAll()).map((book) => {
+      const dto: GetBookDto = GetBookDtoAdapter.forCollection(book);
+      return {
+        ...dto,
+        url: HttpUtils.getFullUrlOf(request) + '/' + dto.isbn,
+      };
+    });
   }
 
   @Get(':isbn')
