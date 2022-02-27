@@ -15,6 +15,7 @@ services:
     command: npm run start
     depends_on:
       - db
+      - minio
     networks:
       - shelf
   db:
@@ -38,6 +39,21 @@ services:
       retries: 3
       timeout: 5s
 
+  minio:
+    image: minio/minio
+    volumes:
+      - shelf_minio:/data
+    command: server /data
+    environment:
+      MINIO_ACCESS_KEY: "${MINIO_ACCESS}"
+      MINIO_SECRET_KEY: "${MINIO_SECRET}"
+    ports:
+      - "${FORWARD_STORAGE_PORT:-9000}:${STORAGE_PORT}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${FORWARD_STORAGE_PORT:-9000}/minio/health/live"]
+      retries: 3
+      timeout: 5s
+
 networks:
   shelf:
     driver: bridge
@@ -45,4 +61,4 @@ networks:
 volumes:
   mysql:
     driver: local
-
+  shelf_minio:
