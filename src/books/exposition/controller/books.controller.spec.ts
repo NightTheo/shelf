@@ -11,7 +11,7 @@ import { AddBookDto } from '../../dto/add-book.dto';
 import { StreamableFile } from '@nestjs/common';
 import { Request } from 'express';
 import { BookCover } from '../../domain/book-cover';
-import { FileLocation } from '../../persistence/file-location';
+import { FileLocation } from '../../../shared/files/file-location';
 
 const streamBuffers = require('stream-buffers');
 

@@ -6,7 +6,7 @@ import { BookEntity } from './book.entity';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { BookAdapter } from '../adapters/book.adapter';
-import { FileLocation } from './file-location';
+import { FileLocation } from '../../shared/files/file-location';
 import { BookNotFoundException } from '../application/exceptions/book.not-found.exception';
 
 @Injectable()

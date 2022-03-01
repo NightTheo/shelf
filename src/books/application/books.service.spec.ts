@@ -8,8 +8,8 @@ import { IsbnFormatException } from '../domain/IsbnFormatException';
 import { BufferFile } from '../exposition/controller/buffer-file';
 import { BookCover } from '../domain/book-cover';
 import { BookCoverFileSystemRepository } from '../persistence/book-cover.file-system.repository';
-import { FilesUtils } from '../../utils/files/files.utils';
-import { FileLocation } from '../persistence/file-location';
+import { FilesUtils } from '../../shared/files/files.utils';
+import { FileLocation } from '../../shared/files/file-location';
 import { BookNotFoundException } from './exceptions/book.not-found.exception';
 
 describe('BooksService', () => {

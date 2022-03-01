@@ -1,6 +1,6 @@
 import { Book } from './book';
 import { Isbn } from './isbn';
-import { FileLocation } from '../persistence/file-location';
+import { FileLocation } from '../../shared/files/file-location';
 
 export interface BookRepository {
   save(book: Book): void;

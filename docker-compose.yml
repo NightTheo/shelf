@@ -40,15 +40,19 @@ services:
       timeout: 5s
 
   minio:
+    container_name: minio
     image: minio/minio
     volumes:
       - shelf_minio:/data
-    command: server /data
+    command: server --console-address ":9001" /data
     environment:
-      MINIO_ACCESS_KEY: "${MINIO_ACCESS}"
-      MINIO_SECRET_KEY: "${MINIO_SECRET}"
+      MINIO_ROOT_USER: "${STORAGE_USER}"
+      MINIO_ROOT_PASSWORD: "${STORAGE_PASSWORD}"
     ports:
       - "${FORWARD_STORAGE_PORT:-9000}:${STORAGE_PORT}"
+      - "9001:9001"
+    networks:
+      - shelf
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${FORWARD_STORAGE_PORT:-9000}/minio/health/live"]
       retries: 3

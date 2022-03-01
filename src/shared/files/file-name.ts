@@ -1,4 +1,4 @@
-import { FilesUtils } from '../../utils/files/files.utils';
+import { FilesUtils } from './files.utils';
 import { FileLocation } from './file-location';
 
 export class FileName {

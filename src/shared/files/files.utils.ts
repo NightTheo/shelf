@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { StringsUtils } from '../strings.utils';
+import { StringsUtils } from '../strings/strings.utils';
 import { FileException } from './file.exception';
 
 export abstract class FilesUtils {

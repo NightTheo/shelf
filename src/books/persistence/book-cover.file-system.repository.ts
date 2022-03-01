@@ -1,24 +1,24 @@
 import { BookCoverRepository } from './book-cover.repository';
 import { BookCover } from '../domain/book-cover';
 import { unlink, writeFile } from 'fs';
-import { FilesUtils } from '../../utils/files/files.utils';
-import { FileLocation } from './file-location';
-import { FileException } from '../../utils/files/file.exception';
+import { FilesUtils } from '../../shared/files/files.utils';
+import { FileLocation } from '../../shared/files/file-location';
+import { FileException } from '../../shared/files/file.exception';
 
 export class BookCoverFileSystemRepository implements BookCoverRepository {
-  private readonly bookCoverDirectory = 'storage/books/cover';
+  readonly bookCoverDirectory: string = 'storage/books/cover';
 
-  save(bookCover: BookCover): FileLocation {
+  save(bookCover: BookCover): Promise<FileLocation> {
     const newFileName = FilesUtils.generateRandomNameFor(
       bookCover.location?.path,
     );
     const path = `${this.bookCoverDirectory}/${newFileName}`;
     writeFile(path, bookCover.file, (err) => {
       if (err) {
-        throw new FileException(`Unable to write file '${path}'`);
+        throw new FileException(`Unable to write file '${path}'.`);
       }
     });
-    return new FileLocation(path);
+    return Promise.resolve(new FileLocation(path));
   }
 
   async findAt(location: FileLocation): Promise<BookCover> {
