@@ -31,7 +31,6 @@ export class BooksService {
       new FileLocation(coverImage?.originalname),
     );
     if (book.cover.exists()) {
-      console.log('minio repo:', this.bookCoverRepository);
       book.cover.location = await this.bookCoverRepository.save(book.cover);
     }
     await this.bookRepository.save(book);

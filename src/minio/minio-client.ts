@@ -29,7 +29,6 @@ export class MinioClient {
     try {
       await this.client.putObject(this.bucket, path, file.file, metaData);
     } catch (e) {
-      console.log(e.stack);
       throw new FileException(
         `MinioError[${e}]. Unable to save file ${path} in MinIO.`,
       );
@@ -40,7 +39,6 @@ export class MinioClient {
   delete(location: FileLocation): void {
     this.client.removeObject(this.bucket, location.path, (err) => {
       if (err) {
-        console.log(err.stack);
         throw new FileException(
           `MinioError[${err}]. Unable to delete file '${location.path}'.`,
         );
@@ -59,13 +57,11 @@ export class MinioClient {
       fs.mkdirSync(localDirectory, { recursive: true });
       this.client.fGetObject(bucket, objetName, localPath, async (err) => {
         if (err) {
-          console.log(err.stack);
           throw new FileException(`MinioError[${err}]. Unable to delete file.`);
         } else {
           const picture: Buffer = await FilesUtils.fileToBuffer(localPath);
           unlink(localPath, (e) => {
             if (e) {
-              console.log(e.stack);
               throw new FileException(
                 `Unable to delete on local '${localPath}'.`,
               );
