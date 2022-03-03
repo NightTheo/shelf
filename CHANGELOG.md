@@ -8,9 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.5.0] - 2022-03-03
 ### Added
-- Upload of book picture when you add a new book is now possible on the endpoint `POST /books`.
+- Upload a book's picture when you add a new book is now possible on the endpoint `POST /books`.
+- A BookCoverRepository witch handle persistence in the domain has two implementations:
+  - BookCoverFileSystemRepository: save or delete on the FS of the application.
+  - **BookCoverMinioRepository**: use the storage object [Minio](https://hub.docker.com/r/minio/minio/)
+- The Current implementation of BookCoverRepository used is BookCoverMinioRepository
 - On the details of a book `GET /books/{isbn}`, if this book has a picture, the property `picture` is an url to the endpoint `GET /books/{isbn}/cover`.
-- A field `picture` in the Book table in database. The field is a string of the file's path in the file system.
+- A field `picture` in the Book table in database as a string for store the file's path (FS or minio).
 
 ### Changed
 - Make the responses of the endpoints `GET /books` more 'HATEOAS': the collection display only the isbn, the title 
