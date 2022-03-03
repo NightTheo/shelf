@@ -4,17 +4,17 @@ import * as Minio from 'minio';
 import * as fs from 'fs';
 import { config } from './config';
 import { FileLocation } from '../shared/files/file-location';
-const mime = require('mime-types');
 import { File } from '../shared/files/file';
 import { FileException } from '../shared/files/file.exception';
 import { FilesUtils } from '../shared/files/files.utils';
-import { unlink } from 'fs';
+
+const mime = require('mime-types');
 
 @Injectable()
 export class MinioClient {
   private readonly bucket = config.MINIO_BUCKET;
 
-  public get client(): Minio.Client {
+  public get minio(): Minio.Client {
     return this.minioService.client;
   }
 
@@ -27,7 +27,7 @@ export class MinioClient {
     const path: string = `${directory}/${newName}`;
     const metaData = { 'Content-Type': mime.lookup(path) };
     try {
-      await this.client.putObject(this.bucket, path, file.file, metaData);
+      await this.minio.putObject(this.bucket, path, file.file, metaData);
     } catch (e) {
       throw new FileException(
         `MinioError[${e}]. Unable to save file ${path} in MinIO.`,
@@ -37,7 +37,7 @@ export class MinioClient {
   }
 
   delete(location: FileLocation): void {
-    this.client.removeObject(this.bucket, location.path, (err) => {
+    this.minio.removeObject(this.bucket, location.path, (err) => {
       if (err) {
         throw new FileException(
           `MinioError[${err}]. Unable to delete file '${location.path}'.`,
@@ -55,20 +55,13 @@ export class MinioClient {
     const localPath: string = `${localDirectory}/${name}`;
     return new Promise(async (resolve) => {
       fs.mkdirSync(localDirectory, { recursive: true });
-      this.client.fGetObject(bucket, objetName, localPath, async (err) => {
+      this.minio.fGetObject(bucket, objetName, localPath, async (err) => {
         if (err) {
           throw new FileException(`MinioError[${err}]. Unable to delete file.`);
-        } else {
-          const picture: Buffer = await FilesUtils.fileToBuffer(localPath);
-          unlink(localPath, (e) => {
-            if (e) {
-              throw new FileException(
-                `Unable to delete on local '${localPath}'.`,
-              );
-            }
-          });
-          resolve(new File(picture, new FileLocation(localPath)));
         }
+        const picture: Buffer = await FilesUtils.fileToBuffer(localPath);
+        FilesUtils.delete(localPath);
+        resolve(new File(picture, new FileLocation(localPath)));
       });
     });
   }

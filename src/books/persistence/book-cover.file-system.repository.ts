@@ -1,9 +1,7 @@
 import { BookCoverRepository } from './book-cover.repository';
 import { BookCover } from '../domain/book-cover';
-import { unlink, writeFile } from 'fs';
 import { FilesUtils } from '../../shared/files/files.utils';
 import { FileLocation } from '../../shared/files/file-location';
-import { FileException } from '../../shared/files/file.exception';
 
 export class BookCoverFileSystemRepository implements BookCoverRepository {
   readonly bookCoverDirectory: string = 'storage/books/cover';
@@ -13,11 +11,7 @@ export class BookCoverFileSystemRepository implements BookCoverRepository {
       bookCover.location?.path,
     );
     const path = `${this.bookCoverDirectory}/${newFileName}`;
-    writeFile(path, bookCover.file, (err) => {
-      if (err) {
-        throw new FileException(`Unable to write file '${path}'.`);
-      }
-    });
+    FilesUtils.write(path, bookCover.file);
     return Promise.resolve(new FileLocation(path));
   }
 
@@ -27,12 +21,6 @@ export class BookCoverFileSystemRepository implements BookCoverRepository {
   }
 
   delete(coverLocation: FileLocation) {
-    unlink(coverLocation.path, (err) => {
-      if (err) {
-        throw new FileException(
-          `Unable to delete file '${coverLocation.path}'`,
-        );
-      }
-    });
+    FilesUtils.delete(coverLocation.path);
   }
 }

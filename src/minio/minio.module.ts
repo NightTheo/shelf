@@ -3,6 +3,7 @@ import { MinioModule } from 'nestjs-minio-client';
 import { MinioClient } from './minio-client';
 import { config } from './config';
 import { ConfigModule } from '@nestjs/config';
+
 @Module({
   imports: [
     MinioModule.registerAsync({

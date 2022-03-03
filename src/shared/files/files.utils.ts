@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { unlink, writeFile } from 'fs';
 import { StringsUtils } from '../strings/strings.utils';
 import { FileException } from './file.exception';
 
@@ -43,4 +44,20 @@ export abstract class FilesUtils {
   }
 
   static replace;
+
+  static delete(localPath: string) {
+    unlink(localPath, (e) => {
+      if (e) {
+        throw new FileException(`Unable to delete on local '${localPath}'.`);
+      }
+    });
+  }
+
+  static write(path: string, file: Buffer) {
+    writeFile(path, file, (err) => {
+      if (err) {
+        throw new FileException(`Unable to write file '${path}'.`);
+      }
+    });
+  }
 }
