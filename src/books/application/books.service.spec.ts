@@ -100,7 +100,7 @@ describe('BooksService', () => {
     expect(allBooks).toEqual(Array.from(mockBooks.values()));
   });
 
-  it('should add a books', async () => {
+  it('should add a book', async () => {
     const book: AddBookDto = {
       isbn: '9782070360024',
       title: "L'Étranger",
@@ -132,7 +132,7 @@ describe('BooksService', () => {
     );
   });
 
-  it('should found a books by its isbn', async function () {
+  it('should found a book by its isbn', async function () {
     expect(await service.findOne('1234567890001')).toEqual(
       mockBooks.get('1234567890001'),
     );
@@ -148,7 +148,7 @@ describe('BooksService', () => {
     );
   });
 
-  it('should add a books with cover image', async () => {
+  it('should add a book with cover image', async () => {
     const book: AddBookDto = {
       isbn: '9782070360025',
       title: "L'Étranger",

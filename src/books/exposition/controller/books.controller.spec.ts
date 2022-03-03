@@ -93,7 +93,7 @@ describe('BooksController', () => {
     expect(allBooks[0]['url']).toContain('/books/1234567890001');
   });
 
-  it('should add a books', async () => {
+  it('should add a book', async () => {
     const book: AddBookDto = {
       isbn: '9782070360024',
       title: "L'Étranger",
@@ -106,7 +106,7 @@ describe('BooksController', () => {
     expect(mockBooksService.add).toHaveBeenCalled();
   });
 
-  it('should add a books without overview and readCount', async () => {
+  it('should add a book without overview and readCount', async () => {
     const book = {
       isbn: '9782070360024',
       title: "L'Étranger",
@@ -117,7 +117,7 @@ describe('BooksController', () => {
     expect(mockBooksService.add).toHaveBeenCalled();
   });
 
-  it('should get a books by its ISBN', async () => {
+  it('should get a book by its ISBN', async () => {
     expect(await controller.findOne('1234567890001', mockRequest)).toEqual({
       isbn: '1234567890001',
       title: 'title 1',
@@ -128,7 +128,7 @@ describe('BooksController', () => {
     });
   });
 
-  it('should get a books and its picture as url', async () => {
+  it('should get a book and its picture as url', async () => {
     mockStoredBooks[1].cover = new BookCover(
       Buffer.alloc(10),
       new FileLocation(imageDirectory + 'filename.ext'),
@@ -143,11 +143,11 @@ describe('BooksController', () => {
     );
   });
 
-  it('should delete a books', async () => {
+  it('should delete a book', async () => {
     expect(await controller.remove('9782070360024'));
   });
 
-  it('should add a books with its cover', async () => {
+  it('should add a book with its cover', async () => {
     const book = {
       isbn: '9782070360024',
       title: "L'Étranger",
