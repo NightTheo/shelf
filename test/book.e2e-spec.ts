@@ -85,7 +85,7 @@ describe('BookController (e2e)', () => {
       });
   });
 
-  it('/books (POST) should create a books without overview and read_count', () => {
+  it('/books (POST) should create a book without overview and read_count', () => {
     return request(app.getHttpServer())
       .post('/books')
       .send({
