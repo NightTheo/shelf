@@ -104,7 +104,7 @@ describe('BooksService', () => {
     expect(allBooks).toEqual(Array.from(mockBooks.values()));
   });
 
-  it('should add a books', async () => {
+  it('should add a book', async () => {
     const book: AddBookDto = {
       isbn: '9782070360024',
       title: "L'Étranger",
@@ -142,7 +142,7 @@ describe('BooksService', () => {
     );
   });
 
-  it('should delete a books', async function () {
+  it('should delete a book', async function () {
     expect(await service.remove('1234567890001'));
   });
 

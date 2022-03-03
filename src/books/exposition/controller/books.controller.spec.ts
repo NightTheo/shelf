@@ -93,7 +93,7 @@ describe('BooksController', () => {
     expect(allBooks[0]['url']).toContain('/books/1234567890001');
   });
 
-  it('should add a books', async () => {
+  it('should add a book', async () => {
     const book: AddBookDto = {
       isbn: '9782070360024',
       title: "L'Étranger",
@@ -106,7 +106,7 @@ describe('BooksController', () => {
     expect(mockBooksService.add).toHaveBeenCalled();
   });
 
-  it('should add a books without overview and readCount', async () => {
+  it('should add a book without overview and readCount', async () => {
     const book = {
       isbn: '9782070360024',
       title: "L'Étranger",
