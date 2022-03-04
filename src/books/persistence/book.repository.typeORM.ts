@@ -1,5 +1,5 @@
 import { BookRepository } from '../domain/book.repository';
-import { Isbn } from '../domain/isbn';
+import { Isbn } from '../domain/isbn/isbn';
 import { Book } from '../domain/book';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookEntity } from './book.entity';

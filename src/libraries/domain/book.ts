@@ -1,4 +1,4 @@
-import { Isbn } from './isbn';
+import { Isbn } from '../../books/domain/isbn/isbn';
 
 export class Book {
   private readonly _isbn: Isbn;

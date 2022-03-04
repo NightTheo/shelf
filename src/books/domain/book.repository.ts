@@ -1,5 +1,5 @@
 import { Book } from './book';
-import { Isbn } from './isbn';
+import { Isbn } from './isbn/isbn';
 import { FileLocation } from '../../shared/files/file-location';
 
 export interface BookRepository {

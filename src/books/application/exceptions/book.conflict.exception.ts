@@ -1,5 +1,5 @@
 import { ConflictException } from '@nestjs/common';
-import { Isbn } from '../../domain/isbn';
+import { Isbn } from '../../domain/isbn/isbn';
 
 export class BookConflictException extends ConflictException {
   constructor(isbn: Isbn) {

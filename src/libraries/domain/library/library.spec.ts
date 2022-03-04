@@ -1,7 +1,7 @@
 import { Library } from './library';
-import { LibraryId } from './library-id';
-import { Book } from './book';
-import { BookConflictException } from './exceptions/book.conflict.exception';
+import { LibraryId } from '../library-id';
+import { Book } from '../book';
+import { BookConflictException } from '../exceptions/book.conflict.exception';
 
 describe('Library', () => {
   it('should create a library', () => {
