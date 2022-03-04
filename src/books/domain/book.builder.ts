@@ -4,7 +4,7 @@ import { Author } from './author';
 import { BookOverview } from './book-overview';
 import { BookCover } from './book-cover';
 import { Book } from './book';
-import { FileLocation } from '../persistence/file-location';
+import { FileLocation } from '../../shared/files/file-location';
 
 export class BookBuilder {
   private _isbn: Isbn;

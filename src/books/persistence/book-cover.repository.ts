@@ -1,8 +1,9 @@
 import { BookCover } from '../domain/book-cover';
-import { FileLocation } from './file-location';
+import { FileLocation } from '../../shared/files/file-location';
 
 export interface BookCoverRepository {
-  save(bookCover: BookCover): FileLocation;
+  bookCoverDirectory: string;
+  save(bookCover: BookCover): Promise<FileLocation>;
   findAt(location: FileLocation): Promise<BookCover>;
   delete(coverLocation: FileLocation);
 }

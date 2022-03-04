@@ -24,9 +24,9 @@ import { GetBookDtoAdapter } from '../../adapters/get-book-dto.adapter';
 import { BufferFile } from './buffer-file';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
-import { HttpUtils } from '../../../utils/http.utils';
+import { HttpUtils } from '../../../shared/http/http.utils';
 import { BookCover } from '../../domain/book-cover';
-import { FileName } from '../../persistence/file-name';
+import { FileName } from '../../../shared/files/file-name';
 
 @Controller('books')
 export class BooksController {
@@ -35,6 +35,7 @@ export class BooksController {
   @Post()
   @HttpCode(201)
   @UseFilters(new BookExceptionFilter())
+  // TODO filter sur le fichier (nom, taille, etc)
   @UseInterceptors(FileInterceptor('picture'))
   async add(
     @Body() addBookDto: AddBookDto,

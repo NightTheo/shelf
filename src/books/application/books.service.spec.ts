@@ -8,9 +8,10 @@ import { IsbnFormatException } from '../domain/IsbnFormatException';
 import { BufferFile } from '../exposition/controller/buffer-file';
 import { BookCover } from '../domain/book-cover';
 import { BookCoverFileSystemRepository } from '../persistence/book-cover.file-system.repository';
-import { FilesUtils } from '../../utils/files/files.utils';
-import { FileLocation } from '../persistence/file-location';
+import { FilesUtils } from '../../shared/files/files.utils';
+import { FileLocation } from '../../shared/files/file-location';
 import { BookNotFoundException } from './exceptions/book.not-found.exception';
+import { BookCoverMinioRepository } from '../persistence/book-cover.minio.repository';
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -80,11 +81,14 @@ describe('BooksService', () => {
         BooksService,
         BookRepositoryTypeORM,
         BookCoverFileSystemRepository,
+        BookCoverMinioRepository,
       ],
     })
       .overrideProvider(BookRepositoryTypeORM)
       .useValue(mockBooksRepositoryImp)
       .overrideProvider(BookCoverFileSystemRepository)
+      .useValue(mockBookCoverRepository)
+      .overrideProvider(BookCoverMinioRepository)
       .useValue(mockBookCoverRepository)
       .compile();
 
@@ -138,7 +142,7 @@ describe('BooksService', () => {
     );
   });
 
-  it('should delete a books', async function () {
+  it('should delete a book', async function () {
     expect(await service.remove('1234567890001'));
   });
 

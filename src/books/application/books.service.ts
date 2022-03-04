@@ -1,24 +1,24 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UpdateBookDto } from '../dto/update-book.dto';
 import { BookRepositoryTypeORM } from '../persistence/book.repository.typeORM';
 import { AddBookDto } from '../dto/add-book.dto';
 import { Isbn } from '../domain/isbn';
 import { BufferFile } from '../exposition/controller/buffer-file';
-import { BookCoverFileSystemRepository } from '../persistence/book-cover.file-system.repository';
 import { Book } from '../domain/book';
 import { BookCover } from '../domain/book-cover';
 import { BookCoverNotFoundException } from './exceptions/book-cover.not-found.exception';
-import { FileLocation } from '../persistence/file-location';
+import { FileLocation } from '../../shared/files/file-location';
 import { BookConflictException } from './exceptions/book.conflict.exception';
 import { BookNotFoundException } from './exceptions/book.not-found.exception';
 import { BookAdapter } from '../adapters/book.adapter';
+import { BookCoverMinioRepository } from '../persistence/book-cover.minio.repository';
 
 @Injectable()
 export class BooksService {
-  @Inject()
-  private readonly bookRepository: BookRepositoryTypeORM;
-  @Inject()
-  private readonly bookCoverRepository: BookCoverFileSystemRepository;
+  constructor(
+    private bookRepository: BookRepositoryTypeORM,
+    private bookCoverRepository: BookCoverMinioRepository,
+  ) {}
 
   async add(dto: AddBookDto, coverImage: BufferFile) {
     const isbn: Isbn = new Isbn(dto.isbn);
@@ -31,7 +31,7 @@ export class BooksService {
       new FileLocation(coverImage?.originalname),
     );
     if (book.cover.exists()) {
-      book.cover.location = this.bookCoverRepository.save(book.cover);
+      book.cover.location = await this.bookCoverRepository.save(book.cover);
     }
     await this.bookRepository.save(book);
   }
