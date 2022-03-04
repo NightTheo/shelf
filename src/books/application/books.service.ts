@@ -3,7 +3,7 @@ import { UpdateBookDto } from '../dto/update-book.dto';
 import { BookRepositoryTypeORM } from '../persistence/book.repository.typeORM';
 import { AddBookDto } from '../dto/add-book.dto';
 import { Isbn } from '../domain/isbn';
-import { BufferFile } from '../exposition/controller/buffer-file';
+import { BufferFile } from '../../shared/files/buffer-file';
 import { Book } from '../domain/book';
 import { BookCover } from '../domain/book-cover';
 import { BookCoverNotFoundException } from './exceptions/book-cover.not-found.exception';

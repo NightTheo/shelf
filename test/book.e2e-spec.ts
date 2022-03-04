@@ -5,6 +5,9 @@ import { BooksModule } from '../src/books/books.module';
 import { BookEntity } from '../src/books/persistence/book.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Book } from '../src/books/domain/book';
+import { FilesUtils } from '../src/shared/files/files.utils';
+import { BookCoverMinioRepository } from '../src/books/persistence/book-cover.minio.repository';
+import { BookCover } from '../src/books/domain/book-cover';
 
 describe('BookController (e2e)', () => {
   let app: INestApplication;
@@ -23,7 +26,7 @@ describe('BookController (e2e)', () => {
     ],
   ]);
 
-  const mockBooksRepository = {
+  const mockBookRepository = {
     save: jest.fn().mockImplementation((book: Book) =>
       mockBooks.set(book.isbn.value, {
         isbn: book.isbn.value,
@@ -40,12 +43,24 @@ describe('BookController (e2e)', () => {
     find: jest.fn().mockResolvedValue(Array.from(mockBooks.values())),
   };
 
+  const mockFileStorage = new Set<string>();
+
+  const mockBookCoverRepository = {
+    save: jest.fn().mockImplementation((bookCover: BookCover) => {
+      const name = FilesUtils.fileNameOfPath(bookCover.location.path);
+      mockFileStorage.add(name);
+      return name;
+    }),
+  };
+
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [BooksModule],
     })
       .overrideProvider(getRepositoryToken(BookEntity))
-      .useValue(mockBooksRepository)
+      .useValue(mockBookRepository)
+      .overrideProvider(BookCoverMinioRepository)
+      .useValue(mockBookCoverRepository)
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -178,5 +193,28 @@ describe('BookController (e2e)', () => {
 
   it('/books/0000000000000 (GET)', () => {
     return request(app.getHttpServer()).get('/books/0000000000000').expect(404);
+  });
+
+  it('/books (POST) with an image', async () => {
+    return request(app.getHttpServer())
+      .post('/books')
+      .field('isbn', '9782290032728')
+      .field('title', 'Des fleurs pour Algernon')
+      .field('author', 'Daniel Keyes')
+      .attach('picture', 'test/assets/images/uploadExample.jpg')
+      .expect(201)
+      .then((response) => {
+        expect(response.body.url).toContain('/books/9782290032728');
+      });
+  });
+
+  it('/books (POST) 422 with a file not acceptable (not an image)', async () => {
+    return request(app.getHttpServer())
+      .post('/books')
+      .field('isbn', '9782290032729')
+      .field('title', 'Des fleurs pour Algernon')
+      .field('author', 'Daniel Keyes')
+      .attach('picture', Buffer.alloc(10), 'badFormatFile.js')
+      .expect(422);
   });
 });

@@ -5,7 +5,7 @@ import { Book } from '../domain/book';
 import { Isbn } from '../domain/isbn';
 import { AddBookDto } from '../dto/add-book.dto';
 import { IsbnFormatException } from '../domain/IsbnFormatException';
-import { BufferFile } from '../exposition/controller/buffer-file';
+import { BufferFile } from '../../shared/files/buffer-file';
 import { BookCover } from '../domain/book-cover';
 import { BookCoverFileSystemRepository } from '../persistence/book-cover.file-system.repository';
 import { FilesUtils } from '../../shared/files/files.utils';
