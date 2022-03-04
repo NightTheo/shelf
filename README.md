@@ -31,16 +31,16 @@ $ docker compose up app
 
 ## Fonctionnalités de l’application
 - [x] Afficher ses livres
-- [ ] Afficher les détails d'un livre
+- [x] Afficher les détails d'un livre
 - [x] Ajouter un livre
 - [ ] Modifier un livre
-- [ ] Supprimer un livre
+- [x] Supprimer un livre
 
 ### Bonnus
-- [ ] Valider l'ISBN
+- [ ] Valider l'ISBN via une api externe
 - [ ] Multiplicité de bibliothèques
 - [ ] Inscription / Connexion
-- [ ] Stockage des images avec [Minio](https://hub.docker.com/r/minio/minio/)
+- [x] Stockage des images avec [Minio](https://hub.docker.com/r/minio/minio/)
 
 ## Versioning
 ### Gitflow

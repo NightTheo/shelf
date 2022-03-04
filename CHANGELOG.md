@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2022-03-03
+### Added
+- Upload a book's picture when you add a new book is now possible on the endpoint `POST /books`.
+- A BookCoverRepository witch handle persistence in the domain has two implementations:
+  - BookCoverFileSystemRepository: save or delete on the FS of the application.
+  - **BookCoverMinioRepository**: use the storage object [Minio](https://hub.docker.com/r/minio/minio/)
+- The Current implementation of BookCoverRepository used is BookCoverMinioRepository
+- On the details of a book `GET /books/{isbn}`, if this book has a picture, the property `picture` is an url to the endpoint `GET /books/{isbn}/cover`.
+- A field `picture` in the Book table in database as a string for store the file's path (FS or minio).
+
+### Changed
+- Make the responses of the endpoints `GET /books` more 'HATEOAS': the collection display only the isbn, the title 
+and the author of each book plus the `url` of the endpoint `GET /books/{isbn}` witch contains the other details like
+the overview, the picture and the read count.
 
 ## [0.4.0] - 2022-02-08
 ### Added
@@ -17,5 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions for Continuous Integration.
 - This CHANGELOG which starts at version 0.4.0.
 
-[Unreleased]: https://github.com/NightTheo/shelf/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/NightTheo/shelf/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/NightTheo/shelf/releases/tag/v0.5.0
 [0.4.0]: https://github.com/NightTheo/shelf/releases/tag/v0.4.0
