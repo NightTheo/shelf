@@ -21,12 +21,13 @@ import { Book } from '../../domain/book';
 import { GetBookDto } from '../../dto/get-book.dto';
 import { BookExceptionFilter } from '../filters/book-exception.filter';
 import { GetBookDtoAdapter } from '../../adapters/get-book-dto.adapter';
-import { BufferFile } from './buffer-file';
+import { BufferFile } from '../../../shared/files/buffer-file';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { HttpUtils } from '../../../shared/http/http.utils';
 import { BookCover } from '../../domain/book-cover';
 import { FileName } from '../../../shared/files/file-name';
+import { FileFormatFilter } from '../../../shared/files/file-format-filter/file-format.filter';
 
 @Controller('books')
 export class BooksController {
@@ -35,8 +36,11 @@ export class BooksController {
   @Post()
   @HttpCode(201)
   @UseFilters(new BookExceptionFilter())
-  // TODO filter sur le fichier (nom, taille, etc)
-  @UseInterceptors(FileInterceptor('picture'))
+  @UseInterceptors(
+    FileInterceptor('picture', {
+      fileFilter: FileFormatFilter.of(['jpg', 'png', 'gif', 'svg']),
+    }),
+  )
   async add(
     @Body() addBookDto: AddBookDto,
     @UploadedFile() coverImage: BufferFile,

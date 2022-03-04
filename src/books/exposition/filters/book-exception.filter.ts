@@ -12,6 +12,7 @@ import { IsbnFormatException } from '../../domain/IsbnFormatException';
 import { BookConflictException } from '../../application/exceptions/book.conflict.exception';
 import { BookNotFoundException } from '../../application/exceptions/book.not-found.exception';
 import { BookCoverNotFoundException } from '../../application/exceptions/book-cover.not-found.exception';
+import { FileFormatException } from '../../../shared/files/file-format.exception';
 
 @Catch()
 export class BookExceptionFilter implements ExceptionFilter {
@@ -32,19 +33,14 @@ export class BookExceptionFilter implements ExceptionFilter {
 
     switch (exception.name) {
       case BadRequestException.name:
-        body.statusCode = 422;
-        break;
       case IsbnFormatException.name:
-        body.statusCode = 422;
-        break;
-      case UnprocessableEntityException.name:
-        break;
       case BookConflictException.name:
+      case BookCoverNotFoundException.name:
+      case FileFormatException.name:
+      case UnprocessableEntityException.name:
         body.statusCode = 422;
         break;
       case BookNotFoundException.name:
-        break;
-      case BookCoverNotFoundException.name:
         break;
       default:
         if (exception! instanceof HttpException) {
