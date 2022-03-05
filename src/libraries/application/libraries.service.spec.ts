@@ -5,6 +5,8 @@ import { Library } from '../domain/library/library';
 import { LibraryId } from '../domain/library-id/library-id';
 import { Book } from '../domain/book/book';
 import { BookRepositoryShelfApi } from '../persistence/book.repository.shelf-api';
+import { BookNotFoundException } from './exceptions/book.not-found.exception';
+import { BookConflictException } from '../domain/exceptions/book.conflict.exception';
 
 describe('LibrariesService', () => {
   let service: LibrariesService;
@@ -25,9 +27,13 @@ describe('LibrariesService', () => {
     }),
   );
   const mockBookRepositoryShelfApi = {
-    findOne: jest.fn((isbn: string) =>
-      mockBookStorage.get(isbn.split('-').join('')),
-    ),
+    findOne: jest.fn((isbn: string) => {
+      isbn = isbn.split('-').join('');
+      if (!mockBookStorage.has(isbn)) {
+        throw new BookNotFoundException(isbn);
+      }
+      return mockBookStorage.get(isbn);
+    }),
   };
 
   beforeEach(async () => {
@@ -69,5 +75,20 @@ describe('LibrariesService', () => {
     expect(created.has(new Book('978-2-2900-3272-5'))).toBeTruthy();
   });
 
-  // should not have duplicates books in the library
+  it('should throw a BookNotFoundException', () => {
+    const unknownIsbn = ['000-0000000000'];
+    expect(() => service.create(unknownIsbn)).rejects.toThrow(
+      BookNotFoundException,
+    );
+  });
+
+  it('should throw a BookConflictException when create a library with duplicate isbn', () => {
+    const duplicateIsbnList: string[] = [
+      '978-2221252055', // Dune - Herbert
+      '9782221252055', // Dune - Herbert
+    ];
+    expect(() => service.create(duplicateIsbnList)).rejects.toThrow(
+      BookConflictException,
+    );
+  });
 });
