@@ -8,18 +8,12 @@ describe('Library', () => {
     const library: Library = new Library(new LibraryId(), [
       new Book('978-2221252055', 'Dune', 'Frank Herbert'),
     ]);
-    expect(library).toEqual({
-      id: expect.any(LibraryId),
-      books: expect.any(Object),
-    });
+    expect(library.id).toBeInstanceOf(LibraryId);
   });
 
   it('should create an empty library', () => {
     const library: Library = new Library(new LibraryId());
-    expect(library).toEqual({
-      id: expect.any(LibraryId),
-      books: {},
-    });
+    expect(library.id).toBeInstanceOf(LibraryId);
   });
 
   it('should add a book', () => {
@@ -33,5 +27,17 @@ describe('Library', () => {
     expect(() => {
       library.add(new Book('978-2221252055', 'Dune', 'Frank Herbert'));
     }).toThrow(BookConflictException);
+  });
+
+  it('should have a book', async () => {
+    const book: Book = new Book('978-2221252055', 'Dune', 'Frank Herbert');
+    const library: Library = new Library(new LibraryId(), [book]);
+    expect(library.has(book)).toBeTruthy();
+  });
+
+  it('should not have a book', async () => {
+    const book: Book = new Book('978-2221252055', 'Dune', 'Frank Herbert');
+    const library: Library = new Library(new LibraryId());
+    expect(library.has(book)).toBeFalsy();
   });
 });

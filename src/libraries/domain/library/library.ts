@@ -3,12 +3,16 @@ import { BookConflictException } from '../exceptions/book.conflict.exception';
 import { Book } from '../book/book';
 
 export class Library {
-  private readonly id: LibraryId;
+  private readonly _id: LibraryId;
   private readonly books: { [isbn: string]: Book } = {};
 
   constructor(id: LibraryId, books: Book[] = []) {
-    this.id = id;
+    this._id = id;
     books.forEach((book) => this.add(book));
+  }
+
+  get id(): LibraryId {
+    return this._id;
   }
 
   add(book: Book) {

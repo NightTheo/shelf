@@ -6,7 +6,7 @@ export class Book {
   private readonly title: string;
   private readonly author: string;
 
-  constructor(isbn: string, title: string, author: string) {
+  constructor(isbn: string, title?: string, author?: string) {
     this.isbn = isbn;
     this.title = title;
     this.author = author;

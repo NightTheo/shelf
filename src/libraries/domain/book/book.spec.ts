@@ -12,4 +12,9 @@ describe('Book', () => {
       new Book('978', 'Dune', 'Frank Herbert');
     }).toThrow(IsbnFormatException);
   });
+
+  it('should create a book without title or author', () => {
+    const book: Book = new Book('978-2221252055');
+    expect(book.isbn).toEqual('978-2-2212-5205-5');
+  });
 });
