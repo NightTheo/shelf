@@ -1,4 +1,4 @@
-import { LibraryId } from '../library-id';
+import { LibraryId } from '../library-id/library-id';
 import { BookConflictException } from '../exceptions/book.conflict.exception';
 import { Book } from '../book/book';
 

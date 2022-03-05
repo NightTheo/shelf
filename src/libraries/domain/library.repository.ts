@@ -1,5 +1,5 @@
 import { Library } from './library/library';
-import { LibraryId } from './library-id';
+import { LibraryId } from './library-id/library-id';
 
 export interface LibraryRepository {
   create(library: Library): void;

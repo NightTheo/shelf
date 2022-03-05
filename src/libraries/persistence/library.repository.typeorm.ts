@@ -1,6 +1,6 @@
 import { LibraryRepository } from '../domain/library.repository';
 import { Library } from '../domain/library/library';
-import { LibraryId } from '../domain/library-id';
+import { LibraryId } from '../domain/library-id/library-id';
 
 export class LibraryRepositoryTypeORM implements LibraryRepository {
   create(library: Library): void {}
