@@ -4,7 +4,7 @@ import { BookRepositoryTypeORM } from '../persistence/book.repository.typeORM';
 import { Book } from '../domain/book';
 import { Isbn } from '../domain/isbn/isbn';
 import { AddBookDto } from '../dto/add-book.dto';
-import { IsbnFormatException } from '../domain/isbn/IsbnFormatException';
+import { IsbnFormatException } from '../../shared/isbn/isbn-format.exception';
 import { BufferFile } from '../../shared/files/buffer-file';
 import { BookCover } from '../domain/book-cover';
 import { BookCoverFileSystemRepository } from '../persistence/book-cover.file-system.repository';

@@ -1,6 +1,6 @@
 import { Library } from './library';
 import { LibraryId } from '../library-id';
-import { Book } from '../book';
+import { Book } from '../book/book';
 import { BookConflictException } from '../exceptions/book.conflict.exception';
 
 describe('Library', () => {

@@ -88,7 +88,7 @@ describe('BookController (e2e)', () => {
     return request(app.getHttpServer())
       .post('/books')
       .send({
-        isbn: '978-2-29-003272-6',
+        isbn: '978-2-2900-3272-6',
         title: '...',
         author: '...',
         overview: '...',

@@ -1,5 +1,5 @@
-import { IsbnFormatException } from './IsbnFormatException';
-import { IsbnFormatFactory } from './isbn-format.factory';
+import { IsbnFormatException } from '../../../shared/isbn/isbn-format.exception';
+import { IsbnFormatFactory } from '../../../shared/isbn/isbn-format.factory';
 
 export class Isbn {
   private readonly _value: string;

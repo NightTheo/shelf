@@ -1,6 +1,6 @@
 import { LibraryId } from '../library-id';
 import { BookConflictException } from '../exceptions/book.conflict.exception';
-import { Book } from '../book';
+import { Book } from '../book/book';
 
 export class Library {
   private readonly id: LibraryId;
@@ -15,11 +15,11 @@ export class Library {
     if (this.has(book)) {
       throw new BookConflictException(book.isbn);
     }
-    this.books[book.isbn.value] = book;
+    this.books[book.isbn] = book;
   }
 
   has(book: Book): boolean {
-    const isbn: string = book.isbn.value;
+    const isbn: string = book.isbn;
     return this.books[isbn] != null;
   }
 }
