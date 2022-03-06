@@ -12,12 +12,14 @@ import { BookConflictException } from './exceptions/book.conflict.exception';
 import { BookNotFoundException } from './exceptions/book.not-found.exception';
 import { BookAdapter } from '../adapters/book.adapter';
 import { BookCoverMinioRepository } from '../persistence/book-cover.minio.repository';
+import { LibraryRepositoryShelfApi } from '../persistence/library.repository.shelf-api';
 
 @Injectable()
 export class BooksService {
   constructor(
     private bookRepository: BookRepositoryTypeORM,
     private bookCoverRepository: BookCoverMinioRepository,
+    private libraryRepository: LibraryRepositoryShelfApi,
   ) {}
 
   async add(dto: AddBookDto, coverImage: BufferFile) {
@@ -59,6 +61,7 @@ export class BooksService {
       await this.bookRepository.findCoverLocation(bookIsbn);
     this.bookCoverRepository.delete(coverLocation);
     await this.bookRepository.delete(bookIsbn);
+    await this.libraryRepository.removeBookFromAllLibraries(bookIsbn);
   }
 
   async findPictureByIsbn(isbn: string): Promise<BookCover> {

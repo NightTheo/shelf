@@ -85,7 +85,8 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s",
       "!**/*module*",
-      "!**/*exception*"
+      "!**/*exception*",
+      "!**/*dto*"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"

@@ -7,6 +7,7 @@ import { BookRepositoryTypeORM } from './persistence/book.repository.typeORM';
 import { BookCoverFileSystemRepository } from './persistence/book-cover.file-system.repository';
 import { BookCoverMinioRepository } from './persistence/book-cover.minio.repository';
 import { MinioClientModule } from '../minio/minio.module';
+import { LibraryRepositoryShelfApi } from './persistence/library.repository.shelf-api';
 
 @Module({
   imports: [TypeOrmModule.forFeature([BookEntity]), MinioClientModule],
@@ -16,6 +17,7 @@ import { MinioClientModule } from '../minio/minio.module';
     BookRepositoryTypeORM,
     BookCoverFileSystemRepository,
     BookCoverMinioRepository,
+    LibraryRepositoryShelfApi,
   ],
 })
 export class BooksModule {}

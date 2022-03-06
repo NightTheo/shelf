@@ -12,6 +12,7 @@ import { FilesUtils } from '../../shared/files/files.utils';
 import { FileLocation } from '../../shared/files/file-location';
 import { BookNotFoundException } from './exceptions/book.not-found.exception';
 import { BookCoverMinioRepository } from '../persistence/book-cover.minio.repository';
+import { LibraryRepositoryShelfApi } from '../persistence/library.repository.shelf-api';
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -46,8 +47,8 @@ describe('BooksService', () => {
       mockBooks.set(book.isbn.value, book);
       mockFileStorage.add(book.cover.location.path);
     }),
-    delete: jest.fn((isbn) => {
-      mockBooks.delete(isbn);
+    delete: jest.fn((isbn: Isbn) => {
+      mockBooks.delete(isbn.value);
     }),
     findOne: jest.fn((isbn: Isbn) => mockBooks.get(isbn.value)),
     exists: jest
@@ -75,6 +76,13 @@ describe('BooksService', () => {
     }),
   };
 
+  const mockLibraryStorage = new Map<string, Set<string>>();
+  const mockLibraryRepositoryShelfApi = {
+    removeBookFromAllLibraries: jest.fn().mockImplementation((isbn: Isbn) => {
+      mockLibraryStorage.forEach((library) => library.delete(isbn.value));
+    }),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -82,6 +90,7 @@ describe('BooksService', () => {
         BookRepositoryTypeORM,
         BookCoverFileSystemRepository,
         BookCoverMinioRepository,
+        LibraryRepositoryShelfApi,
       ],
     })
       .overrideProvider(BookRepositoryTypeORM)
@@ -90,6 +99,8 @@ describe('BooksService', () => {
       .useValue(mockBookCoverRepository)
       .overrideProvider(BookCoverMinioRepository)
       .useValue(mockBookCoverRepository)
+      .overrideProvider(LibraryRepositoryShelfApi)
+      .useValue(mockLibraryRepositoryShelfApi)
       .compile();
 
     service = module.get<BooksService>(BooksService);
@@ -143,7 +154,26 @@ describe('BooksService', () => {
   });
 
   it('should delete a book', async function () {
-    expect(await service.remove('1234567890001'));
+    await service.remove('1234567890001');
+    expect(mockBooks.has('1234567890001')).toBeFalsy();
+  });
+
+  it('should delete a book and remove it from all the librairies', async function () {
+    mockLibraryStorage.set(
+      'libraryId1',
+      new Set<string>(['1234567890001', '1234567890002']),
+    );
+    mockLibraryStorage.set(
+      'libraryId2',
+      new Set<string>(['1234567890000', '1234567890002']),
+    );
+    await service.remove('1234567890002');
+    expect(
+      mockLibraryStorage.get('libraryId1').has('1234567890002'),
+    ).toBeFalsy();
+    expect(
+      mockLibraryStorage.get('libraryId2').has('1234567890002'),
+    ).toBeFalsy();
   });
 
   it('should not found isbn throw NotFoundException', async function () {

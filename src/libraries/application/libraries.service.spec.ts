@@ -168,7 +168,7 @@ describe('LibrariesService', () => {
     mockLibrariesStorage.set(library1.id.value, library1);
     mockLibrariesStorage.set(library2.id.value, library2);
 
-    await service.removeBookFromAllLibrairies('9782221252055');
+    await service.removeBookFromAllLibraries('9782221252055');
     expect(
       mockLibrariesStorage.get(library1.id.value).has(bookToRemove),
     ).toBeFalsy();

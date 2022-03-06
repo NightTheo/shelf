@@ -81,7 +81,7 @@ export class LibrariesService {
     this.libraryRepository.save(library);
   }
 
-  async removeBookFromAllLibrairies(isbn: string): Promise<void> {
+  async removeBookFromAllLibraries(isbn: string): Promise<void> {
     const book: Book = await this.getBookByIsbn(isbn);
     const libraries: Library[] = await this.getLibrariesContainingBook(book);
     libraries.forEach((library) => library.remove(book));
