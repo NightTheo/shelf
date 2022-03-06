@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { BookAdapter } from '../adapters/book.adapter';
 import { FileLocation } from '../../shared/files/file-location';
 import { BookNotFoundException } from '../application/exceptions/book.not-found.exception';
+import { UpdateBookDto } from '../dto/update-book.dto';
 
 @Injectable()
 export class BookRepositoryTypeORM implements BookRepository {
@@ -67,8 +68,15 @@ export class BookRepositoryTypeORM implements BookRepository {
     await this.typeorm.save(bookEntity);
   }
 
-  update(book: Book): Promise<Book> {
-    return Promise.resolve(undefined);
+  async update(isbn: Isbn, bookDto: UpdateBookDto): Promise<void> {
+    const book = await this.typeorm.findOne(isbn.value);
+
+    book.title = bookDto.title;
+    book.author = bookDto.author;
+    book.overview = bookDto.overview;
+    book.read_count = bookDto.read_count;
+
+    await this.typeorm.save(book);
   }
 
   async exists(isbn: Isbn): Promise<boolean> {
