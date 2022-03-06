@@ -13,6 +13,7 @@ import { BookNotFoundException } from './exceptions/book.not-found.exception';
 import { BookAdapter } from '../adapters/book.adapter';
 import { BookCoverMinioRepository } from '../persistence/book-cover.minio.repository';
 import { LibraryRepositoryShelfApi } from '../persistence/library.repository.shelf-api';
+import { IsbnFormatException } from '../../shared/isbn/isbn-format.exception';
 
 @Injectable()
 export class BooksService {

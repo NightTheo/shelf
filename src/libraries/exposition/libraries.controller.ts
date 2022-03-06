@@ -13,9 +13,9 @@ import { LibrariesService } from '../application/libraries.service';
 import { GetLibraryDtoAdapter } from '../adapters/get-library-dto.adapter';
 import { CreateLibraryDto } from '../dto/create-library.dto';
 import { UpdateLibraryBooksDto } from '../dto/update-library-books.dto';
-import { ShelfUrlFactory } from '../../shared/http/shelf-url.factory';
 import { GetLibraryDto } from '../dto/get-library.dto';
 import { LibraryId } from '../domain/library-id/library-id';
+import { ShelfUrlFactory } from '../../shared/http/shelf-url.factory';
 
 @Controller('libraries')
 export class LibrariesController {
@@ -46,13 +46,13 @@ export class LibrariesController {
 
   @Post()
   @HttpCode(201)
-  async createLibrary(@Body() dto: CreateLibraryDto): Promise<any> {
+  async createLibrary(@Body() dto?: CreateLibraryDto): Promise<any> {
     const librariesUrl: string = ShelfUrlFactory.getEndPoint('libraries');
     const createdId: LibraryId =
       await this.librariesService.createWithListOfIsbn(dto ? dto.books : []);
     return {
-      uuid: createdId.value,
-      url: librariesUrl + '/' + createdId.value,
+      uuid: createdId?.value,
+      url: librariesUrl + '/' + createdId?.value,
     };
   }
 

@@ -13,6 +13,7 @@ import { FileLocation } from '../../shared/files/file-location';
 import { BookNotFoundException } from './exceptions/book.not-found.exception';
 import { BookCoverMinioRepository } from '../persistence/book-cover.minio.repository';
 import { LibraryRepositoryShelfApi } from '../persistence/library.repository.shelf-api';
+import { UpdateBookDto } from '../dto/update-book.dto';
 
 describe('BooksService', () => {
   let service: BooksService;
