@@ -7,7 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as ormConfig from './ormconfig';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './all-exceptions.filter';
-import { LibrariesService } from './libraries/application/libraries.service';
 import { LibrariesModule } from './libraries/libraries.module';
 
 @Module({
@@ -24,7 +23,6 @@ import { LibrariesModule } from './libraries/libraries.module';
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
     },
-    LibrariesService,
   ],
 })
 export class AppModule {}

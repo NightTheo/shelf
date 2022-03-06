@@ -1,5 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LibraryEntity } from './persistence/LibraryEntity';
+import { LibraryEntity } from './persistence/library.entity';
 import { LibrariesController } from './exposition/libraries.controller';
 import { LibrariesService } from './application/libraries.service';
 import { Module } from '@nestjs/common';
