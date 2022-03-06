@@ -76,6 +76,7 @@ export class BooksService {
     );
 
     if (book.cover.exists()) {
+      this.bookCoverRepository.delete(found.cover.location);
       book.cover.location = await this.bookCoverRepository.save(book.cover);
     }
 
