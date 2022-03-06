@@ -1,9 +1,10 @@
 import { AddBookDto } from '../dto/add-book.dto';
 import { Book } from '../domain/book';
 import { BookEntity } from '../persistence/book.entity';
+import { UpdateBookDto } from '../dto/update-book.dto';
 
 export class BookAdapter {
-  public static fromDto(dto: AddBookDto): Book {
+  public static fromDto(dto: AddBookDto | UpdateBookDto): Book {
     return Book.builder()
       .isbn(dto.isbn)
       .title(dto.title)

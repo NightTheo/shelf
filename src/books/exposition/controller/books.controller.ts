@@ -85,9 +85,10 @@ export class BooksController {
   async update(
     @Param('isbn') isbn: string,
     @Body() updateBookDto: UpdateBookDto,
+    @UploadedFile() cover: BufferFile,
     @Req() request: Request,
   ): Promise<any> {
-    await this.booksService.update(isbn, updateBookDto);
+    await this.booksService.update(isbn, updateBookDto, cover);
 
     return {
       url: HttpUtils.getFullUrlOf(request),
