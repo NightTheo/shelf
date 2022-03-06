@@ -6,6 +6,8 @@ export abstract class ShelfUrlFactory {
     switch (ressource) {
       case 'books':
         return url + '/books';
+      case 'libraries':
+        return url + '/libraries';
       default:
         throw new ShelfUrlException(`Unknown ressource ${ressource}.`);
     }

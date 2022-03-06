@@ -2,9 +2,8 @@ import { Library } from '../library/library';
 import { LibraryId } from '../library-id/library-id';
 
 export interface LibraryRepository {
-  create(library: Library): void;
-  save(library: Library): void;
+  save(library: Library): Promise<void>;
   delete(libraryId: LibraryId): void;
   findAll(): Promise<Library[]>;
-  findOne(libraryId: LibraryId): Library;
+  findOne(libraryId: LibraryId): Promise<Library>;
 }

@@ -1,8 +1,8 @@
 import { Library } from '../domain/library/library';
-import { GetAllLibrariesDto } from '../dto/get-all-libraries.dto';
+import { GetLibraryDto } from '../dto/get-library.dto';
 
-export class GetAllLibrariesDtoAdapter {
-  static adapt(library: Library): GetAllLibrariesDto {
+export class GetLibraryDtoAdapter {
+  static adapt(library: Library): GetLibraryDto {
     return {
       id: library.id.value,
       books: library.books.map((book) => {

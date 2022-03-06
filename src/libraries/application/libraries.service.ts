@@ -15,15 +15,15 @@ export class LibrariesService {
   ) {}
 
   async createWithListOfIsbn(isbnList?: string[]): Promise<LibraryId> {
-    const id: LibraryId = this.getUniqueLibraryId();
+    const id: LibraryId = await this.getUniqueLibraryId();
     const books: Book[] = await this.getBooksByIsbnList(isbnList);
-    this.libraryRepository.create(new Library(id, books));
+    await this.libraryRepository.save(new Library(id, books));
     return Promise.resolve(id);
   }
 
-  private getUniqueLibraryId(): LibraryId {
+  private async getUniqueLibraryId(): Promise<LibraryId> {
     let id: LibraryId = new LibraryId();
-    while (this.libraryRepository.findOne(id)) {
+    while (await this.libraryRepository.findOne(id)) {
       id = new LibraryId();
     }
     return id;
@@ -51,34 +51,35 @@ export class LibrariesService {
     isbnList: string[],
     libraryId: string,
   ): Promise<void> {
-    const library: Library = this.getLibraryById(libraryId);
+    const library: Library = await this.getLibraryById(libraryId);
     const books: Book[] = await this.getBooksByIsbnList(isbnList);
     books.map((book: Book) => library.add(book));
     this.libraryRepository.save(library);
   }
 
-  private getLibraryById(id: string) {
+  async getLibraryById(id: string) {
     const libraryId: LibraryId = new LibraryId(id);
-    const library: Library = this.libraryRepository.findOne(libraryId);
+    const library: Library = await this.libraryRepository.findOne(libraryId);
     if (!library) {
       throw new LibraryNotFoundException(libraryId);
     }
-    return library;
+    const booksIsbn: string[] = library.books.map((book) => book.isbn);
+    return new Library(library.id, await this.getBooksByIsbnList(booksIsbn));
   }
 
-  delete(libraryId: string): void {
-    const id: LibraryId = this.getLibraryById(libraryId).id;
-    this.libraryRepository.delete(id);
+  async delete(libraryId: string): Promise<void> {
+    const id: LibraryId = (await this.getLibraryById(libraryId)).id;
+    await this.libraryRepository.delete(id);
   }
 
   async removeBooksByIsbnListFromLibrary(
     isbnList: string[],
     libraryId: string,
   ): Promise<void> {
-    const library: Library = this.getLibraryById(libraryId);
+    const library: Library = await this.getLibraryById(libraryId);
     const books: Book[] = await this.getBooksByIsbnList(isbnList);
     books.forEach((book) => library.remove(book));
-    this.libraryRepository.save(library);
+    await this.libraryRepository.save(library);
   }
 
   async removeBookFromAllLibraries(isbn: string): Promise<void> {
@@ -95,21 +96,15 @@ export class LibrariesService {
   async getAll(): Promise<Library[]> {
     const libraries: Library[] = await this.libraryRepository.findAll();
     return Promise.all(
-      libraries.map(async (library) => {
-        const booksIsbn: string[] = library.books.map((book) => book.isbn);
-        return new Library(
-          library.id,
-          await this.getBooksByIsbnList(booksIsbn),
-        );
-      }),
+      libraries.map(async (library) => this.getLibraryById(library.id.value)),
     );
   }
 
   async update(id: string, isbnList: string[]): Promise<void> {
-    const library: Library = this.getLibraryById(id);
+    const library: Library = await this.getLibraryById(id);
     library.removeAllBooks();
     const books: Book[] = await this.getBooksByIsbnList(isbnList);
     books.forEach((book) => library.add(book));
-    this.libraryRepository.save(library);
+    await this.libraryRepository.save(library);
   }
 }

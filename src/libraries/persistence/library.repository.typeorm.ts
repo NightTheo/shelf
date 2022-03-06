@@ -13,9 +13,17 @@ export class LibraryRepositoryTypeORM implements LibraryRepository {
     private readonly typeorm: Repository<LibraryEntity>,
   ) {}
 
-  create(library: Library): void {}
+  async save(library: Library): Promise<void> {
+    const libraryEntity: LibraryEntity = {
+      id: library.id.value,
+      books: JSON.stringify(library.books.map((book: Book) => book.isbn)),
+    };
+    await this.typeorm.save(libraryEntity);
+  }
 
-  delete(libraryId: LibraryId): void {}
+  async delete(libraryId: LibraryId): Promise<void> {
+    await this.typeorm.delete(libraryId.value);
+  }
 
   async findAll(): Promise<Library[]> {
     return (await this.typeorm.find()).map((library) =>
@@ -23,9 +31,8 @@ export class LibraryRepositoryTypeORM implements LibraryRepository {
     );
   }
 
-  findOne(libraryId: LibraryId): Library {
-    return undefined;
+  async findOne(libraryId: LibraryId): Promise<Library> {
+    const library: LibraryEntity = await this.typeorm.findOne(libraryId.value);
+    return library ? LibraryAdapter.fromEntity(library) : null;
   }
-
-  save(library: Library): void {}
 }

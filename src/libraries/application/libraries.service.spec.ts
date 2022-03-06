@@ -129,10 +129,10 @@ describe('LibrariesService', () => {
     ).rejects.toThrow(LibraryNotFoundException);
   });
 
-  it('should delete a library', () => {
+  it('should delete a library', async () => {
     const libraryToDelete: Library = new Library();
     mockLibrariesStorage.set(libraryToDelete.id.value, libraryToDelete);
-    service.delete(libraryToDelete.id.value);
+    await service.delete(libraryToDelete.id.value);
     expect(mockLibrariesStorage.has(libraryToDelete.id.value)).toBeFalsy();
   });
 
@@ -183,11 +183,12 @@ describe('LibrariesService', () => {
   });
 
   it('should get all the libraries', async () => {
+    mockLibrariesStorage.clear();
     const library: Library = new Library(new LibraryId(), [
       new Book('9782221252055', 'Dune', 'Herbert'),
     ]);
     mockLibrariesStorage.set(library.id.value, library);
-    expect(await service.getAll()).toContain(library);
+    expect((await service.getAll())[0]).toEqual(library);
   });
 
   it('should update a library', async () => {
@@ -205,5 +206,13 @@ describe('LibrariesService', () => {
         .get(library.id.value)
         .has(mockBookStorage.get('9782070411610')),
     ).toBeTruthy();
+  });
+
+  it('should get one library by its id', async () => {
+    mockLibrariesStorage.clear();
+    const library: Library = new Library();
+    mockLibrariesStorage.set(library.id.value, library);
+
+    expect(await service.getLibraryById(library.id.value)).toEqual(library);
   });
 });
