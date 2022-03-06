@@ -130,6 +130,20 @@ describe('BooksService', () => {
     expect(mockBooksRepositoryImp.save).toHaveBeenCalled();
   });
 
+  it('should update a book', async () => {
+    const book: UpdateBookDto = {
+      title: 'new title',
+    };
+
+    const isbn = '1234567890001';
+
+    await service.update(isbn, book, null);
+    expect(mockBooksRepositoryImp.findOne).toHaveBeenCalled();
+    expect(mockBooksRepositoryImp.save).toHaveBeenCalled();
+
+    expect(mockBooks.get('1234567890001').title.value).toEqual('new title');
+  });
+
   it('should throw an IsbnFormatException', async () => {
     const book = {
       title: "L'Étranger",

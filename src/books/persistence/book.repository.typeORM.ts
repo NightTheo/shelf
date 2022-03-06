@@ -67,10 +67,6 @@ export class BookRepositoryTypeORM implements BookRepository {
     await this.typeorm.save(bookEntity);
   }
 
-  update(book: Book): Promise<Book> {
-    return Promise.resolve(undefined);
-  }
-
   async exists(isbn: Isbn): Promise<boolean> {
     return (await this.typeorm.findOne(isbn.value)) != null;
   }

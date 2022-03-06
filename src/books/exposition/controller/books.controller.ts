@@ -80,9 +80,20 @@ export class BooksController {
     return dto;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.booksService.update(+id, updateBookDto);
+  @Patch(':isbn')
+  @UseFilters(new BookExceptionFilter())
+  @UseInterceptors(FileInterceptor('picture'))
+  async update(
+    @Param('isbn') isbn: string,
+    @Body() updateBookDto: UpdateBookDto,
+    @UploadedFile() cover: BufferFile,
+    @Req() request: Request,
+  ): Promise<any> {
+    await this.booksService.update(isbn, updateBookDto, cover);
+
+    return {
+      url: HttpUtils.getFullUrlOf(request),
+    };
   }
 
   @HttpCode(204)

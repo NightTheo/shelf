@@ -12,6 +12,7 @@ import { StreamableFile } from '@nestjs/common';
 import { Request } from 'express';
 import { BookCover } from '../../domain/book-cover';
 import { FileLocation } from '../../../shared/files/file-location';
+import { UpdateBookDto } from 'src/books/dto/update-book.dto';
 
 const streamBuffers = require('stream-buffers');
 
@@ -39,6 +40,7 @@ describe('BooksController', () => {
   const mockBooksService = {
     findAll: jest.fn().mockResolvedValue(mockStoredBooks),
     add: jest.fn().mockImplementation((book) => book.isbn),
+    update: jest.fn().mockImplementation((book) => book.isbn),
     findOne: jest
       .fn()
       .mockImplementation(
@@ -104,6 +106,18 @@ describe('BooksController', () => {
     const response = await controller.add(book, null, mockRequest);
     expect(response.url).toContain('/books/9782070360024');
     expect(mockBooksService.add).toHaveBeenCalled();
+  });
+
+  it('should update a book', async () => {
+    const book: UpdateBookDto = {
+      overview: 'new overview',
+    };
+
+    const isbn = '9782070360024';
+
+    const response = await controller.update(isbn, book, null, mockRequest);
+    expect(response).toEqual(expect.anything());
+    expect(mockBooksService.update).toHaveBeenCalled();
   });
 
   it('should add a book without overview and readCount', async () => {

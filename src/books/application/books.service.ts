@@ -24,9 +24,18 @@ export class BooksService {
 
   async add(dto: AddBookDto, coverImage: BufferFile) {
     const isbn: Isbn = new Isbn(dto.isbn);
+    const verified = await isbn.verify();
+
+    if (!verified) {
+      throw new IsbnFormatException(
+        `ISBN do not refer to an existing book. Error with '${isbn.value}'`,
+      );
+    }
+
     if (await this.bookRepository.exists(isbn)) {
       throw new BookConflictException(isbn);
     }
+
     const book: Book = BookAdapter.fromDto(dto);
     book.cover = new BookCover(
       coverImage?.buffer as Buffer,
@@ -51,8 +60,28 @@ export class BooksService {
     return book;
   }
 
-  update(id: number, updateBookDto: UpdateBookDto) {
-    return `This action updates a #${id} book`;
+  async update(isbn: string, dto: UpdateBookDto, cover: BufferFile) {
+    const bookIsbn: Isbn = new Isbn(isbn);
+    const found: Book = await this.bookRepository.findOne(bookIsbn);
+
+    if (!found) {
+      throw new BookNotFoundException(bookIsbn);
+    }
+
+    dto.isbn = isbn;
+    const book: Book = BookAdapter.fromDto(dto);
+
+    book.cover = new BookCover(
+      cover?.buffer as Buffer,
+      new FileLocation(cover?.originalname),
+    );
+
+    if (book.cover.exists()) {
+      this.bookCoverRepository.delete(found.cover.location);
+      book.cover.location = await this.bookCoverRepository.save(book.cover);
+    }
+
+    await this.bookRepository.save(book);
   }
 
   async remove(isbn: string) {
