@@ -3,17 +3,25 @@ import { IsbnFormatException } from '../../../shared/isbn/isbn-format.exception'
 
 export class Book {
   private _isbn: string;
-  private readonly title: string;
-  private readonly author: string;
+  private readonly _title: string;
+  private readonly _author: string;
 
   constructor(isbn: string, title?: string, author?: string) {
     this.isbn = isbn;
-    this.title = title;
-    this.author = author;
+    this._title = title;
+    this._author = author;
   }
 
   get isbn(): string {
     return this._isbn;
+  }
+
+  get title(): string {
+    return this._title;
+  }
+
+  get author(): string {
+    return this._author;
   }
 
   set isbn(value: string) {

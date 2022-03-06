@@ -5,7 +5,7 @@ import { BookNotFoundException } from '../../application/exceptions/book.not-fou
 
 export class Library {
   private readonly _id: LibraryId;
-  private readonly books: Map<string, Book> = new Map<string, Book>();
+  private _books: Map<string, Book> = new Map<string, Book>();
 
   constructor(id?: LibraryId, books: Book[] = []) {
     this._id = id ? id : new LibraryId();
@@ -20,18 +20,26 @@ export class Library {
     if (this.has(book)) {
       throw new BookConflictException(book.isbn);
     }
-    this.books.set(book.isbn, book);
+    this._books.set(book.isbn, book);
   }
 
   has(book: Book): boolean {
     const isbn: string = book.isbn;
-    return this.books.has(isbn);
+    return this._books.has(isbn);
   }
 
   remove(book: Book) {
     if (!this.has(book)) {
       throw new BookNotFoundException(book.isbn);
     }
-    this.books.delete(book.isbn);
+    this._books.delete(book.isbn);
+  }
+
+  get books(): Book[] {
+    return Array.from(this._books.values());
+  }
+
+  removeAllBooks(): void {
+    this._books.clear();
   }
 }

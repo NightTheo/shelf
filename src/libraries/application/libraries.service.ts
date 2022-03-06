@@ -6,6 +6,7 @@ import { Book } from '../domain/book/book';
 import { BookRepositoryShelfApi } from '../persistence/book.repository.shelf-api';
 import { LibraryNotFoundException } from './exceptions/library.not-found.exception';
 import { BookNotFoundException } from './exceptions/book.not-found.exception';
+import { UpdateLibraryBooksDto } from '../dto/update-library-books.dto';
 
 @Injectable()
 export class LibrariesService {
@@ -90,5 +91,17 @@ export class LibrariesService {
   private async getLibrariesContainingBook(book: Book): Promise<Library[]> {
     const allLibraries: Library[] = await this.libraryRepository.findAll();
     return allLibraries.filter((library) => library.has(book));
+  }
+
+  async getAll(): Promise<Library[]> {
+    return this.libraryRepository.findAll();
+  }
+
+  async update(id: string, isbnList: string[]): Promise<void> {
+    const library: Library = this.getLibraryById(id);
+    library.removeAllBooks();
+    const books: Book[] = await this.getBooksByIsbnList(isbnList);
+    books.forEach((book) => library.add(book));
+    this.libraryRepository.save(library);
   }
 }

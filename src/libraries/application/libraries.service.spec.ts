@@ -181,4 +181,29 @@ describe('LibrariesService', () => {
       mockLibrariesStorage.get(library2.id.value).has(bookToRemove),
     ).toBeFalsy();
   });
+
+  it('should get all the libraries', async () => {
+    const library: Library = new Library(new LibraryId(), [
+      new Book('9782221252055', 'Dune', 'Herbert'),
+    ]);
+    mockLibrariesStorage.set(library.id.value, library);
+    expect(await service.getAll()).toContain(library);
+  });
+
+  it('should update a library', async () => {
+    mockLibrariesStorage.clear();
+    const library: Library = new Library();
+    mockLibrariesStorage.set(library.id.value, library);
+    await service.update(library.id.value, ['978-2221252055', '9782070411610']);
+    expect(
+      mockLibrariesStorage
+        .get(library.id.value)
+        .has(mockBookStorage.get('9782221252055')),
+    ).toBeTruthy();
+    expect(
+      mockLibrariesStorage
+        .get(library.id.value)
+        .has(mockBookStorage.get('9782070411610')),
+    ).toBeTruthy();
+  });
 });
