@@ -46,17 +46,33 @@ export class LibrariesService {
     isbnList: string[],
     libraryId: string,
   ): Promise<void> {
-    const library: Library = this.getLibraryById(new LibraryId(libraryId));
+    const library: Library = this.getLibraryById(libraryId);
     const books: Book[] = await this.getBooksByIsbnList(isbnList);
     books.map((book: Book) => library.add(book));
     this.libraryRepository.save(library);
   }
 
-  private getLibraryById(id: LibraryId) {
-    const library: Library = this.libraryRepository.findOne(id);
+  private getLibraryById(id: string) {
+    const libraryId: LibraryId = new LibraryId(id);
+    const library: Library = this.libraryRepository.findOne(libraryId);
     if (!library) {
-      throw new LibraryNotFoundException(id);
+      throw new LibraryNotFoundException(libraryId);
     }
     return library;
+  }
+
+  delete(libraryId: string): void {
+    const id: LibraryId = this.getLibraryById(libraryId).id;
+    this.libraryRepository.delete(id);
+  }
+
+  async removeBooksByIsbnListFromLibrary(
+    isbnList: string[],
+    libraryId: string,
+  ): Promise<void> {
+    const library: Library = this.getLibraryById(libraryId);
+    const books: Book[] = await this.getBooksByIsbnList(isbnList);
+    books.forEach((book) => library.remove(book));
+    this.libraryRepository.save(library);
   }
 }

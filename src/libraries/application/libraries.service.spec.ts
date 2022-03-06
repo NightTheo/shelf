@@ -22,6 +22,11 @@ describe('LibrariesService', () => {
       .mockImplementation((library: Library) =>
         mockLibrariesStorage.set(library.id.value, library),
       ),
+    delete: jest
+      .fn()
+      .mockImplementation((id: LibraryId) =>
+        mockLibrariesStorage.delete(id.value),
+      ),
   };
   const mockLibrariesStorage: Map<string, Library> = new Map<string, Library>();
 
@@ -33,13 +38,9 @@ describe('LibrariesService', () => {
     }),
   );
   const mockBookRepositoryShelfApi = {
-    findOne: jest.fn((isbn: string) => {
-      isbn = isbn.split('-').join('');
-      /*if (!mockBookStorage.has(isbn)) {
-        throw new BookNotFoundException(isbn);
-      }*/
-      return mockBookStorage.get(isbn);
-    }),
+    findOne: jest.fn((isbn: string) =>
+      mockBookStorage.get(isbn.split('-').join('')),
+    ),
   };
 
   beforeEach(async () => {
@@ -103,7 +104,7 @@ describe('LibrariesService', () => {
 
   it('should add books in a library', async () => {
     // given an existing library and the existing book 'Dune'
-    const existingLibrary: Library = new Library(new LibraryId(), []);
+    const existingLibrary: Library = new Library();
     const libraryUuid: string = existingLibrary.id.value;
     mockLibrariesStorage.set(libraryUuid, existingLibrary);
     const bookToAdd: Book = mockBookStorage.get('9782221252055');
@@ -122,5 +123,30 @@ describe('LibrariesService', () => {
       async () =>
         await service.addBooksInLibrary(['9782221252055'], notExistingId.value),
     ).rejects.toThrow(LibraryNotFoundException);
+  });
+
+  it('should delete a library', () => {
+    const libraryToDelete: Library = new Library();
+    mockLibrariesStorage.set(libraryToDelete.id.value, libraryToDelete);
+    service.delete(libraryToDelete.id.value);
+    expect(mockLibrariesStorage.has(libraryToDelete.id.value)).toBeFalsy();
+  });
+
+  it('should remove books from a library', async () => {
+    //given a library with two books in it
+    const library: Library = new Library(new LibraryId(), [
+      mockBookStorage.get('9782221252055'), // Dune - Herbert
+      mockBookStorage.get('9782070411610'), // L'Étranger - Camus
+    ]);
+    const id: string = library.id.value;
+    mockLibrariesStorage.set(id, library);
+
+    await service.removeBooksByIsbnListFromLibrary(['9782221252055'], id);
+    expect(
+      mockLibrariesStorage.get(id).has(mockBookStorage.get('9782221252055')),
+    ).toBeFalsy();
+    expect(
+      mockLibrariesStorage.get(id).has(mockBookStorage.get('9782070411610')),
+    ).toBeTruthy();
   });
 });
