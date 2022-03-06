@@ -12,7 +12,7 @@ export class LibrariesService {
     private bookRepository: BookRepositoryShelfApi,
   ) {}
 
-  async create(isbnList?: string[]): Promise<LibraryId> {
+  async createWithListOfIsbn(isbnList?: string[]): Promise<LibraryId> {
     const id: LibraryId = this.getUniqueLibraryId();
     const books: Book[] = await this.getBooksByIsbnList(isbnList);
     this.libraryRepository.create(new Library(id, books));
@@ -33,5 +33,17 @@ export class LibrariesService {
       : await Promise.all(
           isbnList.map((isbn) => this.bookRepository.findOne(isbn)),
         );
+  }
+
+  async addBooksInLibrary(
+    isbnList: string[],
+    libraryId: string,
+  ): Promise<void> {
+    const books: Book[] = await this.getBooksByIsbnList(isbnList);
+    const library: Library = this.libraryRepository.findOne(
+      new LibraryId(libraryId),
+    );
+    books.map((book: Book) => library.add(book));
+    this.libraryRepository.save(library);
   }
 }

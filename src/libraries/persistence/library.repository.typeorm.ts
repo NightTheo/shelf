@@ -15,4 +15,6 @@ export class LibraryRepositoryTypeORM implements LibraryRepository {
   findOne(libraryId: LibraryId): Library {
     return undefined;
   }
+
+  save(library: Library): void {}
 }
