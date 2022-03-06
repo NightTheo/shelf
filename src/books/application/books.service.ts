@@ -49,8 +49,15 @@ export class BooksService {
     return book;
   }
 
-  update(id: number, updateBookDto: UpdateBookDto) {
-    return `This action updates a #${id} book`;
+  async update(isbn: string, updated: UpdateBookDto) {
+    const bookIsbn: Isbn = new Isbn(isbn);
+    const book: Book = await this.bookRepository.findOne(bookIsbn);
+
+    if (!book) {
+      throw new BookNotFoundException(bookIsbn);
+    }
+
+    await this.bookRepository.update(book.isbn, updated);
   }
 
   async remove(isbn: string) {
