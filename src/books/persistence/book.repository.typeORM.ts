@@ -8,7 +8,6 @@ import { Repository } from 'typeorm';
 import { BookAdapter } from '../adapters/book.adapter';
 import { FileLocation } from '../../shared/files/file-location';
 import { BookNotFoundException } from '../application/exceptions/book.not-found.exception';
-import { UpdateBookDto } from '../dto/update-book.dto';
 
 @Injectable()
 export class BookRepositoryTypeORM implements BookRepository {

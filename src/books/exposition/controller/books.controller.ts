@@ -78,6 +78,7 @@ export class BooksController {
 
   @Patch(':isbn')
   @UseFilters(new BookExceptionFilter())
+  @UseInterceptors(FileInterceptor('picture'))
   async update(
     @Param('isbn') isbn: string,
     @Body() updateBookDto: UpdateBookDto,

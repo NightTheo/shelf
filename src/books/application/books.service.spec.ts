@@ -12,6 +12,7 @@ import { FilesUtils } from '../../shared/files/files.utils';
 import { FileLocation } from '../../shared/files/file-location';
 import { BookNotFoundException } from './exceptions/book.not-found.exception';
 import { BookCoverMinioRepository } from '../persistence/book-cover.minio.repository';
+import { UpdateBookDto } from '../dto/update-book.dto';
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -117,6 +118,20 @@ describe('BooksService', () => {
       originalname: '9782070360024.jpg',
     } as BufferFile);
     expect(mockBooksRepositoryImp.save).toHaveBeenCalled();
+  });
+
+  it('should update a book', async () => {
+    const book: UpdateBookDto = {
+      title: 'new title',
+    };
+
+    const isbn = '1234567890001';
+
+    await service.update(isbn, book, null);
+    expect(mockBooksRepositoryImp.findOne).toHaveBeenCalled();
+    expect(mockBooksRepositoryImp.save).toHaveBeenCalled();
+
+    expect(mockBooks.get('1234567890001').title.value).toEqual('new title');
   });
 
   it('should throw an IsbnFormatException', async () => {
