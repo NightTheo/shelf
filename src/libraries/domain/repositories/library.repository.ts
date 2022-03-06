@@ -5,6 +5,6 @@ export interface LibraryRepository {
   create(library: Library): void;
   save(library: Library): void;
   delete(libraryId: LibraryId): void;
-  findAll(): Library[];
+  findAll(): Promise<Library[]>;
   findOne(libraryId: LibraryId): Library;
 }

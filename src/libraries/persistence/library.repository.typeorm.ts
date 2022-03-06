@@ -8,8 +8,8 @@ export class LibraryRepositoryTypeORM implements LibraryRepository {
 
   delete(libraryId: LibraryId): void {}
 
-  findAll(): Library[] {
-    return [];
+  findAll(): Promise<Library[]> {
+    return Promise.resolve([]);
   }
 
   findOne(libraryId: LibraryId): Library {

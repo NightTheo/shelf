@@ -12,6 +12,8 @@ import { LibraryNotFoundException } from './exceptions/library.not-found.excepti
 describe('LibrariesService', () => {
   let service: LibrariesService;
 
+  const mockLibrariesStorage: Map<string, Library> = new Map<string, Library>();
+
   const mockLibraryRepositoryTypeORM = {
     create: jest.fn().mockImplementation((library: Library) => {
       mockLibrariesStorage.set(library.id.value, library);
@@ -27,8 +29,10 @@ describe('LibrariesService', () => {
       .mockImplementation((id: LibraryId) =>
         mockLibrariesStorage.delete(id.value),
       ),
+    findAll: jest
+      .fn()
+      .mockImplementation(() => Array.from(mockLibrariesStorage.values())),
   };
-  const mockLibrariesStorage: Map<string, Library> = new Map<string, Library>();
 
   const mockBookStorage: Map<string, Book> = new Map<string, Book>(
     Object.entries({
@@ -148,5 +152,33 @@ describe('LibrariesService', () => {
     expect(
       mockLibrariesStorage.get(id).has(mockBookStorage.get('9782070411610')),
     ).toBeTruthy();
+  });
+
+  it('should remove a book from all the libraries containing it', async () => {
+    // Given two libraries with the book 'Dune'
+    const bookToRemove: Book = mockBookStorage.get('9782221252055'); // Dune - Herbert
+    const library1: Library = new Library(new LibraryId(), [
+      bookToRemove,
+      mockBookStorage.get('9782070411610'), // L'Étranger - Camus
+    ]);
+    const library2: Library = new Library(new LibraryId(), [
+      bookToRemove,
+      mockBookStorage.get('9782290032725'), // Des Fleurs Pour Algernon - Keyes
+    ]);
+    mockLibrariesStorage.set(library1.id.value, library1);
+    mockLibrariesStorage.set(library2.id.value, library2);
+
+    await service.removeBookFromAllLibrairies('9782221252055');
+    expect(
+      mockLibrariesStorage.get(library1.id.value).has(bookToRemove),
+    ).toBeFalsy();
+    expect(
+      mockLibrariesStorage
+        .get(library1.id.value)
+        .has(mockBookStorage.get('9782070411610')),
+    ).toBeTruthy();
+    expect(
+      mockLibrariesStorage.get(library2.id.value).has(bookToRemove),
+    ).toBeFalsy();
   });
 });

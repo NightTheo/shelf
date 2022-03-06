@@ -42,6 +42,11 @@ export class LibrariesService {
     );
   }
 
+  private async getBookByIsbn(isbn: string): Promise<Book> {
+    const books: Book[] = await this.getBooksByIsbnList([isbn]);
+    return books[0];
+  }
+
   async addBooksInLibrary(
     isbnList: string[],
     libraryId: string,
@@ -74,5 +79,16 @@ export class LibrariesService {
     const books: Book[] = await this.getBooksByIsbnList(isbnList);
     books.forEach((book) => library.remove(book));
     this.libraryRepository.save(library);
+  }
+
+  async removeBookFromAllLibrairies(isbn: string): Promise<void> {
+    const book: Book = await this.getBookByIsbn(isbn);
+    const libraries: Library[] = await this.getLibrariesContainingBook(book);
+    libraries.forEach((library) => library.remove(book));
+  }
+
+  private async getLibrariesContainingBook(book: Book): Promise<Library[]> {
+    const allLibraries: Library[] = await this.libraryRepository.findAll();
+    return allLibraries.filter((library) => library.has(book));
   }
 }
