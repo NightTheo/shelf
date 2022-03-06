@@ -7,6 +7,7 @@ export class GetAllLibrariesDtoAdapter {
       id: library.id.value,
       books: library.books.map((book) => {
         return {
+          isbn: book.isbn,
           title: book.title,
           author: book.author,
           url: undefined,
