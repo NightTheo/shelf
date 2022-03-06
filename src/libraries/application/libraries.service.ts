@@ -4,6 +4,8 @@ import { LibraryId } from '../domain/library-id/library-id';
 import { Library } from '../domain/library/library';
 import { Book } from '../domain/book/book';
 import { BookRepositoryShelfApi } from '../persistence/book.repository.shelf-api';
+import { LibraryNotFoundException } from './exceptions/library.not-found.exception';
+import { BookNotFoundException } from './exceptions/book.not-found.exception';
 
 @Injectable()
 export class LibrariesService {
@@ -28,22 +30,33 @@ export class LibrariesService {
   }
 
   private async getBooksByIsbnList(isbnList: string[]): Promise<Book[]> {
-    return !isbnList
-      ? []
-      : await Promise.all(
-          isbnList.map((isbn) => this.bookRepository.findOne(isbn)),
-        );
+    if (!isbnList) return [];
+    return await Promise.all(
+      isbnList.map(async (isbn) => {
+        const book: Book = await this.bookRepository.findOne(isbn);
+        if (!book) {
+          throw new BookNotFoundException(isbn);
+        }
+        return book;
+      }),
+    );
   }
 
   async addBooksInLibrary(
     isbnList: string[],
     libraryId: string,
   ): Promise<void> {
+    const library: Library = this.getLibraryById(new LibraryId(libraryId));
     const books: Book[] = await this.getBooksByIsbnList(isbnList);
-    const library: Library = this.libraryRepository.findOne(
-      new LibraryId(libraryId),
-    );
     books.map((book: Book) => library.add(book));
     this.libraryRepository.save(library);
+  }
+
+  private getLibraryById(id: LibraryId) {
+    const library: Library = this.libraryRepository.findOne(id);
+    if (!library) {
+      throw new LibraryNotFoundException(id);
+    }
+    return library;
   }
 }

@@ -7,7 +7,7 @@ import { Book } from '../domain/book/book';
 import { BookRepositoryShelfApi } from '../persistence/book.repository.shelf-api';
 import { BookNotFoundException } from './exceptions/book.not-found.exception';
 import { BookConflictException } from '../domain/exceptions/book.conflict.exception';
-import { log } from 'util';
+import { LibraryNotFoundException } from './exceptions/library.not-found.exception';
 
 describe('LibrariesService', () => {
   let service: LibrariesService;
@@ -35,9 +35,9 @@ describe('LibrariesService', () => {
   const mockBookRepositoryShelfApi = {
     findOne: jest.fn((isbn: string) => {
       isbn = isbn.split('-').join('');
-      if (!mockBookStorage.has(isbn)) {
+      /*if (!mockBookStorage.has(isbn)) {
         throw new BookNotFoundException(isbn);
-      }
+      }*/
       return mockBookStorage.get(isbn);
     }),
   };
@@ -86,6 +86,9 @@ describe('LibrariesService', () => {
     expect(() => service.createWithListOfIsbn(unknownIsbn)).rejects.toThrow(
       BookNotFoundException,
     );
+    expect(() => service.createWithListOfIsbn(unknownIsbn)).rejects.toThrow(
+      '000-0000000000',
+    );
   });
 
   it('should throw a BookConflictException when create a library with duplicate isbn', () => {
@@ -99,43 +102,25 @@ describe('LibrariesService', () => {
   });
 
   it('should add books in a library', async () => {
-    // given an existing library and the existing book 'Clean Architecture'
+    // given an existing library and the existing book 'Dune'
     const existingLibrary: Library = new Library(new LibraryId(), []);
     const libraryUuid: string = existingLibrary.id.value;
-    mockLibrariesStorage.set(existingLibrary.id.value, existingLibrary);
-
-    const newBook: Book = new Book(
-      '9780134494166',
-      'Clean Architecture',
-      'Robert Martin',
-    );
-    mockBookStorage.set('9780134494166', newBook);
+    mockLibrariesStorage.set(libraryUuid, existingLibrary);
+    const bookToAdd: Book = mockBookStorage.get('9782221252055');
 
     // when add the book in the library
-    await service.addBooksInLibrary(['9780134494166'], libraryUuid);
+    await service.addBooksInLibrary(['9782221252055'], libraryUuid);
 
-    expect(mockLibrariesStorage.get(libraryUuid).has(newBook)).toBeTruthy();
+    expect(mockLibrariesStorage.get(libraryUuid).has(bookToAdd)).toBeTruthy();
   });
 
-  /*it('should throw a BookConflictException', () => {
-    mockBookStorage.set(
-        '9780132350884',
-        new Book('9780132350884', 'Clean Code', 'Robert Martin'),
+  it("should throw a LibraryNotFoundException when add books when library uuid doesn't exists", () => {
+    const notExistingId: LibraryId = LibraryId.withValue(
+      '00000000-0000-0000-0000-000000000000',
     );
-    service.addBooksInLibrary([])
-  });*/
-
-  /*it('should add a book in a library', () => {
-    mockBookStorage.set(
-      '9780132350884',
-      new Book('9780132350884', 'Clean Code', 'Robert Martin'),
-    );
-    mockBookStorage.set(
-      '9780134494166',
-      new Book('9780134494166', 'Clean Architecture', 'Robert Martin'),
-    );
-    service.
-  });*/
-
-  // should throw a LibraryNotFound when given library doesn't exists
+    expect(
+      async () =>
+        await service.addBooksInLibrary(['9782221252055'], notExistingId.value),
+    ).rejects.toThrow(LibraryNotFoundException);
+  });
 });
