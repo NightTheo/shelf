@@ -12,6 +12,7 @@ import { BookConflictException } from './exceptions/book.conflict.exception';
 import { BookNotFoundException } from './exceptions/book.not-found.exception';
 import { BookAdapter } from '../adapters/book.adapter';
 import { BookCoverMinioRepository } from '../persistence/book-cover.minio.repository';
+import { IsbnFormatException } from '../domain/IsbnFormatException';
 
 @Injectable()
 export class BooksService {
@@ -22,9 +23,18 @@ export class BooksService {
 
   async add(dto: AddBookDto, coverImage: BufferFile) {
     const isbn: Isbn = new Isbn(dto.isbn);
+    const verified = await isbn.verify();
+
+    if (!verified) {
+      throw new IsbnFormatException(
+        `ISBN do not refer to an existing book. Error with '${isbn.value}'`,
+      );
+    }
+
     if (await this.bookRepository.exists(isbn)) {
       throw new BookConflictException(isbn);
     }
+
     const book: Book = BookAdapter.fromDto(dto);
     book.cover = new BookCover(
       coverImage?.buffer as Buffer,
