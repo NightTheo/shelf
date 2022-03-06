@@ -49,15 +49,27 @@ export class BooksService {
     return book;
   }
 
-  async update(isbn: string, updated: UpdateBookDto) {
+  async update(isbn: string, dto: UpdateBookDto, cover: BufferFile) {
     const bookIsbn: Isbn = new Isbn(isbn);
-    const book: Book = await this.bookRepository.findOne(bookIsbn);
+    const found: Book = await this.bookRepository.findOne(bookIsbn);
 
-    if (!book) {
+    if (!found) {
       throw new BookNotFoundException(bookIsbn);
     }
 
-    await this.bookRepository.update(book.isbn, updated);
+    dto.isbn = isbn;
+    const book: Book = BookAdapter.fromDto(dto);
+
+    book.cover = new BookCover(
+      cover?.buffer as Buffer,
+      new FileLocation(cover?.originalname),
+    );
+
+    if (book.cover.exists()) {
+      book.cover.location = await this.bookCoverRepository.save(book.cover);
+    }
+
+    await this.bookRepository.save(book);
   }
 
   async remove(isbn: string) {

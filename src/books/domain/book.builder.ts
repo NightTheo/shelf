@@ -20,12 +20,12 @@ export class BookBuilder {
   }
 
   public title(title: string) {
-    this._title = new BookTitle(title.trim());
+    this._title = new BookTitle(title?.trim());
     return this;
   }
 
   public author(author: string) {
-    this._author = new Author(author.trim());
+    this._author = new Author(author?.trim());
     return this;
   }
 

@@ -8,7 +8,6 @@ export interface BookRepository {
   findOne(isbn: Isbn): Promise<Book>;
   find(): Promise<Book[]>;
   findBy(): Promise<Book[]>;
-  update(isbn: Isbn, book: UpdateBookDto): Promise<void>;
   delete(isbn: Isbn): void;
   findCoverLocation(isbn: Isbn): Promise<FileLocation>;
   exists(isbn: Isbn);
