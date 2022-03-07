@@ -91,7 +91,9 @@ export class BooksService {
     const bookIsbn = new Isbn(isbn);
     const coverLocation: FileLocation =
       await this.bookRepository.findCoverLocation(bookIsbn);
-    this.bookCoverRepository.delete(coverLocation);
+    if (coverLocation?.exists()) {
+      this.bookCoverRepository.delete(coverLocation);
+    }
     await this.bookRepository.delete(bookIsbn);
     await this.libraryRepository.removeBookFromAllLibraries(bookIsbn);
   }

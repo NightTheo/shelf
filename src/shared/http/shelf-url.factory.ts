@@ -8,6 +8,8 @@ export abstract class ShelfUrlFactory {
         return url + '/books';
       case 'libraries':
         return url + '/libraries';
+      case 'book-in-all-library':
+        return this.getEndPoint('libraries') + '/book';
       default:
         throw new ShelfUrlException(`Unknown ressource ${ressource}.`);
     }
