@@ -69,4 +69,10 @@ export class LibrariesController {
   ): Promise<void> {
     await this.librariesService.update(id, updateLibraryBooksDto.books);
   }
+
+  @HttpCode(204)
+  @Delete('book/:isbn')
+  async removeBookFromAllLibraries(@Param('isbn') isbn: string): Promise<void> {
+    await this.librariesService.removeBookFromAllLibraries(isbn);
+  }
 }

@@ -35,6 +35,15 @@ describe('LibrariesController', () => {
       );
       mockLibrariesStorage.set(id, library);
     }),
+    removeBookFromAllLibraries: jest.fn().mockImplementation((isbn: string) => {
+      const book: Book = new Book(isbn);
+      Array.from(mockLibrariesStorage.values())
+        .filter((library: Library) => library.has(book))
+        .forEach((library: Library) => {
+          library.remove(book);
+          mockLibrariesStorage.set(library.id.value, library);
+        });
+    }),
   };
 
   beforeEach(async () => {
@@ -47,6 +56,7 @@ describe('LibrariesController', () => {
       .compile();
 
     controller = module.get<LibrariesController>(LibrariesController);
+    mockLibrariesStorage.clear();
   });
 
   it('should be defined', () => {
@@ -76,7 +86,6 @@ describe('LibrariesController', () => {
   });
 
   it('should create an empty library', async () => {
-    mockLibrariesStorage.clear();
     await controller.createLibrary();
     expect(mockLibrariesStorage.size).toEqual(1);
     const [created] = mockLibrariesStorage.keys();
@@ -84,7 +93,6 @@ describe('LibrariesController', () => {
   });
 
   it('should create a library with three books', async () => {
-    mockLibrariesStorage.clear();
     const dto: CreateLibraryDto = {
       books: ['978-2221252055', '9782070411610', '978-2-2900-3272-5'],
     };
@@ -99,7 +107,6 @@ describe('LibrariesController', () => {
   });
 
   it('should delete a library', async () => {
-    mockLibrariesStorage.clear();
     const toDelete: Library = new Library();
     mockLibrariesStorage.set(toDelete.id.value, toDelete);
     await controller.delete(toDelete.id.value);
@@ -107,7 +114,6 @@ describe('LibrariesController', () => {
   });
 
   it('should update a library', async () => {
-    mockLibrariesStorage.clear();
     const library: Library = new Library();
     mockLibrariesStorage.set(library.id.value, library);
     const dto: UpdateLibraryBooksDto = {
@@ -117,5 +123,36 @@ describe('LibrariesController', () => {
     expect(
       mockLibrariesStorage.get(library.id.value).has(new Book('9782070411610')),
     ).toBeTruthy();
+  });
+
+  it('should delete a book from all libraries containing it', async () => {
+    // Given two libraries with the book 'Dune'
+    const bookToRemove: Book = new Book('9782221252055', 'Dune', 'Herbert'); // Dune - Herbert
+    const bookRemaining: Book = new Book(
+      '9782070411610',
+      "L'Étranger",
+      'Camus',
+    );
+    const library1: Library = new Library(new LibraryId(), [
+      bookToRemove,
+      bookRemaining,
+    ]);
+    const library2: Library = new Library(new LibraryId(), [
+      bookToRemove,
+      new Book('9782290032725', 'Des Fleurs Pour Algernon', 'Keyes'),
+    ]);
+    mockLibrariesStorage.set(library1.id.value, library1);
+    mockLibrariesStorage.set(library2.id.value, library2);
+
+    await controller.removeBookFromAllLibraries(bookToRemove.isbn);
+    expect(
+      mockLibrariesStorage.get(library1.id.value).has(bookToRemove),
+    ).toBeFalsy();
+    expect(
+      mockLibrariesStorage.get(library1.id.value).has(bookRemaining),
+    ).toBeTruthy();
+    expect(
+      mockLibrariesStorage.get(library2.id.value).has(bookToRemove),
+    ).toBeFalsy();
   });
 });
