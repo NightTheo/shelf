@@ -14,6 +14,7 @@ import { BookAdapter } from '../adapters/book.adapter';
 import { BookCoverMinioRepository } from '../persistence/book-cover.minio.repository';
 import { LibraryRepositoryShelfApi } from '../persistence/library.repository.shelf-api';
 import { IsbnFormatException } from '../../shared/isbn/isbn-format.exception';
+import { IsbnValidatorGoogleApi } from '../../shared/isbn/isbn.validator.google-api';
 
 @Injectable()
 export class BooksService {
@@ -21,11 +22,12 @@ export class BooksService {
     private bookRepository: BookRepositoryTypeORM,
     private bookCoverRepository: BookCoverMinioRepository,
     private libraryRepository: LibraryRepositoryShelfApi,
+    private isbnValidator: IsbnValidatorGoogleApi,
   ) {}
 
   async add(dto: AddBookDto, coverImage: BufferFile) {
     const isbn: Isbn = new Isbn(dto.isbn);
-    const verified = await isbn.verify();
+    const verified = await this.isbnValidator.validate(isbn);
 
     if (!verified) {
       throw new IsbnFormatException(

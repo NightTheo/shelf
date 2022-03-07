@@ -8,6 +8,7 @@ import { Book } from '../src/books/domain/book';
 import { FilesUtils } from '../src/shared/files/files.utils';
 import { BookCoverMinioRepository } from '../src/books/persistence/book-cover.minio.repository';
 import { BookCover } from '../src/books/domain/book-cover';
+import { IsbnValidatorGoogleApi } from '../src/shared/isbn/isbn.validator.google-api';
 
 describe('BookController (e2e)', () => {
   let app: INestApplication;
@@ -53,6 +54,10 @@ describe('BookController (e2e)', () => {
     }),
   };
 
+  const mockIsbnValidator = {
+    validate: jest.fn().mockResolvedValue(true),
+  };
+
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [BooksModule],
@@ -61,6 +66,8 @@ describe('BookController (e2e)', () => {
       .useValue(mockBookRepository)
       .overrideProvider(BookCoverMinioRepository)
       .useValue(mockBookCoverRepository)
+      .overrideProvider(IsbnValidatorGoogleApi)
+      .useValue(mockIsbnValidator)
       .compile();
 
     app = moduleFixture.createNestApplication();

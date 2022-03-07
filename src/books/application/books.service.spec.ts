@@ -14,6 +14,7 @@ import { BookNotFoundException } from './exceptions/book.not-found.exception';
 import { BookCoverMinioRepository } from '../persistence/book-cover.minio.repository';
 import { LibraryRepositoryShelfApi } from '../persistence/library.repository.shelf-api';
 import { UpdateBookDto } from '../dto/update-book.dto';
+import { IsbnValidatorGoogleApi } from '../../shared/isbn/isbn.validator.google-api';
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -84,6 +85,10 @@ describe('BooksService', () => {
     }),
   };
 
+  const mockIsbnValidator = {
+    validate: jest.fn().mockResolvedValue(true),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -92,6 +97,7 @@ describe('BooksService', () => {
         BookCoverFileSystemRepository,
         BookCoverMinioRepository,
         LibraryRepositoryShelfApi,
+        IsbnValidatorGoogleApi,
       ],
     })
       .overrideProvider(BookRepositoryTypeORM)
@@ -102,6 +108,8 @@ describe('BooksService', () => {
       .useValue(mockBookCoverRepository)
       .overrideProvider(LibraryRepositoryShelfApi)
       .useValue(mockLibraryRepositoryShelfApi)
+      .overrideProvider(IsbnValidatorGoogleApi)
+      .useValue(mockIsbnValidator)
       .compile();
 
     service = module.get<BooksService>(BooksService);
