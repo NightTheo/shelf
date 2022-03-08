@@ -142,7 +142,6 @@ Les branches main et develop sont protégées par des règles :
 
 ## Contribuer
 
-La documentation de l’exécution de votre application via l’environnement de développement sous docker-compose
 ```bash
 $ docker compose up app
 ```
@@ -205,7 +204,7 @@ Il y a en tout 3 volumes :
 
 ##### Réseau
 
-Les trois services sont dans le réseau `shelf` qui est en bridge.
+Les trois services sont dans le réseau `shelf` en bridge.
 
 ##### Important
 
@@ -215,7 +214,20 @@ Il faut faire attention, lorsque l'on veut faire des appels entre conteneurs (co
 
 ## Déploiement
 
-La documentation de l’exécution de votre application en production avec Docker
+Le [Dockerfile](./Dockerfile) présent à la racine du projet précise qu'il s'agit 
+d'une image [node:17-bullseye](https://hub.docker.com/_/node).
+On utilise comme Workdir `/usr/src/app`.
+On copie les fichiers [package.json](./package.json) et package-lock.json présents à la racine du projet.
+On installe toutes les dépendances puis on copie tous les fichiers du projet.
+Enfin on lance la construction du projet. Une fois terminé, le docker-compose lance l'api via `npm run start`.
+
+Le projet possède des [Github Actions](./.github/workflows/test.yml).
+Ces actions lancent sur les versions 12, 14 et 16 de node :
+- la vérification du format avec Prettier
+- les tests unitaires
+- les tests d'intégration
+
+lorsque l'on **push** ou **pull request** sur main ou develop.
 
 ## Tests logiciels
 
