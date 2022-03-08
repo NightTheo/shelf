@@ -15,13 +15,19 @@ Renommer le fichier `.env.exemple` par `.env`
 et remplacer les variables relatives à la base de données:
 
 ```dotenv
-#.env
+.env
 
+DB_TYPE=mysql
 DB_HOST=shelf_db
 DB_PORT=3306
 DB_DATABASE=dbname
 DB_USERNAME=user
 DB_PASSWORD=pwd
+
+STORAGE_ENDPOINT=minio
+STORAGE_PORT=9000
+STORAGE_USER=shelf
+STORAGE_PASSWORD=secure_password
 ```
 
 ## Démarrage
@@ -38,19 +44,34 @@ $ docker compose up app
 - [x] Ajouter un livre
 - [x] Modifier un livre
 - [x] Supprimer un livre
-
-### Bonnus
-
-- [ ] Valider l'ISBN via une api externe
-- [ ] Multiplicité de bibliothèques
+- [x] Valider l'ISBN via une api externe
+- [x] Multiplicité de bibliothèques
 - [ ] Inscription / Connexion
 - [x] Stockage des images avec [Minio](https://hub.docker.com/r/minio/minio/)
+
+### Routes
+
+| Méthode | Chemin                | Status Normal | Description                                    |
+|---------|-----------------------|---------------|------------------------------------------------|
+| `GET`     | `/books`                | 200           | Récupère tous les livres                       |
+| `GET`     | `/books/:isbn`          | 200           | Récupère un livre par son ISBN                 |
+| `GET`     | `/books/:isbn/cover`    | 200           | Récupère l'image de couverture d'un livre      |
+| `POST`    | `/books`                | 201           | Ajoute un livre                                |
+| `PATCH`   | `/books/:isbn`          | 200           | Modifie un livre                                |
+| `DELETE`  | `/books/:isbn`          | 204           | Supprime un livre                              |
+| `GET`     | `/libraries`            | 200           | Récupère toutes les bibliothèques              |
+| `GET`     | `/libraries/:uuid`      | 200           | Récupère un bibliothèque par son UUID          |
+| `POST`    | `/libraries`            | 201           | Crée une bibliothèque                          |
+| `PATCH`   | `/libraries/:uuid`      | 200           | Modifie la liste des livres d'une bibliothèque  |
+| `DELETE`  | `/libraries/:uuid`      | 204           | Supprime une bibliothèque                      |
+| `DELETE`  | `/libraries/book/:isbn` | 204           | Retire un livre de toutes les bibliothèques    |
+
 
 ## Versioning
 
 ### Gitflow
 
-Le worflow utilisé est le **Gitflow**, c'est à dire les branches:
+Le worflow utilisé est le **Gitflow**, c'est-à-dire les branches :
 
 - main
 - develop

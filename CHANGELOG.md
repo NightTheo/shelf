@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2022-03-08
+### Added
+- Libraries management :
+  - `GET /libraries` get all the libraries (with their books).
+  - `GET /libraries/{uuid}` get the details of a library.
+  - `POST /libraries` create a new library with books (array of isbn in the body)
+  - `DELETE /libraries/{uuid}` delete a library
+  - `PATH /libraries/{uuid}` update the list of books in a library
+  - When a book is deleted by `DELETE /books/{isbn}`, the book is removed from all libraries
+- `PATCH /books/{isbn}` update a book information
+- When a book is added, the given ISBN is checked by calling the [Google API](https://www.googleapis.com/books/v1/volumes?q=isbn:9782221252055)
+- Documentation of the use of docker, docker-compose, git, GitHub, ... in the [README.md](./README.md)
+
 ## [0.5.0] - 2022-03-03
 ### Added
 - Upload a book's picture when you add a new book is now possible on the endpoint `POST /books`.
@@ -31,6 +44,7 @@ the overview, the picture and the read count.
 - GitHub Actions for Continuous Integration.
 - This CHANGELOG which starts at version 0.4.0.
 
-[Unreleased]: https://github.com/NightTheo/shelf/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/NightTheo/shelf/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/NightTheo/shelf/releases/tag/v1.0.0
 [0.5.0]: https://github.com/NightTheo/shelf/releases/tag/v0.5.0
 [0.4.0]: https://github.com/NightTheo/shelf/releases/tag/v0.4.0
