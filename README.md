@@ -77,6 +77,33 @@ $ docker compose up app
 
 ---
 
+L'application est découpée en deux packages : Books et Libraries
+
+### Books
+Le lecteur peut afficher tous les livres qu’il a lus `GET /books`.
+
+Le lecteur peut afficher les détails d’un livre `GET /books/:isbn`.
+
+Le lecteur peut afficher l'image de couverture d’un livre `GET /books/:isbn/cover`.
+
+Le lecteur peut ajouter un nouveau livre dans sa bibliothèque générale `POST /books`.
+
+Le lecteur peut modifier un livre déjà présent dans sa bibliothèque `PATCH /books/:isbn` .
+
+Le lecteur peut supprimer un livre de toutes ses bibliothèques. `DELETE /books/:isbn`.
+
+### Libraries
+
+Le lecteur peut afficher toutes les bibliothèques qu’il a `GET /libraries`.
+
+Le lecteur peut afficher les livres présents dans une bibliothèque `GET /libraries/:uuid`.
+
+Le lecteur peut créer une nouvelle bibliothèque `POST /libraries`.
+
+Le lecteur peut modifier la liste des livres présents dans une bibliothèque `PATCH /libraries/:uuid` .
+
+Le lecteur peut supprimer une de ses bibliothèques. `DELETE /libraries/:uuid`.
+
 ## Versioning
 
 ### Gitflow
