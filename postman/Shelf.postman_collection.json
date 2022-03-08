@@ -1,0 +1,637 @@
+{
+	"info": {
+		"_postman_id": "fbe0449a-ced3-491e-8d2d-82440f881a21",
+		"name": "Shelf",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "books",
+			"item": [
+				{
+					"name": "a new book",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"isbn\": \"9782253082645\",\n        \"title\": \"Le Grand Meaulnes\",\n        \"author\": \"Alain-Fournier\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/books",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"books"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "add a valid book",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"isbn\": \"978-2-29-003272-6\",\n    \"title\": \"Des fleurs pour Algernon\",\n    \"author\": \"Daniel Keyes\",\n    \"overview\": \"Algernon est une souris dont le traitement du Pr Nemur et du Dr Strauss vient de décupler l'intelligence.\",\n    \"readCound\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/books",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"books"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "24"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"18-SjHf4ZWZOxaUyOqdCRWvIVTy1HY\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 22 Jan 2022 19:35:08 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"isbn\": \"9782290032726\"\n}"
+						},
+						{
+							"name": "a new book",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"isbn\": \"978-2072927515\",\n    \"title\": \"La Horde du Contrevent\",\n    \"author\": \"Alain Damasio\",\n    \"overview\": \"Un groupe d'élite, formé dès l'enfance à faire face, part des confins d'une terre féroce, saignée de rafales, pour aller chercher l'origine du vent. Ils sont vingt-trois, un bloc, un noeud de courage : la Horde. Ils sont pilier, ailier, traceur, aéromaître et géomaître, feuleuse et sourcière, troubadour et scribe. Ils traversent leur monde debout, à pied, en quête d'un Extrême-Amont qui fuit devant eux comme un horizon fou. Expérience de lecture unique, La Horde du Contrevent est un livre-univers qui fond d'un même feu l'aventure et la poésie des parcours, le combat nu et la quête d'un sens profond du vivant qui unirait le mouvement et le lien. Chaque mot résonne, claque, fuse : Alain Damasio joue de sa plume comme d'un pinceau, d'une caméra ou d'une arme... Chef-d'oeuvre porté par un bouche-à-oreille rare, le roman a été logiquement récompensé par le Grand Prix de l'Imaginaire.\",\n    \"readCound\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/books",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"books"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "24"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"18-k2s1nqH+Ta+H47x1Wsw2Bs0onWQ\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 23 Jan 2022 08:48:32 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"isbn\": \"9782072927515\"\n}"
+						},
+						{
+							"name": "a new book with empty body",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/books",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"books"
+									]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "396"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"18c-gi1s2YrFmKSAGVz5tAQTFI6K1dI\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 23 Jan 2022 08:49:28 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 422,\n    \"timestamp\": \"2022-01-23T08:49:28.211Z\",\n    \"message\": [\n        \"isbn must be shorter than or equal to 17 characters\",\n        \"isbn should not be empty\",\n        \"title must be shorter than or equal to 200 characters\",\n        \"title should not be empty\",\n        \"author must be shorter than or equal to 150 characters\",\n        \"author should not be empty\",\n        \"overview must be shorter than or equal to 1500 characters\"\n    ],\n    \"path\": \"/books\"\n}"
+						},
+						{
+							"name": "a new book with a bad isbn format",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"isbn\": \"badIsbn\",\n    \"title\": \"...\",\n    \"author\": \"...\",\n    \"overview\": \"...\",\n    \"readCound\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/books",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"books"
+									]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "149"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"95-+qPkv5u3VnWr6mZEjYCAlv74Glg\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 23 Jan 2022 08:50:21 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 422,\n    \"timestamp\": \"2022-01-23T08:50:21.114Z\",\n    \"message\": \"ISBN-13 format is: 'aaa-b-cc-dddddd-e' (with or without dashes)\",\n    \"path\": \"/books\"\n}"
+						}
+					]
+				},
+				{
+					"name": "a new book with a cover",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "isbn",
+									"value": "978-2070772439",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "Le Cahier bleu et le Cahier brun",
+									"type": "text"
+								},
+								{
+									"key": "author",
+									"value": "Ludwig Wittgenstein",
+									"type": "text"
+								},
+								{
+									"key": "picture",
+									"type": "file",
+									"src": "/Users/theo/Desktop/41Z6nZqzWJL_SX327_BO1,204,203,200_.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/books",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "a new book with a  BAD cover file",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "isbn",
+									"value": "978-2070772439",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "Le Cahier bleu et le Cahier brun",
+									"type": "text"
+								},
+								{
+									"key": "author",
+									"value": "Ludwig Wittgenstein",
+									"type": "text"
+								},
+								{
+									"key": "picture",
+									"type": "file",
+									"src": "/Users/theo/Desktop/Prototypage.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/books",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/books/",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"books",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "all books",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/books",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"books"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "205"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"cd-4+0wjI7KsNf7yJQdJLFFQpI5NzI\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 22 Jan 2022 19:36:41 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"isbn\": \"9782290032726\",\n        \"title\": \"Des fleurs pour Algernon\",\n        \"author\": \"Daniel Keyes\",\n        \"overview\": \"Algernon est une souris dont le traitement du Pr Nemur et du Dr Strauss vient de décupler l'intelligence.\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "a book",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/books/978-2-0703-8890-5",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"books",
+								"978-2-0703-8890-5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "one book",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/books/978-2-0703-8890-5",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"books",
+								"978-2-0703-8890-5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "book cover picture",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/books/9782070772439/cover",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"books",
+								"9782070772439",
+								"cover"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "libraries",
+			"item": [
+				{
+					"name": "all libraries",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/libraries",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"libraries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "one library",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/libraries/c70cdd8b-d751-475a-9669-f3e0d17b9b62",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"libraries",
+								"c70cdd8b-d751-475a-9669-f3e0d17b9b62"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "a library",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/libraries/cc1d43b9-9ebf-4e3e-86ce-fe4f67da7e64",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"libraries",
+								"cc1d43b9-9ebf-4e3e-86ce-fe4f67da7e64"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "a new empty library",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/libraries",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"libraries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "a new library with two books",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"books\": [\"9782070388905\", \"9782253082645\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/libraries",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"libraries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "a library",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"books\": [\"978-2-0703-8890-5\", \"978-2-2530-8264-5\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/libraries/809947d2-d3e7-41d9-804e-9ee53c5b8857",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"libraries",
+								"809947d2-d3e7-41d9-804e-9ee53c5b8857"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "a book from all libraries",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/libraries/book/978-2-0703-8890-5",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"libraries",
+								"book",
+								"978-2-0703-8890-5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
