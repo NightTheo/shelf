@@ -1,4 +1,4 @@
-import { Isbn } from './isbn';
+import { Isbn } from './isbn/isbn';
 import { BookTitle } from './book-title';
 import { Author } from './author';
 import { BookOverview } from './book-overview';

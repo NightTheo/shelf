@@ -7,12 +7,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as ormConfig from './ormconfig';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './all-exceptions.filter';
+import { LibrariesModule } from './libraries/libraries.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(ormConfig),
     BooksModule,
+    LibrariesModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,5 +1,5 @@
 import { NotFoundException } from '@nestjs/common';
-import { Isbn } from '../../domain/isbn';
+import { Isbn } from '../../domain/isbn/isbn';
 
 export class BookCoverNotFoundException extends NotFoundException {
   constructor(isbn: Isbn) {

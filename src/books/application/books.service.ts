@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UpdateBookDto } from '../dto/update-book.dto';
 import { BookRepositoryTypeORM } from '../persistence/book.repository.typeORM';
 import { AddBookDto } from '../dto/add-book.dto';
-import { Isbn } from '../domain/isbn';
+import { Isbn } from '../domain/isbn/isbn';
 import { BufferFile } from '../../shared/files/buffer-file';
 import { Book } from '../domain/book';
 import { BookCover } from '../domain/book-cover';
@@ -12,18 +12,22 @@ import { BookConflictException } from './exceptions/book.conflict.exception';
 import { BookNotFoundException } from './exceptions/book.not-found.exception';
 import { BookAdapter } from '../adapters/book.adapter';
 import { BookCoverMinioRepository } from '../persistence/book-cover.minio.repository';
-import { IsbnFormatException } from '../domain/IsbnFormatException';
+import { LibraryRepositoryShelfApi } from '../persistence/library.repository.shelf-api';
+import { IsbnFormatException } from '../../shared/isbn/isbn-format.exception';
+import { IsbnValidatorGoogleApi } from '../../shared/isbn/isbn.validator.google-api';
 
 @Injectable()
 export class BooksService {
   constructor(
     private bookRepository: BookRepositoryTypeORM,
     private bookCoverRepository: BookCoverMinioRepository,
+    private libraryRepository: LibraryRepositoryShelfApi,
+    private isbnValidator: IsbnValidatorGoogleApi,
   ) {}
 
   async add(dto: AddBookDto, coverImage: BufferFile) {
     const isbn: Isbn = new Isbn(dto.isbn);
-    const verified = await isbn.verify();
+    const verified = await this.isbnValidator.validate(isbn);
 
     if (!verified) {
       throw new IsbnFormatException(
@@ -87,8 +91,11 @@ export class BooksService {
     const bookIsbn = new Isbn(isbn);
     const coverLocation: FileLocation =
       await this.bookRepository.findCoverLocation(bookIsbn);
-    this.bookCoverRepository.delete(coverLocation);
+    if (coverLocation?.exists()) {
+      this.bookCoverRepository.delete(coverLocation);
+    }
     await this.bookRepository.delete(bookIsbn);
+    await this.libraryRepository.removeBookFromAllLibraries(bookIsbn);
   }
 
   async findPictureByIsbn(isbn: string): Promise<BookCover> {

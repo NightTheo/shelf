@@ -2,9 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BooksService } from './books.service';
 import { BookRepositoryTypeORM } from '../persistence/book.repository.typeORM';
 import { Book } from '../domain/book';
-import { Isbn } from '../domain/isbn';
+import { Isbn } from '../domain/isbn/isbn';
 import { AddBookDto } from '../dto/add-book.dto';
-import { IsbnFormatException } from '../domain/IsbnFormatException';
+import { IsbnFormatException } from '../../shared/isbn/isbn-format.exception';
 import { BufferFile } from '../../shared/files/buffer-file';
 import { BookCover } from '../domain/book-cover';
 import { BookCoverFileSystemRepository } from '../persistence/book-cover.file-system.repository';
@@ -12,7 +12,9 @@ import { FilesUtils } from '../../shared/files/files.utils';
 import { FileLocation } from '../../shared/files/file-location';
 import { BookNotFoundException } from './exceptions/book.not-found.exception';
 import { BookCoverMinioRepository } from '../persistence/book-cover.minio.repository';
+import { LibraryRepositoryShelfApi } from '../persistence/library.repository.shelf-api';
 import { UpdateBookDto } from '../dto/update-book.dto';
+import { IsbnValidatorGoogleApi } from '../../shared/isbn/isbn.validator.google-api';
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -47,8 +49,8 @@ describe('BooksService', () => {
       mockBooks.set(book.isbn.value, book);
       mockFileStorage.add(book.cover.location.path);
     }),
-    delete: jest.fn((isbn) => {
-      mockBooks.delete(isbn);
+    delete: jest.fn((isbn: Isbn) => {
+      mockBooks.delete(isbn.value);
     }),
     findOne: jest.fn((isbn: Isbn) => mockBooks.get(isbn.value)),
     exists: jest
@@ -76,6 +78,17 @@ describe('BooksService', () => {
     }),
   };
 
+  const mockLibraryStorage = new Map<string, Set<string>>();
+  const mockLibraryRepositoryShelfApi = {
+    removeBookFromAllLibraries: jest.fn().mockImplementation((isbn: Isbn) => {
+      mockLibraryStorage.forEach((library) => library.delete(isbn.value));
+    }),
+  };
+
+  const mockIsbnValidator = {
+    validate: jest.fn().mockResolvedValue(true),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -83,6 +96,8 @@ describe('BooksService', () => {
         BookRepositoryTypeORM,
         BookCoverFileSystemRepository,
         BookCoverMinioRepository,
+        LibraryRepositoryShelfApi,
+        IsbnValidatorGoogleApi,
       ],
     })
       .overrideProvider(BookRepositoryTypeORM)
@@ -91,6 +106,10 @@ describe('BooksService', () => {
       .useValue(mockBookCoverRepository)
       .overrideProvider(BookCoverMinioRepository)
       .useValue(mockBookCoverRepository)
+      .overrideProvider(LibraryRepositoryShelfApi)
+      .useValue(mockLibraryRepositoryShelfApi)
+      .overrideProvider(IsbnValidatorGoogleApi)
+      .useValue(mockIsbnValidator)
       .compile();
 
     service = module.get<BooksService>(BooksService);
@@ -158,7 +177,26 @@ describe('BooksService', () => {
   });
 
   it('should delete a book', async function () {
-    expect(await service.remove('1234567890001'));
+    await service.remove('1234567890001');
+    expect(mockBooks.has('1234567890001')).toBeFalsy();
+  });
+
+  it('should delete a book and remove it from all the librairies', async function () {
+    mockLibraryStorage.set(
+      'libraryId1',
+      new Set<string>(['1234567890001', '1234567890002']),
+    );
+    mockLibraryStorage.set(
+      'libraryId2',
+      new Set<string>(['1234567890000', '1234567890002']),
+    );
+    await service.remove('1234567890002');
+    expect(
+      mockLibraryStorage.get('libraryId1').has('1234567890002'),
+    ).toBeFalsy();
+    expect(
+      mockLibraryStorage.get('libraryId2').has('1234567890002'),
+    ).toBeFalsy();
   });
 
   it('should not found isbn throw NotFoundException', async function () {

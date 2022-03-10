@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BooksController } from './books.controller';
 import { BooksService } from '../../application/books.service';
 import { Book } from '../../domain/book';
-import { Isbn } from '../../domain/isbn';
+import { Isbn } from '../../domain/isbn/isbn';
 import { BookTitle } from '../../domain/book-title';
 import { Author } from '../../domain/author';
 import { BookOverview } from '../../domain/book-overview';

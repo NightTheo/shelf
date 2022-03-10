@@ -8,7 +8,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { IsbnFormatException } from '../../domain/IsbnFormatException';
+import { IsbnFormatException } from '../../../shared/isbn/isbn-format.exception';
 import { BookConflictException } from '../../application/exceptions/book.conflict.exception';
 import { BookNotFoundException } from '../../application/exceptions/book.not-found.exception';
 import { BookCoverNotFoundException } from '../../application/exceptions/book-cover.not-found.exception';

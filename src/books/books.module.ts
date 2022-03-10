@@ -7,6 +7,8 @@ import { BookRepositoryTypeORM } from './persistence/book.repository.typeORM';
 import { BookCoverFileSystemRepository } from './persistence/book-cover.file-system.repository';
 import { BookCoverMinioRepository } from './persistence/book-cover.minio.repository';
 import { MinioClientModule } from '../minio/minio.module';
+import { LibraryRepositoryShelfApi } from './persistence/library.repository.shelf-api';
+import { IsbnValidatorGoogleApi } from '../shared/isbn/isbn.validator.google-api';
 
 @Module({
   imports: [TypeOrmModule.forFeature([BookEntity]), MinioClientModule],
@@ -16,6 +18,8 @@ import { MinioClientModule } from '../minio/minio.module';
     BookRepositoryTypeORM,
     BookCoverFileSystemRepository,
     BookCoverMinioRepository,
+    LibraryRepositoryShelfApi,
+    IsbnValidatorGoogleApi,
   ],
 })
 export class BooksModule {}
