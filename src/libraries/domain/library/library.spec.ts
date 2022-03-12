@@ -5,10 +5,11 @@ import { BookConflictException } from '../exceptions/book.conflict.exception';
 
 describe('Library', () => {
   it('should create a library', () => {
-    const library: Library = new Library(new LibraryId(), [
+    const library: Library = new Library(new LibraryId(), 'library', [
       new Book('978-2221252055', 'Dune', 'Frank Herbert'),
     ]);
     expect(library.id).toBeInstanceOf(LibraryId);
+    expect(library.name.value).toEqual('library');
   });
 
   it('should create an empty library', () => {
@@ -31,7 +32,7 @@ describe('Library', () => {
 
   it('should have a book', async () => {
     const book: Book = new Book('978-2221252055', 'Dune', 'Frank Herbert');
-    const library: Library = new Library(new LibraryId(), [book]);
+    const library: Library = new Library(new LibraryId(), 'library', [book]);
     expect(library.has(book)).toBeTruthy();
   });
 
@@ -48,7 +49,7 @@ describe('Library', () => {
       "L'Étranger",
       'Camus',
     );
-    const library: Library = new Library(new LibraryId(), [
+    const library: Library = new Library(new LibraryId(), 'library', [
       bookToRemove,
       remainingBook,
     ]);
@@ -63,7 +64,7 @@ describe('Library', () => {
       new Book('9782070411610', "L'Étranger", 'Camus'),
       new Book('9782290032725', 'Algernon', 'Keyes'),
     ];
-    const library: Library = new Library(new LibraryId(), books);
+    const library: Library = new Library(new LibraryId(), 'library', books);
     library.removeAllBooks();
     expect(library.has(books[0])).toBeFalsy();
     expect(library.has(books[1])).toBeFalsy();

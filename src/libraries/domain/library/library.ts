@@ -2,18 +2,25 @@ import { LibraryId } from '../library-id/library-id';
 import { BookConflictException } from '../exceptions/book.conflict.exception';
 import { Book } from '../book/book';
 import { BookNotFoundException } from '../../application/exceptions/book.not-found.exception';
+import { LibraryName } from '../library-name/library-name';
 
 export class Library {
   private readonly _id: LibraryId;
+  private readonly _name: LibraryName;
   private _books: Map<string, Book> = new Map<string, Book>();
 
-  constructor(id?: LibraryId, books: Book[] = []) {
+  constructor(id?: LibraryId, name: string = '', books: Book[] = []) {
     this._id = id ? id : new LibraryId();
+    this._name = new LibraryName(name);
     books.forEach((book) => this.add(book));
   }
 
   get id(): LibraryId {
     return this._id;
+  }
+
+  get name(): LibraryName {
+    return this._name;
   }
 
   add(book: Book) {
