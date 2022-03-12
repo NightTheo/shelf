@@ -14,10 +14,13 @@ export class LibrariesService {
     private bookRepository: BookRepositoryShelfApi,
   ) {}
 
-  async createWithListOfIsbn(isbnList?: string[]): Promise<LibraryId> {
+  async createWithListOfIsbn(
+    name: string,
+    isbnList?: string[],
+  ): Promise<LibraryId> {
     const id: LibraryId = await this.getUniqueLibraryId();
     const books: Book[] = await this.getBooksByIsbnList(isbnList);
-    await this.libraryRepository.save(new Library(id, books));
+    await this.libraryRepository.save(new Library(id, name, books));
     return Promise.resolve(id);
   }
 
@@ -54,7 +57,7 @@ export class LibrariesService {
     const library: Library = await this.getLibraryById(libraryId);
     const books: Book[] = await this.getBooksByIsbnList(isbnList);
     books.map((book: Book) => library.add(book));
-    this.libraryRepository.save(library);
+    await this.libraryRepository.save(library);
   }
 
   async getLibraryById(id: string) {
@@ -64,7 +67,12 @@ export class LibrariesService {
       throw new LibraryNotFoundException(libraryId);
     }
     const booksIsbn: string[] = library.books.map((book) => book.isbn);
-    return new Library(library.id, await this.getBooksByIsbnList(booksIsbn));
+    const l = new Library(
+      library.id,
+      library.name.value,
+      await this.getBooksByIsbnList(booksIsbn),
+    );
+    return l;
   }
 
   async delete(libraryId: string): Promise<void> {
@@ -103,11 +111,16 @@ export class LibrariesService {
     );
   }
 
-  async update(id: string, isbnList: string[]): Promise<void> {
+  async update(id: string, name: string, isbnList: string[]): Promise<void> {
     const library: Library = await this.getLibraryById(id);
-    library.removeAllBooks();
-    const books: Book[] = await this.getBooksByIsbnList(isbnList);
-    books.forEach((book) => library.add(book));
+    if (name) {
+      library.name.value = name;
+    }
+    if (isbnList) {
+      library.removeAllBooks();
+      const books: Book[] = await this.getBooksByIsbnList(isbnList);
+      books.forEach((book) => library.add(book));
+    }
     await this.libraryRepository.save(library);
   }
 }

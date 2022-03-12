@@ -5,7 +5,7 @@ import { Library } from '../domain/library/library';
 import { LibraryId } from '../domain/library-id/library-id';
 import { Book } from '../domain/book/book';
 import { CreateLibraryDto } from '../dto/create-library.dto';
-import { UpdateLibraryBooksDto } from '../dto/update-library-books.dto';
+import { UpdateLibraryDto } from '../dto/update-library.dto';
 import { GetLibraryDto } from '../dto/get-library.dto';
 
 describe('LibrariesController', () => {
@@ -16,25 +16,32 @@ describe('LibrariesController', () => {
     getAll: jest
       .fn()
       .mockImplementation(() => Array.from(mockLibrariesStorage.values())),
-    createWithListOfIsbn: jest.fn().mockImplementation((isbnList: string[]) => {
-      const newLibrary: Library = isbnList
-        ? new Library(
-            new LibraryId(),
-            isbnList.map((isbn) => new Book(isbn)),
-          )
-        : new Library();
-      mockLibrariesStorage.set(newLibrary.id.value, newLibrary);
-    }),
+    createWithListOfIsbn: jest
+      .fn()
+      .mockImplementation((name: string, isbnList: string[]) => {
+        const newLibrary: Library = isbnList
+          ? new Library(
+              new LibraryId(),
+              name,
+              isbnList.map((isbn) => new Book(isbn)),
+            )
+          : new Library();
+        mockLibrariesStorage.set(newLibrary.id.value, newLibrary);
+      }),
     delete: jest
       .fn()
       .mockImplementation((id: string) => mockLibrariesStorage.delete(id)),
-    update: jest.fn().mockImplementation((id: string, isbnList: string[]) => {
-      const library: Library = new Library(
-        LibraryId.withValue(id),
-        isbnList.map((isbn) => new Book(isbn)),
-      );
-      mockLibrariesStorage.set(id, library);
-    }),
+    update: jest
+      .fn()
+      .mockImplementation((id: string, name: string, isbnList: string[]) => {
+        const old = mockLibrariesStorage.get(id);
+        const library: Library = new Library(
+          LibraryId.withValue(id),
+          name ? name : old.name.value,
+          isbnList ? isbnList.map((isbn) => new Book(isbn)) : old.books,
+        );
+        mockLibrariesStorage.set(id, library);
+      }),
     removeBookFromAllLibraries: jest.fn().mockImplementation((isbn: string) => {
       const book: Book = new Book(isbn);
       Array.from(mockLibrariesStorage.values())
@@ -64,7 +71,7 @@ describe('LibrariesController', () => {
   });
 
   it('should get all the books', async () => {
-    const library: Library = new Library(new LibraryId(), [
+    const library: Library = new Library(new LibraryId(), 'library', [
       new Book('9782221252055', 'Dune', 'Herbert'),
     ]);
     mockLibrariesStorage.set(library.id.value, library);
@@ -72,6 +79,7 @@ describe('LibrariesController', () => {
     expect(dtos).toEqual([
       {
         id: library.id.value,
+        name: 'library',
         books: expect.any(Array),
       },
     ]);
@@ -86,7 +94,9 @@ describe('LibrariesController', () => {
   });
 
   it('should create an empty library', async () => {
-    await controller.createLibrary();
+    await controller.createLibrary({
+      name: 'library',
+    } as CreateLibraryDto);
     expect(mockLibrariesStorage.size).toEqual(1);
     const [created] = mockLibrariesStorage.keys();
     expect(mockLibrariesStorage.get(created).books).toEqual([]);
@@ -94,6 +104,7 @@ describe('LibrariesController', () => {
 
   it('should create a library with three books', async () => {
     const dto: CreateLibraryDto = {
+      name: 'library',
       books: ['978-2221252055', '9782070411610', '978-2-2900-3272-5'],
     };
     await controller.createLibrary(dto);
@@ -116,13 +127,50 @@ describe('LibrariesController', () => {
   it('should update a library', async () => {
     const library: Library = new Library();
     mockLibrariesStorage.set(library.id.value, library);
-    const dto: UpdateLibraryBooksDto = {
+    const dto: UpdateLibraryDto = {
+      name: 'newName',
       books: ['978-2221252055', '9782070411610', '978-2-2900-3272-5'],
     };
     await controller.update(library.id.value, dto);
     expect(
       mockLibrariesStorage.get(library.id.value).has(new Book('9782070411610')),
     ).toBeTruthy();
+    expect(mockLibrariesStorage.get(library.id.value).name.value).toEqual(
+      'newName',
+    );
+  });
+
+  it('should not update the library name when not given in dto', async () => {
+    const library: Library = new Library(
+      new LibraryId(),
+      'thisNameWillNotBeUpdated',
+    );
+    mockLibrariesStorage.set(library.id.value, library);
+    const dto: UpdateLibraryDto = {
+      books: ['978-2221252055'],
+    };
+    await controller.update(library.id.value, dto);
+    expect(mockLibrariesStorage.get(library.id.value).name.value).toEqual(
+      'thisNameWillNotBeUpdated',
+    );
+  });
+
+  it('should not update the library books when not given in dto', async () => {
+    const book: Book = new Book('978-2221252055');
+    const library: Library = new Library(
+      new LibraryId(),
+      'thisNameWillBeUpdated',
+      [book],
+    );
+    mockLibrariesStorage.set(library.id.value, library);
+    const dto: UpdateLibraryDto = {
+      name: 'newName',
+    };
+    await controller.update(library.id.value, dto);
+    expect(mockLibrariesStorage.get(library.id.value).name.value).toEqual(
+      'newName',
+    );
+    expect(mockLibrariesStorage.get(library.id.value).has(book)).toBeTruthy();
   });
 
   it('should delete a book from all libraries containing it', async () => {
@@ -133,11 +181,11 @@ describe('LibrariesController', () => {
       "L'Étranger",
       'Camus',
     );
-    const library1: Library = new Library(new LibraryId(), [
+    const library1: Library = new Library(new LibraryId(), 'library1', [
       bookToRemove,
       bookRemaining,
     ]);
-    const library2: Library = new Library(new LibraryId(), [
+    const library2: Library = new Library(new LibraryId(), 'library2', [
       bookToRemove,
       new Book('9782290032725', 'Des Fleurs Pour Algernon', 'Keyes'),
     ]);

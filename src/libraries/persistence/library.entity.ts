@@ -5,6 +5,9 @@ export class LibraryEntity {
   @PrimaryColumn({ length: 36 })
   id: string;
 
+  @Column({ nullable: false })
+  name: string;
+
   @Column({ nullable: false, default: '[]' })
   books: string;
 }

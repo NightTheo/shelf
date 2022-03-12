@@ -7,6 +7,6 @@ export class LibraryAdapter {
   static fromEntity(library: LibraryEntity): Library {
     const isbnList: string[] = JSON.parse(library.books);
     const books: Book[] = isbnList.map((isbn) => new Book(isbn));
-    return new Library(new LibraryId(library.id), books);
+    return new Library(new LibraryId(library.id), library.name, books);
   }
 }

@@ -69,7 +69,9 @@ describe('LibrariesService', () => {
   });
 
   it('should create new empty library', async () => {
-    const createdLibraryId: LibraryId = await service.createWithListOfIsbn();
+    const createdLibraryId: LibraryId = await service.createWithListOfIsbn(
+      'library',
+    );
     expect(mockLibrariesStorage.has(createdLibraryId.value)).toBeTruthy();
   });
 
@@ -79,7 +81,10 @@ describe('LibrariesService', () => {
       '9782070411610', // L'Étranger - Camus
       '978-2-2900-3272-5', // Des fleurs pour Algernon - Keyes
     ];
-    const id: LibraryId = await service.createWithListOfIsbn(isbnList);
+    const id: LibraryId = await service.createWithListOfIsbn(
+      'library',
+      isbnList,
+    );
     const created: Library = mockLibrariesStorage.get(id.value);
     expect(created.has(new Book('978-2221252055'))).toBeTruthy();
     expect(created.has(new Book('9782070411610'))).toBeTruthy();
@@ -88,12 +93,12 @@ describe('LibrariesService', () => {
 
   it('should throw a BookNotFoundException', () => {
     const unknownIsbn = ['000-0000000000'];
-    expect(() => service.createWithListOfIsbn(unknownIsbn)).rejects.toThrow(
-      BookNotFoundException,
-    );
-    expect(() => service.createWithListOfIsbn(unknownIsbn)).rejects.toThrow(
-      '000-0000000000',
-    );
+    expect(() =>
+      service.createWithListOfIsbn('library', unknownIsbn),
+    ).rejects.toThrow(BookNotFoundException);
+    expect(() =>
+      service.createWithListOfIsbn('library', unknownIsbn),
+    ).rejects.toThrow('000-0000000000');
   });
 
   it('should throw a BookConflictException when create a library with duplicate isbn', () => {
@@ -102,7 +107,7 @@ describe('LibrariesService', () => {
       '9782221252055', // Dune - Herbert
     ];
     expect(() =>
-      service.createWithListOfIsbn(duplicateIsbnList),
+      service.createWithListOfIsbn('library', duplicateIsbnList),
     ).rejects.toThrow(BookConflictException);
   });
 
@@ -138,7 +143,7 @@ describe('LibrariesService', () => {
 
   it('should remove books from a library', async () => {
     //given a library with two books in it
-    const library: Library = new Library(new LibraryId(), [
+    const library: Library = new Library(new LibraryId(), 'library', [
       mockBookStorage.get('9782221252055'), // Dune - Herbert
       mockBookStorage.get('9782070411610'), // L'Étranger - Camus
     ]);
@@ -157,11 +162,11 @@ describe('LibrariesService', () => {
   it('should remove a book from all the libraries containing it', async () => {
     // Given two libraries with the book 'Dune'
     const bookToRemove: Book = mockBookStorage.get('9782221252055'); // Dune - Herbert
-    const library1: Library = new Library(new LibraryId(), [
+    const library1: Library = new Library(new LibraryId(), 'library1', [
       bookToRemove,
       mockBookStorage.get('9782070411610'), // L'Étranger - Camus
     ]);
-    const library2: Library = new Library(new LibraryId(), [
+    const library2: Library = new Library(new LibraryId(), 'library2', [
       bookToRemove,
       mockBookStorage.get('9782290032725'), // Des Fleurs Pour Algernon - Keyes
     ]);
@@ -184,7 +189,7 @@ describe('LibrariesService', () => {
 
   it('should get all the libraries', async () => {
     mockLibrariesStorage.clear();
-    const library: Library = new Library(new LibraryId(), [
+    const library: Library = new Library(new LibraryId(), 'library', [
       new Book('9782221252055', 'Dune', 'Herbert'),
     ]);
     mockLibrariesStorage.set(library.id.value, library);
@@ -195,17 +200,14 @@ describe('LibrariesService', () => {
     mockLibrariesStorage.clear();
     const library: Library = new Library();
     mockLibrariesStorage.set(library.id.value, library);
-    await service.update(library.id.value, ['978-2221252055', '9782070411610']);
-    expect(
-      mockLibrariesStorage
-        .get(library.id.value)
-        .has(mockBookStorage.get('9782221252055')),
-    ).toBeTruthy();
-    expect(
-      mockLibrariesStorage
-        .get(library.id.value)
-        .has(mockBookStorage.get('9782070411610')),
-    ).toBeTruthy();
+    await service.update(library.id.value, 'newName', [
+      '978-2221252055',
+      '9782070411610',
+    ]);
+    const updated: Library = mockLibrariesStorage.get(library.id.value);
+    expect(updated.has(mockBookStorage.get('9782221252055'))).toBeTruthy();
+    expect(updated.has(mockBookStorage.get('9782070411610'))).toBeTruthy();
+    expect(updated.name.value).toEqual('newName');
   });
 
   it('should get one library by its id', async () => {

@@ -12,7 +12,7 @@ import { Library } from '../domain/library/library';
 import { LibrariesService } from '../application/libraries.service';
 import { GetLibraryDtoAdapter } from '../adapters/get-library-dto.adapter';
 import { CreateLibraryDto } from '../dto/create-library.dto';
-import { UpdateLibraryBooksDto } from '../dto/update-library-books.dto';
+import { UpdateLibraryDto } from '../dto/update-library.dto';
 import { GetLibraryDto } from '../dto/get-library.dto';
 import { LibraryId } from '../domain/library-id/library-id';
 import { ShelfUrlFactory } from '../../shared/http/shelf-url.factory';
@@ -46,10 +46,11 @@ export class LibrariesController {
 
   @Post()
   @HttpCode(201)
-  async createLibrary(@Body() dto?: CreateLibraryDto): Promise<any> {
+  async createLibrary(@Body() dto: CreateLibraryDto): Promise<any> {
     const librariesUrl: string = ShelfUrlFactory.getEndPoint('libraries');
+    const isbnList: string[] = dto.books ? dto.books : [];
     const createdId: LibraryId =
-      await this.librariesService.createWithListOfIsbn(dto ? dto.books : []);
+      await this.librariesService.createWithListOfIsbn(dto.name, isbnList);
     return {
       uuid: createdId?.value,
       url: librariesUrl + '/' + createdId?.value,
@@ -65,9 +66,9 @@ export class LibrariesController {
   @Patch(':uuid')
   async update(
     @Param('uuid') id: string,
-    @Body() updateLibraryBooksDto: UpdateLibraryBooksDto,
+    @Body() updateDto: UpdateLibraryDto,
   ): Promise<void> {
-    await this.librariesService.update(id, updateLibraryBooksDto.books);
+    await this.librariesService.update(id, updateDto.name, updateDto.books);
   }
 
   @HttpCode(204)

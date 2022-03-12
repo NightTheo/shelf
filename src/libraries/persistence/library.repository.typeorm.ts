@@ -16,6 +16,7 @@ export class LibraryRepositoryTypeORM implements LibraryRepository {
   async save(library: Library): Promise<void> {
     const libraryEntity: LibraryEntity = {
       id: library.id.value,
+      name: library.name.value,
       books: JSON.stringify(library.books.map((book: Book) => book.isbn)),
     };
     await this.typeorm.save(libraryEntity);
