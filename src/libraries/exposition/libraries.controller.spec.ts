@@ -6,7 +6,7 @@ import { LibraryId } from '../domain/library-id/library-id';
 import { Book } from '../domain/book/book';
 import { CreateLibraryDto } from '../dto/create-library.dto';
 import { UpdateLibraryDto } from '../dto/update-library.dto';
-import { GetLibraryDto } from '../dto/get-library.dto';
+import { GetAllLibrariesDto } from '../dto/get-all-libraries.dto';
 
 describe('LibrariesController', () => {
   let controller: LibrariesController;
@@ -75,19 +75,11 @@ describe('LibrariesController', () => {
       new Book('9782221252055', 'Dune', 'Herbert'),
     ]);
     mockLibrariesStorage.set(library.id.value, library);
-    const dtos: GetLibraryDto[] = await controller.getAllLibraries();
+    const dtos: GetAllLibrariesDto[] = await controller.getAllLibraries();
     expect(dtos).toEqual([
       {
         id: library.id.value,
         name: 'library',
-        books: expect.any(Array),
-      },
-    ]);
-    expect(dtos[0].books).toEqual([
-      {
-        isbn: '978-2-2212-5205-5',
-        title: 'Dune',
-        author: 'Herbert',
         url: expect.any(String),
       },
     ]);

@@ -16,16 +16,20 @@ import { UpdateLibraryDto } from '../dto/update-library.dto';
 import { GetLibraryDto } from '../dto/get-library.dto';
 import { LibraryId } from '../domain/library-id/library-id';
 import { ShelfUrlFactory } from '../../shared/http/shelf-url.factory';
+import { GetAllLibrariesDto } from '../dto/get-all-libraries.dto';
+import { GetAllLibrariesDtoAdapter } from '../adapters/get-all-libraries-dto.adapter';
 
 @Controller('libraries')
 export class LibrariesController {
   constructor(private readonly librariesService: LibrariesService) {}
 
   @Get()
-  async getAllLibraries(): Promise<GetLibraryDto[]> {
+  async getAllLibraries(): Promise<GetAllLibrariesDto[]> {
+    const librariesApiUrl: string = ShelfUrlFactory.getEndPoint('libraries');
     return (await this.librariesService.getAll()).map((library: Library) => {
-      const dto: GetLibraryDto = GetLibraryDtoAdapter.adapt(library);
-      return this.getLibraryDtoWithBooksUrlFrom(dto);
+      const dto: GetAllLibrariesDto = GetAllLibrariesDtoAdapter.adapt(library);
+      dto.url = `${librariesApiUrl}/${library.id.value}`;
+      return dto;
     });
   }
 
