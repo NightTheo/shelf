@@ -81,6 +81,7 @@ describe('LibrariesController', () => {
         id: library.id.value,
         name: 'library',
         url: expect.any(String),
+        book_count: 1,
       },
     ]);
   });

@@ -6,6 +6,7 @@ export class GetLibraryDtoAdapter {
     return {
       id: library.id.value,
       name: library.name.value,
+      book_count: library.bookCount(),
       books: library.books.map((book) => {
         return {
           isbn: book.isbn,
