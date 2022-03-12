@@ -49,4 +49,8 @@ export class Library {
   removeAllBooks(): void {
     this._books.clear();
   }
+
+  bookCount(): number {
+    return this._books.size;
+  }
 }

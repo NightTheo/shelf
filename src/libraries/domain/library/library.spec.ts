@@ -70,4 +70,14 @@ describe('Library', () => {
     expect(library.has(books[1])).toBeFalsy();
     expect(library.has(books[2])).toBeFalsy();
   });
+
+  it('should get the number of books in the library', () => {
+    const books: Book[] = [
+      new Book('9782221252055', 'Dune', 'Herbert'),
+      new Book('9782070411610', "L'Étranger", 'Camus'),
+      new Book('9782290032725', 'Algernon', 'Keyes'),
+    ];
+    const library: Library = new Library(new LibraryId(), 'library', books);
+    expect(library.bookCount()).toEqual(3);
+  });
 });

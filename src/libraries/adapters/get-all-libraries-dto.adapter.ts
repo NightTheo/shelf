@@ -7,6 +7,7 @@ export class GetAllLibrariesDtoAdapter {
       id: library.id.value,
       name: library.name.value,
       url: undefined,
+      book_count: library.bookCount(),
     };
   }
 }
