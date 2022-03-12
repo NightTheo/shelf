@@ -5,7 +5,7 @@ import axios from 'axios';
 
 export class LibraryRepositoryShelfApi implements LibraryRepository {
   async removeBookFromAllLibraries(isbn: Isbn): Promise<void> {
-    const url: string = ShelfUrlFactory.getEndPoint('book-in-all-library');
+    const url: string = ShelfUrlFactory.getEndPoint('book-in-all-libraries');
     await axios.delete(`${url}/${isbn.value}`);
   }
 }
