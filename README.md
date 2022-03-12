@@ -69,7 +69,7 @@ $ docker compose up app
 | `PATCH`   | `/books/:isbn`          | 200           | Modifie un livre                                |
 | `DELETE`  | `/books/:isbn`          | 204           | Supprime un livre                              |
 | `GET`     | `/libraries`            | 200           | Récupère toutes les bibliothèques              |
-| `GET`     | `/libraries/:uuid`      | 200           | Récupère une bibliothèque par son UUID          |
+| `GET`     | `/libraries/:uuid`      | 200           | Récupère une bibliothèque par son UUID         |
 | `POST`    | `/libraries`            | 201           | Crée une bibliothèque                          |
 | `PATCH`   | `/libraries/:uuid`      | 200           | Modifie la liste des livres d'une bibliothèque  |
 | `DELETE`  | `/libraries/:uuid`      | 204           | Supprime une bibliothèque                      |
