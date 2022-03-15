@@ -10,14 +10,58 @@ services:
     restart: unless-stopped
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules # Just specify a path and let the Engine create a volume
     ports:
       - "3000:3000"
-      - "9229:9229"
-    command: npm run start:dev
+    command: npm run start
+    depends_on:
+      - db
+      - minio
     networks:
       - shelf
+  db:
+    container_name: "${DB_HOST}"
+    image: mysql:8.0
+    restart: unless-stopped
+    ports:
+      - "${FORWARD_DB_PORT:-3306}:${DB_PORT}"
+    environment:
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_RANDOM_ROOT_PASSWORD: yes
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - shelf
+    healthcheck:
+      test: ["CMD","mysqladmin","ping","-p","${DB_PASSWORD}"]
+      retries: 3
+      timeout: 5s
+
+  minio:
+    container_name: minio
+    image: minio/minio
+    volumes:
+      - shelf_minio:/data
+    command: server --console-address ":9001" /data
+    environment:
+      MINIO_ROOT_USER: "${STORAGE_USER}"
+      MINIO_ROOT_PASSWORD: "${STORAGE_PASSWORD}"
+    ports:
+      - "${FORWARD_STORAGE_PORT:-9000}:${STORAGE_PORT}"
+      - "9001:9001"
+    networks:
+      - shelf
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${FORWARD_STORAGE_PORT:-9000}/minio/health/live"]
+      retries: 3
+      timeout: 5s
 
 networks:
   shelf:
+    driver: bridge
 
+volumes:
+  mysql:
+    driver: local
+  shelf_minio:
